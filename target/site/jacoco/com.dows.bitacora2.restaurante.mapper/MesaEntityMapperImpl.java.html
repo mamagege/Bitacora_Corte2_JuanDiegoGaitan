@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MesaEntityMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BITACORA-TERCIO2</a> &gt; <a href="index.source.html" class="el_package">com.dows.bitacora2.restaurante.mapper</a> &gt; <span class="el_source">MesaEntityMapperImpl.java</span></div><h1>MesaEntityMapperImpl.java</h1><pre class="source lang-java linenums">package com.dows.bitacora2.restaurante.mapper;
+
+import com.dows.bitacora2.restaurante.model.domain.Mesa;
+import com.dows.bitacora2.restaurante.persistence.entity.MesaEntity;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-09-29T00:08:49-0500&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)&quot;
+)
+@Component
+<span class="nc" id="L16">public class MesaEntityMapperImpl implements MesaEntityMapper {</span>
+
+    @Override
+    public MesaEntity toEntity(Mesa mesa) {
+<span class="nc bnc" id="L20" title="All 2 branches missed.">        if ( mesa == null ) {</span>
+<span class="nc" id="L21">            return null;</span>
+        }
+
+<span class="nc" id="L24">        MesaEntity mesaEntity = new MesaEntity();</span>
+
+<span class="nc" id="L26">        mesaEntity.setId( mesa.getId() );</span>
+<span class="nc" id="L27">        mesaEntity.setNumero( mesa.getNumero() );</span>
+<span class="nc" id="L28">        mesaEntity.setCapacidad( mesa.getCapacidad() );</span>
+<span class="nc" id="L29">        mesaEntity.setEstado( mesa.getEstado() );</span>
+<span class="nc" id="L30">        mesaEntity.setCuentaAbierta( mesa.getCuentaAbierta() );</span>
+
+<span class="nc" id="L32">        return mesaEntity;</span>
+    }
+
+    @Override
+    public Mesa toDomain(MesaEntity entity) {
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        if ( entity == null ) {</span>
+<span class="nc" id="L38">            return null;</span>
+        }
+
+<span class="nc" id="L41">        Mesa mesa = new Mesa();</span>
+
+<span class="nc" id="L43">        mesa.setId( entity.getId() );</span>
+<span class="nc" id="L44">        mesa.setNumero( entity.getNumero() );</span>
+<span class="nc" id="L45">        mesa.setCapacidad( entity.getCapacidad() );</span>
+<span class="nc" id="L46">        mesa.setEstado( entity.getEstado() );</span>
+<span class="nc" id="L47">        mesa.setCuentaAbierta( entity.getCuentaAbierta() );</span>
+
+<span class="nc" id="L49">        return mesa;</span>
+    }
+
+    @Override
+    public List&lt;Mesa&gt; toDomainList(List&lt;MesaEntity&gt; entities) {
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if ( entities == null ) {</span>
+<span class="nc" id="L55">            return null;</span>
+        }
+
+<span class="nc" id="L58">        List&lt;Mesa&gt; list = new ArrayList&lt;Mesa&gt;( entities.size() );</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        for ( MesaEntity mesaEntity : entities ) {</span>
+<span class="nc" id="L60">            list.add( toDomain( mesaEntity ) );</span>
+<span class="nc" id="L61">        }</span>
+
+<span class="nc" id="L63">        return list;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

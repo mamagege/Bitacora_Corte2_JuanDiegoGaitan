@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Guía Turtwig · Implementación completa de un Controller</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+  --verde:#3d8b5e;--verde-cl:#6abf8a;--verde-hoja:#a8d5b5;--verde-osc:#2d6e47;
+  --amarillo:#f4a435;--warn:#f4a435;--info:#3a9bd5;--tip:#7c4dff;
+  --danger:#e53e3e;
+  --gris-osc:#1e2a24;--gris-med:#4a5e54;--gris-cl:#8a9e94;
+  --fondo:#f0f7f3;--blanco:#fff;
+  --code-bg:#0f1923;--code-tx:#7dd3fc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',sans-serif;background:var(--fondo);color:var(--gris-osc);line-height:1.7;font-size:16px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a2f22 0%,#2d6e47 50%,#3d8b5e 100%);color:#fff;padding:60px 48px 52px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:360px;height:360px;background:rgba(106,191,138,.1);border-radius:50%}
+.hero::after{content:'🍽️';position:absolute;bottom:-20px;right:60px;font-size:120px;opacity:.08}
+.hero-inner{max-width:1140px;margin:0 auto;position:relative;z-index:1}
+.dosw-badge{display:inline-flex;align-items:center;gap:8px;background:var(--amarillo);color:var(--gris-osc);font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.8px;margin-bottom:18px;text-transform:uppercase}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;line-height:1.2;margin-bottom:12px}
+.hero h1 span{color:var(--verde-hoja)}
+.hero-sub{font-size:.98rem;color:rgba(255,255,255,.78);max-width:680px;line-height:1.75}
+.hero-chips{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-size:12px;font-weight:600;padding:5px 13px;border-radius:16px;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);font-family:'JetBrains Mono',monospace}
+
+/* NAV */
+.nav-toc{background:var(--blanco);border-bottom:2px solid var(--verde-hoja);padding:0 48px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(30,42,36,.08)}
+.nav-toc ul{max-width:1140px;margin:0 auto;display:flex;list-style:none;overflow-x:auto}
+.nav-toc ul li a{display:block;padding:13px 13px;font-size:11.5px;font-weight:700;color:var(--gris-med);text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;text-transform:uppercase;letter-spacing:.4px}
+.nav-toc ul li a:hover{color:var(--verde);border-bottom-color:var(--verde)}
+
+/* CONTENT */
+.content{max-width:1140px;margin:0 auto;padding:52px 48px 80px}
+
+/* SECTION */
+.section{margin-bottom:72px;scroll-margin-top:62px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid var(--verde-hoja)}
+.section-icon{width:46px;height:46px;background:var(--verde);color:#fff;font-size:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-title{font-size:1.4rem;font-weight:700}
+.section-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--verde);letter-spacing:1.2px;display:block;text-transform:uppercase}
+
+/* SECTION COVER */
+.section-cover{background:var(--gris-osc);margin:0 -48px;padding:52px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:48px}
+.sc-badge{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--verde-cl);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px}
+.sc-title{font-size:clamp(1.7rem,3.5vw,2.6rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:10px}
+.sc-title span{color:var(--verde-cl)}
+.sc-desc{font-size:.95rem;color:var(--gris-cl);max-width:520px;line-height:1.7}
+.sc-right{font-size:5rem;opacity:.2;flex-shrink:0}
+
+/* FLOW PIPELINE */
+.pipeline{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:wrap;gap:0}
+.pipe-step{background:var(--blanco);border:2px solid var(--verde-hoja);border-radius:10px;padding:14px 18px;text-align:center;min-width:130px;flex:1}
+.pipe-step .ps-num{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--verde);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.pipe-step .ps-name{font-size:.9rem;font-weight:700;color:var(--gris-osc)}
+.pipe-step .ps-sub{font-size:.75rem;color:var(--gris-cl);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.pipe-arrow{font-size:1.4rem;color:var(--verde-cl);padding:0 4px;flex-shrink:0}
+.pipe-step.active{background:var(--verde);border-color:var(--verde-osc)}
+.pipe-step.active .ps-num,.pipe-step.active .ps-name,.pipe-step.active .ps-sub{color:#fff}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:16px 0}
+@media(max-width:700px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* CARDS */
+.card{background:var(--blanco);border-radius:12px;padding:20px 24px;margin-bottom:14px;border-left:4px solid var(--verde-cl);box-shadow:0 2px 8px rgba(30,42,36,.06)}
+.card h3{font-size:.95rem;font-weight:700;color:var(--verde);margin-bottom:8px}
+.card p{font-size:.9rem;color:var(--gris-osc)}
+
+/* CALLOUTS */
+.callout{border-radius:10px;padding:15px 20px;margin:18px 0;display:flex;gap:12px;font-size:.9rem}
+.callout-icon{font-size:19px;flex-shrink:0;line-height:1.5}
+.callout.warn{background:#fff8ec;border-left:4px solid var(--warn)}
+.callout.info{background:#eaf5fb;border-left:4px solid var(--info)}
+.callout.key{background:#e8f7ef;border-left:4px solid var(--verde)}
+.callout.danger{background:#fff0f0;border-left:4px solid var(--danger)}
+.callout.tip{background:#f3eeff;border-left:4px solid var(--tip)}
+.callout strong{display:block;font-weight:700;margin-bottom:3px}
+
+/* CODE */
+pre{background:var(--code-bg);color:#e2e8f0;border-radius:10px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:12.5px;overflow-x:auto;line-height:1.7;margin:14px 0;position:relative}
+code{font-family:'JetBrains Mono',monospace;background:rgba(61,139,94,.12);color:var(--verde);padding:2px 7px;border-radius:4px;font-size:.85em}
+pre code{background:none;color:inherit;padding:0}
+.kw{color:#ff7b72}.ty{color:#79c0ff}.st{color:#a5d6ff}.cmt{color:#4a6741;font-style:italic}.fn{color:#d2a8ff}.nu{color:#f2cc60}.an{color:#ffa657}.ok{color:#3fb950}
+
+/* STEP LABELS */
+.steps{counter-reset:step;list-style:none;margin:16px 0}
+.steps li{counter-increment:step;display:flex;gap:14px;margin-bottom:22px;align-items:flex-start}
+.steps li::before{content:counter(step);min-width:32px;height:32px;background:var(--verde);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px}
+.step-title{font-weight:700;font-size:.97rem;margin-bottom:3px;color:var(--verde-osc)}
+.step-desc{font-size:.88rem;color:var(--gris-med)}
+
+/* QUIZ INLINE */
+.quiz-inline{background:var(--gris-osc);border-radius:12px;padding:22px 26px;margin:36px 0;border-left:5px solid var(--amarillo)}
+.qi-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.qi-badge{background:var(--amarillo);color:var(--gris-osc);font-size:10px;font-weight:800;padding:4px 12px;border-radius:10px;text-transform:uppercase;letter-spacing:.6px}
+.qi-q{color:#fff;font-size:.92rem;font-weight:600;margin-bottom:4px}
+.qi-a{color:var(--verde-cl);font-size:.84rem;font-style:italic;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(168,213,181,.15)}
+.qi-a:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+
+/* TUT CHECK */
+.tut-check{background:#fff8ec;border:1.5px solid var(--amarillo);border-radius:10px;padding:16px 22px;margin:18px 0}
+.tut-check strong{color:var(--warn);display:block;margin-bottom:8px;font-size:.9rem}
+.tut-check ul{padding-left:18px;font-size:.87rem;color:var(--gris-osc)}
+.tut-check li{padding:3px 0}
+
+/* TABLA */
+.tabla-wrap{overflow-x:auto;margin:16px 0;border-radius:10px;box-shadow:0 2px 8px rgba(30,42,36,.07)}
+table{width:100%;border-collapse:collapse;background:var(--blanco)}
+th{background:var(--verde);color:#fff;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;text-align:left}
+td{padding:11px 16px;font-size:13px;border-bottom:1px solid #e8eaf6;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:#f8fdf9}
+
+/* RULE BOX */
+.rule-box{background:var(--gris-osc);border-radius:12px;padding:22px 28px;margin:18px 0}
+.rule-box h4{color:var(--amarillo);font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px}
+.rule-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:.88rem;color:rgba(255,255,255,.88)}
+.rule-item:last-child{margin-bottom:0}
+.rule-ok{color:var(--verde-cl)}
+.rule-no{color:#fc8181}
+
+/* BADGE RULE */
+.badge-rule{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;font-family:'JetBrains Mono',monospace}
+.badge-si{background:#e8f7ef;color:var(--verde)}
+.badge-no{background:#fff0f0;color:var(--danger)}
+
+/* DIAGRAM */
+.diagram-wrap{background:var(--blanco);border-radius:12px;padding:26px;margin:20px 0;box-shadow:0 2px 12px rgba(30,42,36,.07);overflow-x:auto}
+.diagram-label{font-size:11px;font-weight:700;color:var(--verde);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.diagram-label::before{content:'◆';font-size:8px}
+
+/* SEP */
+.sep{height:1px;background:linear-gradient(90deg,var(--verde-hoja),transparent);margin:56px 0}
+
+/* FOOTER */
+footer{background:var(--gris-osc);color:rgba(255,255,255,.5);text-align:center;padding:28px;font-size:13px}
+footer span{color:var(--verde-cl)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="dosw-badge">🌿 Guía Turtwig de Studio</div>
+    <h1>Cómo construir un Controller<br><span>de punta a punta</span></h1>
+    <p class="hero-sub">Desde las clases de dominio hasta Swagger, pasando por DTOs, Mapper, Service, validaciones y manejo de errores. Una guía paso a paso para que implementes todos los controladores de tu restaurante con el mismo estándar.</p>
+    <div class="hero-chips">
+      <span class="chip">1· Dominio</span>
+      <span class="chip">2· DTOs</span>
+      <span class="chip">3· Mapper</span>
+      <span class="chip">4· Service</span>
+      <span class="chip">5· Validaciones</span>
+      <span class="chip">6· Controller</span>
+      <span class="chip">7· Excepciones</span>
+      <span class="chip">8· Swagger</span>
+    </div>
+  </div>
+</div>
+
+<nav class="nav-toc">
+  <ul>
+    <li><a href="#arquitectura">Arquitectura</a></li>
+    <li><a href="#dominio">1· Dominio</a></li>
+    <li><a href="#dto">2· DTOs</a></li>
+    <li><a href="#mapper">3· Mapper</a></li>
+    <li><a href="#service">4· Service</a></li>
+    <li><a href="#validaciones">5· Validaciones</a></li>
+    <li><a href="#utilidades">5B· Utils</a></li>
+    <li><a href="#controller">6· Controller</a></li>
+    <li><a href="#excepciones">7· Excepciones</a></li>
+    <li><a href="#swagger">8· Swagger</a></li>
+    <li><a href="#ejercicio">Ejercicio</a></li>
+    <li><a href="#pruebas">9· Pruebas</a></li>
+    <li><a href="#checklist">Checklist</a></li>
+  </ul>
+</nav>
+
+<div class="content">
+
+<!-- ARQUITECTURA -->
+<section class="section" id="arquitectura">
+  <div class="section-header">
+    <div class="section-icon">🗺️</div>
+    <div>
+      <span class="section-num">Vista general</span>
+      <div class="section-title">El flujo completo — quién habla con quién</div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:20px;font-size:.95rem">Antes de escribir una línea de código, tienes que tener claro quién le habla a quién y qué objeto pasa por cada frontera. Este diagrama es tu mapa para toda la guía.</p>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Flujo de una petición — de la red al dominio y de vuelta</div>
+    <div class="mermaid">
+flowchart LR
+    C["🌐 Cliente\nPostman / React"]
+    CT["@RestController\nController"]
+    MP["Mapper\n(MapperIn)"]
+    SV["IService\n→ ServiceImpl"]
+    DO["Dominio\nObjetos de negocio"]
+    MP2["Mapper\n(MapperOut)"]
+    DTO_REQ["RequestDTO\n@Valid"]
+    DTO_RES["ResponseDTO"]
+
+    C -- "JSON Request" --> CT
+    CT -- "@Valid → MapperIn" --> MP
+    MP -- "objeto dominio" --> SV
+    SV -- "opera sobre" --> DO
+    DO -- "devuelve\nobjeto dominio" --> SV
+    SV -- "devuelve\nobjeto dominio" --> CT
+    CT -- "MapperOut" --> MP2
+    MP2 -- "ResponseDTO" --> DTO_RES
+    DTO_RES -- "JSON Response" --> C
+
+    style C fill:#e8f7ef
+    style CT fill:#3d8b5e,color:#fff
+    style MP fill:#eaf5fb,stroke:#3a9bd5
+    style MP2 fill:#eaf5fb,stroke:#3a9bd5
+    style SV fill:#fff3e8,stroke:#8b5e3d
+    style DO fill:#f3eeff,stroke:#7c4dff
+    style DTO_REQ fill:#e8f7ef
+    style DTO_RES fill:#e8f7ef
+    </div>
+  </div>
+
+  <div class="rule-box">
+    <h4>🔑 Las 4 reglas que no se negocian</h4>
+    <div class="rule-item"><span class="rule-ok">✅</span><div>El <strong>Mapper</strong> vive en el Controller — no en el Service. El Service recibe y devuelve objetos de dominio, nunca DTOs.</div></div>
+    <div class="rule-item"><span class="rule-ok">✅</span><div>El <strong>Service</strong> devuelve objetos de dominio — nunca un ResponseDTO. La conversión a DTO la hace el Controller justo antes de responder.</div></div>
+    <div class="rule-item"><span class="rule-ok">✅</span><div>El <strong>Controller</strong> no tiene lógica de negocio — solo recibe, traduce, delega y responde.</div></div>
+    <div class="rule-item"><span class="rule-ok">✅</span><div>Las <strong>validaciones de input</strong> van en el DTO con Bean Validation. Las <strong>validaciones de negocio</strong> van en el Service con excepciones propias.</div></div>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>¿Por qué el Mapper NO va en el Service?</strong> Si el Service devuelve un ResponseDTO, está acoplado a la capa de presentación. El día que necesites otro formato de respuesta (v2 del API, WebSocket, exportación a PDF) tienes que tocar el Service — y el Service es donde vive tu lógica de negocio. El Mapper en el Controller mantiene esas dos responsabilidades separadas.</div>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="ps-num">Paso 1</div>
+      <div class="ps-name">Dominio</div>
+      <div class="ps-sub">model/domain</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="ps-num">Paso 2</div>
+      <div class="ps-name">DTOs</div>
+      <div class="ps-sub">model/dto</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="ps-num">Paso 3</div>
+      <div class="ps-name">Mapper</div>
+      <div class="ps-sub">mapper/</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="ps-num">Paso 4</div>
+      <div class="ps-name">Service</div>
+      <div class="ps-sub">service/ + impl/</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="ps-num">Paso 5</div>
+      <div class="ps-name">Validaciones</div>
+      <div class="ps-sub">validator/</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step active">
+      <div class="ps-num">Paso 6</div>
+      <div class="ps-name">Controller</div>
+      <div class="ps-sub">controller/</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="ps-num">Paso 7</div>
+      <div class="ps-name">Excepciones</div>
+      <div class="ps-sub">exception/</div>
+    </div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step">
+      <div class="ps-num">Paso 8</div>
+      <div class="ps-name">Swagger</div>
+      <div class="ps-sub">@Operation</div>
+    </div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- DOMINIO -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 01</div>
+    <div class="sc-title">Las clases de <span>dominio</span></div>
+    <div class="sc-desc">El dominio es el núcleo. Todo lo demás (DTOs, Mappers, Services) orbita alrededor de estas clases. Si el dominio está mal modelado, todo lo demás también lo está.</div>
+  </div>
+  <div class="sc-right">🏗️</div>
+</div>
+
+<section class="section" id="dominio">
+  <div class="section-header">
+    <div class="section-icon">🏗️</div>
+    <div>
+      <span class="section-num">Paso 01 — model/domain/</span>
+      <div class="section-title">Clases de dominio con Lombok</div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:18px">Las clases de dominio representan los conceptos del negocio — sin anotaciones de Spring, sin DTOs, sin nada que las acople a la infraestructura. Son Java puro con Lombok para no escribir getters, setters y constructores a mano.</p>
+
+  <pre><code><span class="cmt">// model/domain/Plato.java</span>
+<span class="an">@Data</span>                  <span class="cmt">// genera getters, setters, equals, hashCode, toString</span>
+<span class="an">@NoArgsConstructor</span>    <span class="cmt">// constructor vacío (necesario para deserialización)</span>
+<span class="an">@AllArgsConstructor</span>   <span class="cmt">// constructor con todos los campos</span>
+<span class="an">@Builder</span>              <span class="cmt">// patrón Builder: Plato.builder().nombre("X").build()</span>
+<span class="kw">public class</span> <span class="ty">Plato</span> {
+
+    <span class="kw">private</span> <span class="ty">Long</span>    id;
+    <span class="kw">private</span> <span class="ty">String</span>  nombre;
+    <span class="kw">private</span> <span class="ty">Double</span>  precio;
+    <span class="kw">private</span> <span class="ty">String</span>  categoria;
+    <span class="kw">private</span> <span class="ty">Boolean</span> disponible;
+    <span class="kw">private</span> <span class="ty">String</span>  descripcion;
+
+    <span class="cmt">// ✅ Comportamiento de negocio propio del objeto
+    // El dominio sabe qué puede hacer — sin depender de estado externo</span>
+    <span class="kw">public boolean</span> <span class="fn">estaDisponible</span>() {
+        <span class="kw">return</span> <span class="ty">Boolean</span>.<span class="fn">TRUE</span>.<span class="fn">equals</span>(disponible);
+    }
+
+    <span class="cmt">// Activa/desactiva sin que el Service tenga que tocar el campo directamente</span>
+    <span class="kw">public void</span> <span class="fn">activar</span>()   { <span class="kw">this</span>.disponible = <span class="kw">true</span>;  }
+    <span class="kw">public void</span> <span class="fn">desactivar</span>(){ <span class="kw">this</span>.disponible = <span class="kw">false</span>; }
+}
+
+<span class="cmt">// ❌ Lo que NO va en el dominio:
+//    public boolean esValido() { return nombre != null && precio > 0; }
+//    → Eso ya lo garantiza el @NotBlank y @Positive del RequestDTO.
+//    Si el objeto existe, es porque el input ya fue validado.
+//    Duplicarlo aquí solo crea dos fuentes de verdad que pueden desincronizarse.</span>
+
+<span class="cmt">// model/domain/EstadoPedido.java — Enum con comportamiento de negocio</span>
+<span class="kw">public enum</span> <span class="ty">EstadoPedido</span> {
+    RECIBIDO, EN_PREPARACION, LISTO, ENTREGADO, CANCELADO;
+
+    <span class="cmt">// ✅ La regla de transición vive en el Enum — es parte del dominio
+    // Nadie más la conoce: ni el Service, ni el Validator, ni el Controller</span>
+    <span class="kw">public boolean</span> <span class="fn">puedeTransicionarA</span>(<span class="ty">EstadoPedido</span> siguiente) {
+        <span class="kw">return switch</span> (<span class="kw">this</span>) {
+            <span class="kw">case</span> RECIBIDO       -> siguiente == EN_PREPARACION || siguiente == CANCELADO;
+            <span class="kw">case</span> EN_PREPARACION -> siguiente == LISTO;
+            <span class="kw">case</span> LISTO          -> siguiente == ENTREGADO;
+            <span class="kw">default</span>             -> <span class="kw">false</span>;
+        };
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">esCancelable</span>() {
+        <span class="kw">return this</span> == RECIBIDO;
+    }
+}</code></pre>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div>
+      <strong>¿Qué SÍ va como método en el dominio?</strong><br>
+      Comportamiento que el objeto sabe ejecutar sobre su propio estado interno, sin depender de nada externo: <code>estaDisponible()</code>, <code>activar()</code>, <code>puedeTransicionarA()</code>, <code>esCancelable()</code>, <code>estaVigente()</code> en Reserva, <code>subtotal()</code> en ItemPedido.<br><br>
+      <strong>¿Qué NO va en el dominio?</strong><br>
+      Validaciones de formato que ya cubre el DTO (<code>esValido()</code>, <code>precioEsPositivo()</code>), ni reglas que cruzan objetos (<em>"¿el nombre ya existe?"</em> requiere consultar la colección → eso es el Validator).
+    </div>
+  </div>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div><strong>Estructura de paquetes recomendada</strong><br>
+    <code>model/domain/</code> → clases de negocio + enums<br>
+    <code>model/dto/request/</code> → lo que entra al API<br>
+    <code>model/dto/response/</code> → lo que sale del API<br>
+    <code>mapper/</code> → conversión entre capas<br>
+    <code>service/</code> → interfaces (contratos)<br>
+    <code>service/impl/</code> → implementaciones<br>
+    <code>controller/</code> → endpoints REST<br>
+    <code>exception/</code> → excepciones + handler<br>
+    <code>validator/</code> → validadores de negocio (opcional)</div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- DTOs -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 02</div>
+    <div class="sc-title">Los <span>DTOs</span> — lo que entra y lo que sale</div>
+    <div class="sc-desc">Un DTO por funcionalidad, no uno para todo. El Request valida el input. El Response controla exactamente qué le muestras al cliente — nunca el objeto de dominio completo.</div>
+  </div>
+  <div class="sc-right">📦</div>
+</div>
+
+<section class="section" id="dto">
+  <div class="section-header">
+    <div class="section-icon">📦</div>
+    <div>
+      <span class="section-num">Paso 02 — model/dto/</span>
+      <div class="section-title">DTOs de Request y Response</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Antes de crear un DTO hazte estas preguntas:</strong> ¿Requiere datos de entrada? ¿Hay campos opcionales? ¿Qué devuelve en caso de éxito? ¿Qué devuelve en caso de error? — La respuesta determina cuántos DTOs necesitas por endpoint.</div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <h3 style="margin-bottom:12px;font-size:1rem;color:var(--verde)">📥 RequestDTO — lo que entra</h3>
+      <pre><code><span class="cmt">// model/dto/request/PlatoRequestDTO.java</span>
+<span class="an">@Data</span>
+<span class="an">@NoArgsConstructor</span>
+<span class="an">@AllArgsConstructor</span>
+<span class="kw">public class</span> <span class="ty">PlatoRequestDTO</span> {
+
+    <span class="an">@NotBlank</span>(message = <span class="st">"El nombre es obligatorio"</span>)
+    <span class="an">@Size</span>(max = <span class="nu">100</span>, message = <span class="st">"Máximo 100 caracteres"</span>)
+    <span class="kw">private</span> <span class="ty">String</span> nombre;
+
+    <span class="an">@NotNull</span>(message = <span class="st">"El precio es obligatorio"</span>)
+    <span class="an">@Positive</span>(message = <span class="st">"El precio debe ser mayor a 0"</span>)
+    <span class="kw">private</span> <span class="ty">Double</span> precio;
+
+    <span class="an">@NotBlank</span>(message = <span class="st">"La categoría es obligatoria"</span>)
+    <span class="kw">private</span> <span class="ty">String</span> categoria;
+
+    <span class="cmt">// Campo opcional — sin @NotNull</span>
+    <span class="kw">private</span> <span class="ty">String</span> descripcion;
+}</code></pre>
+    </div>
+    <div>
+      <h3 style="margin-bottom:12px;font-size:1rem;color:var(--verde)">📤 ResponseDTO — lo que sale</h3>
+      <pre><code><span class="cmt">// model/dto/response/PlatoResponseDTO.java</span>
+<span class="an">@Data</span>
+<span class="an">@NoArgsConstructor</span>
+<span class="an">@AllArgsConstructor</span>
+<span class="an">@Builder</span>
+<span class="kw">public class</span> <span class="ty">PlatoResponseDTO</span> {
+
+    <span class="kw">private</span> <span class="ty">Long</span>    id;
+    <span class="kw">private</span> <span class="ty">String</span>  nombre;
+    <span class="kw">private</span> <span class="ty">Double</span>  precio;
+    <span class="kw">private</span> <span class="ty">String</span>  categoria;
+    <span class="kw">private</span> <span class="ty">Boolean</span> disponible;
+
+    <span class="cmt">// ✅ Solo los campos que el cliente necesita ver</span>
+    <span class="cmt">// ❌ NO expongas campos internos del dominio</span>
+    <span class="cmt">// ❌ NO pongas la clase de dominio directamente</span>
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>¿Un DTO por endpoint o uno compartido?</strong> Si dos endpoints reciben los mismos campos → comparten el RequestDTO. Si uno recibe menos → crea uno específico. No hagas un RequestDTO con 15 campos opcionales para cubrirlo todo — eso rompe el principio de responsabilidad única y hace inútil la validación.</div>
+  </div>
+
+  <h3 style="margin:24px 0 12px;font-size:1rem">Referencia — qué anotaciones de Bean Validation usar</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Anotación</th><th>Para qué sirve</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td><code>@NotNull</code></td><td>El campo no puede ser null (acepta string vacío)</td><td>Cualquier objeto obligatorio</td></tr>
+        <tr><td><code>@NotBlank</code></td><td>String no null y no vacío (después de trim)</td><td>nombre, categoria, descripción</td></tr>
+        <tr><td><code>@NotEmpty</code></td><td>Collection o String no vacíos</td><td>Lista de items de un pedido</td></tr>
+        <tr><td><code>@Positive</code></td><td>Número mayor que 0</td><td>precio, cantidad, capacidad</td></tr>
+        <tr><td><code>@Min</code> / <code>@Max</code></td><td>Rango de un número</td><td>@Min(1) cantidad, @Max(50) comensales</td></tr>
+        <tr><td><code>@Size</code></td><td>Longitud de String o Collection</td><td>@Size(max=100) nombre</td></tr>
+        <tr><td><code>@Email</code></td><td>Formato de email válido</td><td>correo del cliente</td></tr>
+        <tr><td><code>@Pattern</code></td><td>Regex personalizado</td><td>@Pattern(regexp="[A-Z]{3}-[0-9]+") placa</td></tr>
+        <tr><td><code>@Future</code></td><td>Fecha en el futuro</td><td>fechaReserva</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Pausa rápida</span>
+      <span class="qi-title">DTOs — antes de seguir</span>
+    </div>
+    <div class="qi-q">¿Por qué el Service no devuelve el ResponseDTO directamente?</div>
+    <div class="qi-a">Porque el Service no debería saber nada de la capa de presentación. Si mañana el ResponseDTO cambia (versión v2 del API), tendrías que tocar el Service — y el Service es donde vive la lógica de negocio. La conversión la hace el Controller con el Mapper.</div>
+    <div class="qi-q">¿Puede el RequestDTO tener campos opcionales?</div>
+    <div class="qi-a">Sí — simplemente no les pones @NotNull ni @NotBlank. En el Service validas si el valor fue enviado antes de usarlo.</div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- MAPPER -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 03</div>
+    <div class="sc-title">El <span>Mapper</span> —<br>el traductor entre capas</div>
+    <div class="sc-desc">El Mapper traduce entre RequestDTO → dominio y dominio → ResponseDTO. Vive en el Controller, no en el Service. Puede ser manual o con MapStruct.</div>
+  </div>
+  <div class="sc-right">🔄</div>
+</div>
+
+<section class="section" id="mapper">
+  <div class="section-header">
+    <div class="section-icon">🔄</div>
+    <div>
+      <span class="section-num">Paso 03 — mapper/</span>
+      <div class="section-title">Mapper — traducción entre DTOs y dominio</div>
+    </div>
+  </div>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div><strong>Regla fundamental:</strong> El Mapper se inyecta en el Controller. Nunca en el Service. El Service recibe objetos de dominio y devuelve objetos de dominio. El Controller usa el Mapper para traducir antes de llamar al Service y después de recibir la respuesta.</div>
+  </div>
+
+  <h3 style="margin:20px 0 14px;font-size:1rem">Dependencia en pom.xml — MapStruct + Lombok juntos</h3>
+  <pre><code><span class="cmt">&lt;!-- MapStruct --&gt;</span>
+&lt;<span class="fn">dependency</span>&gt;
+    &lt;<span class="fn">groupId</span>&gt;org.mapstruct&lt;/<span class="fn">groupId</span>&gt;
+    &lt;<span class="fn">artifactId</span>&gt;mapstruct&lt;/<span class="fn">artifactId</span>&gt;
+    &lt;<span class="fn">version</span>&gt;1.5.5.Final&lt;/<span class="fn">version</span>&gt;
+&lt;/<span class="fn">dependency</span>&gt;
+
+<span class="cmt">&lt;!-- Plugin del compilador — Lombok DEBE ir antes que MapStruct --&gt;</span>
+&lt;<span class="fn">plugin</span>&gt;
+    &lt;<span class="fn">groupId</span>&gt;org.apache.maven.plugins&lt;/<span class="fn">groupId</span>&gt;
+    &lt;<span class="fn">artifactId</span>&gt;maven-compiler-plugin&lt;/<span class="fn">artifactId</span>&gt;
+    &lt;<span class="fn">configuration</span>&gt;
+        &lt;<span class="fn">annotationProcessorPaths</span>&gt;
+            &lt;<span class="fn">path</span>&gt;
+                &lt;<span class="fn">groupId</span>&gt;org.projectlombok&lt;/<span class="fn">groupId</span>&gt;
+                &lt;<span class="fn">artifactId</span>&gt;lombok&lt;/<span class="fn">artifactId</span>&gt;
+            &lt;/<span class="fn">path</span>&gt;
+            &lt;<span class="fn">path</span>&gt;
+                &lt;<span class="fn">groupId</span>&gt;org.mapstruct&lt;/<span class="fn">groupId</span>&gt;
+                &lt;<span class="fn">artifactId</span>&gt;mapstruct-processor&lt;/<span class="fn">artifactId</span>&gt;
+                &lt;<span class="fn">version</span>&gt;1.5.5.Final&lt;/<span class="fn">version</span>&gt;
+            &lt;/<span class="fn">path</span>&gt;
+        &lt;/<span class="fn">annotationProcessorPaths</span>&gt;
+    &lt;/<span class="fn">configuration</span>&gt;
+&lt;/<span class="fn">plugin</span>&gt;</code></pre>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>Lombok antes que MapStruct en el pom — siempre.</strong> MapStruct genera código a partir de los getters/setters de Lombok. Si Lombok no procesó primero, MapStruct no encuentra los métodos y falla con errores crípticos en compilación.</div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">El Mapper con MapStruct — interfaz + @Mapping</h3>
+
+  <p style="margin-bottom:14px;font-size:.9rem;color:var(--gris-med)">MapStruct genera en tiempo de compilación la implementación completa de la interfaz. Tú solo declaras los métodos y anotas los campos que no se pueden mapear automáticamente. Si un campo de origen y destino tienen el mismo nombre y tipo, MapStruct lo mapea solo — sin escribir nada.</p>
+
+  <pre><code><span class="cmt">// mapper/PlatoMapper.java</span>
+<span class="an">@Mapper</span>(componentModel = <span class="st">"spring"</span>)
+<span class="cmt">// componentModel = "spring" → MapStruct genera un @Component
+// que Spring gestiona — se inyecta normalmente con @Autowired o constructor</span>
+<span class="kw">public interface</span> <span class="ty">PlatoMapper</span> {
+
+    <span class="cmt">// ── MapperIn: RequestDTO → Dominio ──────────────────────────────────
+    // Los campos con el mismo nombre (nombre, precio, categoria, descripcion)
+    // se mapean automáticamente. Solo anotamos los que difieren o necesitan
+    // un valor especial.</span>
+    <span class="an">@Mapping</span>(target = <span class="st">"id"</span>,         ignore = <span class="kw">true</span>)   <span class="cmt">// el id lo asigna el sistema</span>
+    <span class="an">@Mapping</span>(target = <span class="st">"disponible"</span>, constant = <span class="st">"true"</span>) <span class="cmt">// todo plato nuevo empieza disponible</span>
+    <span class="ty">Plato</span> <span class="fn">toDomain</span>(<span class="ty">PlatoRequestDTO</span> dto);
+
+    <span class="cmt">// ── MapperOut: Dominio → ResponseDTO ────────────────────────────────
+    // Todos los campos coinciden — MapStruct los mapea sin anotaciones.</span>
+    <span class="ty">PlatoResponseDTO</span> <span class="fn">toResponse</span>(<span class="ty">Plato</span> plato);
+
+    <span class="cmt">// ── Lista: MapStruct genera el bucle automáticamente ────────────────</span>
+    <span class="ty">List</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">toResponseList</span>(<span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; platos);
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Los @Mapping que más vas a necesitar</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Caso</th><th>Anotación</th><th>Cuándo usarlo</th></tr></thead>
+      <tbody>
+        <tr><td>Campos con el mismo nombre y tipo</td><td><em>(ninguna — automático)</em></td><td>La mayoría de los campos</td></tr>
+        <tr><td>Campo con distinto nombre</td><td><code>@Mapping(source="nombreOrigen", target="nombreDestino")</code></td><td>El DTO llama <code>fechaHora</code>, el dominio llama <code>timestamp</code></td></tr>
+        <tr><td>Campo que no existe en el destino</td><td><code>@Mapping(target="campo", ignore=true)</code></td><td>El <code>id</code> al mapear un RequestDTO → dominio</td></tr>
+        <tr><td>Valor fijo independiente del input</td><td><code>@Mapping(target="campo", constant="valor")</code></td><td><code>disponible = true</code> al crear un plato nuevo</td></tr>
+        <tr><td>Campo anidado con notación de punto</td><td><code>@Mapping(source="mesa.numero", target="numeroMesa")</code></td><td>Aplanar un objeto anidado en el ResponseDTO</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div><strong>Lo que MapStruct genera por ti</strong> — después de compilar con <code>mvn compile</code>, en <code>target/generated-sources/</code> aparece <code>PlatoMapperImpl.java</code>. Es Java puro: un for-each para las listas, asignaciones campo a campo, null-checks. Puedes abrirlo y leerlo si algo no funciona como esperas — es el primer lugar donde buscar cuando el mapeo da resultados raros.</div>
+  </div>
+
+  <div class="tut-check">
+    <strong>✅ ¿Compiló MapStruct? — verificación rápida</strong>
+    <ul>
+      <li>Ejecuta <code>mvn compile</code></li>
+      <li>Busca en <code>target/generated-sources/annotations/</code> los archivos <code>*MapperImpl.java</code></li>
+      <li>Si no aparecen → revisa el orden de Lombok/MapStruct en el plugin del compilador</li>
+      <li>Si aparecen pero hay errores de compilación → revisa que todos los campos del target estén mapeados o ignorados explícitamente</li>
+    </ul>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- SERVICE -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 04</div>
+    <div class="sc-title">El <span>Service</span> —<br>donde vive la lógica</div>
+    <div class="sc-desc">Interfaz + implementación. Recibe dominio, opera sobre una lista en memoria con Streams, devuelve dominio. Sin DTOs, sin Spring MVC, sin conocimiento del Controller.</div>
+  </div>
+  <div class="sc-right">⚙️</div>
+</div>
+
+<section class="section" id="service">
+  <div class="section-header">
+    <div class="section-icon">⚙️</div>
+    <div>
+      <span class="section-num">Paso 04 — service/ + service/impl/</span>
+      <div class="section-title">Interfaz del Service e Implementación</div>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:14px;font-size:1rem">Primero — la interfaz (el contrato)</h3>
+  <pre><code><span class="cmt">// service/IPlatoService.java</span>
+<span class="kw">public interface</span> <span class="ty">IPlatoService</span> {
+
+    <span class="cmt">// ✅ Métodos reciben y devuelven objetos de DOMINIO — nunca DTOs</span>
+    <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt;  <span class="fn">obtenerTodos</span>();
+    <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt;  <span class="fn">obtenerDisponibles</span>();
+    <span class="ty">Plato</span>        <span class="fn">obtenerPorId</span>(<span class="ty">Long</span> id);
+    <span class="ty">Plato</span>        <span class="fn">crear</span>(<span class="ty">Plato</span> plato);
+    <span class="ty">Plato</span>        <span class="fn">actualizar</span>(<span class="ty">Long</span> id, <span class="ty">Plato</span> plato);
+    <span class="ty">Plato</span>        <span class="fn">cambiarDisponibilidad</span>(<span class="ty">Long</span> id, <span class="kw">boolean</span> disponible);
+    <span class="kw">void</span>         <span class="fn">eliminar</span>(<span class="ty">Long</span> id);
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">La implementación — todo con Streams</h3>
+  <pre><code><span class="cmt">// service/impl/PlatoServiceImpl.java</span>
+<span class="an">@Service</span>
+<span class="an">@Slf4j</span>
+<span class="an">@RequiredArgsConstructor</span>
+<span class="kw">public class</span> <span class="ty">PlatoServiceImpl</span> <span class="kw">implements</span> <span class="ty">IPlatoService</span> {
+
+    <span class="kw">private final</span> <span class="ty">Map</span>&lt;<span class="ty">Long</span>, <span class="ty">Plato</span>&gt; platos  = <span class="kw">new</span> <span class="ty">ConcurrentHashMap</span>&lt;&gt;();
+    <span class="kw">private final</span> <span class="ty">AtomicLong</span>          contador = <span class="kw">new</span> <span class="ty">AtomicLong</span>(<span class="nu">1</span>);
+    <span class="kw">private final</span> <span class="ty">IPlatoValidator</span>      validator;
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; <span class="fn">obtenerTodos</span>() {
+        <span class="fn">log</span>.info(<span class="st">"Obteniendo todos los platos. Total: {}"</span>, platos.size());
+        <span class="kw">return</span> platos.values().<span class="fn">stream</span>()
+                .<span class="fn">toList</span>();
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; <span class="fn">obtenerDisponibles</span>() {
+        <span class="kw">return</span> platos.values().<span class="fn">stream</span>()
+                .<span class="fn">filter</span>(<span class="ty">Plato</span>::<span class="fn">estaDisponible</span>)
+                .<span class="fn">toList</span>();
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; <span class="fn">obtenerPorCategoria</span>(<span class="ty">String</span> categoria) {
+        <span class="kw">return</span> platos.values().<span class="fn">stream</span>()
+                .<span class="fn">filter</span>(p -> p.getCategoria().<span class="fn">equalsIgnoreCase</span>(categoria))
+                .<span class="fn">toList</span>();
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">Plato</span> <span class="fn">obtenerPorId</span>(<span class="ty">Long</span> id) {
+        <span class="kw">return</span> platos.values().<span class="fn">stream</span>()
+                .<span class="fn">filter</span>(p -> p.getId().<span class="fn">equals</span>(id))
+                .<span class="fn">findFirst</span>()
+                .<span class="fn">orElseThrow</span>(() -> {
+                    <span class="fn">log</span>.warn(<span class="st">"Plato no encontrado: id={}"</span>, id);
+                    <span class="kw">return new</span> <span class="ty">RecursoNoEncontradoException</span>(<span class="st">"Plato"</span>, id);
+                });
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">Plato</span> <span class="fn">crear</span>(<span class="ty">Plato</span> plato) {
+        validator.<span class="fn">validarNombreUnico</span>(plato.getNombre(), platos.values());
+        plato.<span class="fn">setId</span>(contador.<span class="fn">getAndIncrement</span>());
+        platos.<span class="fn">put</span>(plato.getId(), plato);
+        <span class="fn">log</span>.info(<span class="st">"Plato creado: id={}, nombre={}"</span>, plato.getId(), plato.getNombre());
+        <span class="kw">return</span> plato;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">Plato</span> <span class="fn">actualizar</span>(<span class="ty">Long</span> id, <span class="ty">Plato</span> nuevosDatos) {
+        <span class="ty">Plato</span> existente = <span class="fn">obtenerPorId</span>(id);  <span class="cmt">// lanza 404 si no existe</span>
+        validator.<span class="fn">validarNombreUnico</span>(nuevosDatos.getNombre(),
+            platos.values().<span class="fn">stream</span>()
+                    .<span class="fn">filter</span>(p -> !p.getId().<span class="fn">equals</span>(id))  <span class="cmt">// excluye el propio plato</span>
+                    .<span class="fn">toList</span>());
+        existente.<span class="fn">setNombre</span>(nuevosDatos.getNombre());
+        existente.<span class="fn">setPrecio</span>(nuevosDatos.getPrecio());
+        existente.<span class="fn">setCategoria</span>(nuevosDatos.getCategoria());
+        existente.<span class="fn">setDescripcion</span>(nuevosDatos.getDescripcion());
+        <span class="fn">log</span>.info(<span class="st">"Plato actualizado: id={}"</span>, id);
+        <span class="kw">return</span> existente;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">Plato</span> <span class="fn">cambiarDisponibilidad</span>(<span class="ty">Long</span> id, <span class="kw">boolean</span> disponible) {
+        <span class="ty">Plato</span> plato = <span class="fn">obtenerPorId</span>(id);
+        <span class="kw">if</span> (disponible) plato.<span class="fn">activar</span>(); <span class="kw">else</span> plato.<span class="fn">desactivar</span>();
+        <span class="fn">log</span>.info(<span class="st">"Plato id={} → disponible={}"</span>, id, disponible);
+        <span class="kw">return</span> plato;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">eliminar</span>(<span class="ty">Long</span> id) {
+        <span class="fn">obtenerPorId</span>(id);  <span class="cmt">// lanza 404 si no existe</span>
+        <span class="cmt">// En versiones futuras: validator.validarSinPedidosActivos(id, pedidosActivos);</span>
+        platos.<span class="fn">remove</span>(id);
+        <span class="fn">log</span>.info(<span class="st">"Plato eliminado: id={}"</span>, id);
+    }
+}</code></pre>
+
+  <h3 style="margin:26px 0 14px;font-size:1rem">Referencia rápida — el Stream correcto para cada operación</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Qué necesitas hacer</th><th>Operación</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>Obtener todos como lista</td><td><code>.stream().toList()</code></td><td><code>List&lt;T&gt;</code></td></tr>
+        <tr><td>Filtrar por condición</td><td><code>.stream().filter(...).toList()</code></td><td><code>List&lt;T&gt;</code></td></tr>
+        <tr><td>Buscar uno por id / condición</td><td><code>.stream().filter(...).findFirst().orElseThrow()</code></td><td><code>T</code> o excepción</td></tr>
+        <tr><td>Verificar si existe</td><td><code>.stream().anyMatch(...)</code></td><td><code>boolean</code></td></tr>
+        <tr><td>Ordenar</td><td><code>.stream().sorted(Comparator.comparing(...)).toList()</code></td><td><code>List&lt;T&gt;</code></td></tr>
+        <tr><td>Aplanar lista de listas</td><td><code>.stream().flatMap(x -> x.getItems().stream()).toList()</code></td><td><code>List&lt;Item&gt;</code></td></tr>
+        <tr><td>Sumar un campo numérico</td><td><code>.stream().mapToDouble(...).sum()</code></td><td><code>double</code></td></tr>
+        <tr><td>Agrupar por campo</td><td><code>.stream().collect(Collectors.groupingBy(...))</code></td><td><code>Map&lt;K, List&lt;T&gt;&gt;</code></td></tr>
+        <tr><td>Contar elementos</td><td><code>.stream().filter(...).count()</code></td><td><code>long</code></td></tr>
+        <tr><td>Transformar a otro tipo</td><td><code>.stream().map(...).toList()</code></td><td><code>List&lt;R&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>Un Service puede depender de otro Service</strong> — siempre via interfaz. Si el día de mañana <code>PedidoServiceImpl</code> necesita verificar que un plato existe, inyecta <code>IPlatoService</code> — nunca la implementación concreta. Cuidado con dependencias circulares: si A depende de B y B depende de A, Spring no puede resolver la inyección.</div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- VALIDACIONES -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 05</div>
+    <div class="sc-title"><span>Validaciones</span> —<br>input vs negocio</div>
+    <div class="sc-desc">Dos tipos, dos lugares. Las de formato van en el DTO. Las de negocio van en el Service o en un Validator dedicado. Mezclarlas es el error más común.</div>
+  </div>
+  <div class="sc-right">✅</div>
+</div>
+
+<section class="section" id="validaciones">
+  <div class="section-header">
+    <div class="section-icon">✅</div>
+    <div>
+      <span class="section-num">Paso 05 — validator/ + @Valid en Controller</span>
+      <div class="section-title">Validaciones de input y de negocio</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div style="background:#e8f7ef;border-radius:10px;padding:18px;margin-bottom:14px">
+        <div style="font-size:.75rem;font-weight:700;color:var(--verde);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">✅ Validación de INPUT — en el DTO</div>
+        <p style="font-size:.85rem;color:var(--gris-osc);line-height:1.65;margin-bottom:8px">¿El formato es correcto? ¿El campo está presente? ¿El número está en rango? → Bean Validation con anotaciones.</p>
+        <ul style="font-size:.83rem;color:var(--gris-med);padding-left:16px">
+          <li>@NotBlank, @NotNull, @NotEmpty</li>
+          <li>@Positive, @Min, @Max</li>
+          <li>@Size, @Email, @Pattern</li>
+          <li>Activada con <code>@Valid</code> en el Controller</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div style="background:#fff3e8;border-radius:10px;padding:18px;margin-bottom:14px">
+        <div style="font-size:.75rem;font-weight:700;color:#8b5e3d;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">⚙️ Validación de NEGOCIO — en el Service</div>
+        <p style="font-size:.85rem;color:var(--gris-osc);line-height:1.65;margin-bottom:8px">¿Cumple la regla del dominio? ¿El plato ya existe? ¿El pedido está en estado modificable? → Excepciones propias tipadas.</p>
+        <ul style="font-size:.83rem;color:var(--gris-med);padding-left:16px">
+          <li>¿El nombre ya existe? → ConflictoException</li>
+          <li>¿El estado permite la transición? → EstadoInvalidoException</li>
+          <li>¿La mesa tiene cuenta abierta? → ReglaDeNegocioException</li>
+          <li>Puede delegarse a un Validator (SRP)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin:20px 0 14px;font-size:1rem">Validators como @Component — cada dominio tiene el suyo</h3>
+
+  <p style="margin-bottom:14px;font-size:.9rem;color:var(--gris-med)">El mismo patrón del Service aplica al Validator: interfaz que define el contrato, @Component que lo implementa. <strong>Cada Validator valida solo las reglas de su propio dominio.</strong> PlatoValidator valida reglas de Plato. Cuando implementes Pedido, crearás PedidoValidator para sus propias reglas. Nunca un Validator valida reglas de otro dominio.</p>
+
+  <pre><code><span class="cmt">// validator/IPlatoValidator.java — solo reglas del dominio Plato</span>
+<span class="kw">public interface</span> <span class="ty">IPlatoValidator</span> {
+    <span class="kw">void</span> <span class="fn">validarNombreUnico</span>(<span class="ty">String</span> nombre, <span class="ty">Collection</span>&lt;<span class="ty">Plato</span>&gt; platosExistentes);
+    <span class="kw">void</span> <span class="fn">validarSinPedidosActivos</span>(<span class="ty">Long</span> idPlato, <span class="ty">Collection</span>&lt;<span class="ty">Pedido</span>&gt; pedidosActivos);
+}
+
+    <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>¿Un Validator por dominio o uno transversal?</strong> La regla es simple: si la validación solo tiene sentido para Plato → va en <code>PlatoValidator</code>. Si la misma lógica la necesitan Pedido y Mesa → va en un <code>ValidadorComun</code> o en una <code>Utility</code>. Nunca copies código de validación — si lo vas a pegar en dos lugares, extráelo.</div>
+  </div>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Pausa rápida</span>
+      <span class="qi-title">Validaciones — ¿dónde va cada una?</span>
+    </div>
+    <div class="qi-q">¿El @Valid va en el Controller o en el Service?</div>
+    <div class="qi-a">En el Controller, en el parámetro del método: <code>@RequestBody @Valid PlatoRequestDTO dto</code>. Si @Valid no está, Bean Validation no se activa y el request pasa con datos inválidos al Service.</div>
+    <div class="qi-q">¿Dónde va "verificar que el nombre del plato no esté duplicado"?</div>
+    <div class="qi-a">En el Validator inyectado en el Service. Es una regla de negocio — requiere consultar el estado actual del sistema. No es una validación de formato del input.</div>
+    <div class="qi-q">¿Por qué el Validator usa una interfaz si solo hay una implementación?</div>
+    <div class="qi-a">Para poder mockearlo en las pruebas unitarias del Service. Con <code>@Mock IPlatoValidator validator</code> puedes controlar exactamente qué lanza en cada escenario, sin necesidad de que el Validator real ejecute toda su lógica.</div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- UTILIDADES -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 05-B</div>
+    <div class="sc-title"><span>Utilidades</span> —<br>lógica compartida sin duplicar</div>
+    <div class="sc-desc">Si la misma lógica la necesitan dos Services distintos — formatear fechas, calcular totales, normalizar strings — no la dupliques. Va en una Utility que todos pueden importar.</div>
+  </div>
+  <div class="sc-right">🛠️</div>
+</div>
+
+<section class="section" id="utilidades">
+  <div class="section-header">
+    <div class="section-icon">🛠️</div>
+    <div>
+      <span class="section-num">Paso 05-B — util/</span>
+      <div class="section-title">Utilidades — lógica compartida entre dominios</div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:18px;font-size:.95rem">Las utilidades son clases de métodos estáticos (o @Component cuando necesitan dependencias) que contienen lógica genérica que no pertenece a ningún dominio en particular pero que varios componentes necesitan. La regla: si lo vas a escribir en dos lugares, crea una utility.</p>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>¿Cuándo es una Utility y cuándo es un Validator?</strong> Si la lógica <em>valida una regla de negocio y lanza excepción</em> → es un Validator. Si la lógica <em>transforma, calcula o formatea datos</em> sin lanzar excepciones → es una Utility. Un Validator puede usar una Utility internamente.</div>
+  </div>
+
+  <h3 style="margin:20px 0 14px;font-size:1rem">Utility de fechas — útil para Reserva, Parqueadero, Pedido</h3>
+  <pre><code><span class="cmt">// util/FechaUtils.java</span>
+<span class="kw">public final class</span> <span class="ty">FechaUtils</span> {
+
+    <span class="kw">private</span> <span class="ty">FechaUtils</span>() {}  <span class="cmt">// evita instanciación — solo métodos estáticos</span>
+
+    <span class="kw">private static final</span> <span class="ty">DateTimeFormatter</span> FORMATO_DISPLAY =
+            <span class="ty">DateTimeFormatter</span>.<span class="fn">ofPattern</span>(<span class="st">"dd/MM/yyyy HH:mm"</span>);
+
+    <span class="kw">private static final</span> <span class="ty">DateTimeFormatter</span> FORMATO_CORTO =
+            <span class="ty">DateTimeFormatter</span>.<span class="fn">ofPattern</span>(<span class="st">"dd/MM/yyyy"</span>);
+
+    <span class="cmt">// Formatea un LocalDateTime para mostrarlo al cliente</span>
+    <span class="kw">public static</span> <span class="ty">String</span> <span class="fn">formatearFecha</span>(<span class="ty">LocalDateTime</span> fecha) {
+        <span class="kw">if</span> (fecha == <span class="kw">null</span>) <span class="kw">return</span> <span class="st">"Sin fecha"</span>;
+        <span class="kw">return</span> fecha.<span class="fn">format</span>(FORMATO_DISPLAY);
+    }
+
+    <span class="cmt">// Calcula minutos transcurridos desde una fecha hasta ahora</span>
+    <span class="kw">public static long</span> <span class="fn">minutosDesde</span>(<span class="ty">LocalDateTime</span> desde) {
+        <span class="kw">return</span> <span class="ty">ChronoUnit</span>.MINUTES.<span class="fn">between</span>(desde, <span class="ty">LocalDateTime</span>.<span class="fn">now</span>());
+    }
+
+    <span class="cmt">// Verifica si una fecha está dentro del rango permitido para reservas</span>
+    <span class="kw">public static boolean</span> <span class="fn">esFechaFutura</span>(<span class="ty">LocalDateTime</span> fecha) {
+        <span class="kw">return</span> fecha != <span class="kw">null</span> && fecha.<span class="fn">isAfter</span>(<span class="ty">LocalDateTime</span>.<span class="fn">now</span>());
+    }
+
+    <span class="cmt">// Verifica solapamiento de reservas: ¿dos reservas chocan en horario?</span>
+    <span class="kw">public static boolean</span> <span class="fn">seSolapan</span>(<span class="ty">LocalDateTime</span> inicio1, <span class="ty">LocalDateTime</span> fin1,
+                                      <span class="ty">LocalDateTime</span> inicio2, <span class="ty">LocalDateTime</span> fin2) {
+        <span class="kw">return</span> inicio1.<span class="fn">isBefore</span>(fin2) && fin1.<span class="fn">isAfter</span>(inicio2);
+    }
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Utility de cálculos — útil para Parqueadero, Cuenta, Pedido</h3>
+  <pre><code><span class="cmt">// util/CalculoUtils.java</span>
+<span class="kw">public final class</span> <span class="ty">CalculoUtils</span> {
+
+    <span class="kw">private</span> <span class="ty">CalculoUtils</span>() {}
+
+    <span class="cmt">// Redondea a 2 decimales — evita problemas de punto flotante</span>
+    <span class="kw">public static double</span> <span class="fn">redondear</span>(<span class="kw">double</span> valor) {
+        <span class="kw">return</span> <span class="ty">Math</span>.<span class="fn">round</span>(valor * <span class="nu">100.0</span>) / <span class="nu">100.0</span>;
+    }
+
+    <span class="cmt">// Cobra por minutos — útil para Parqueadero</span>
+    <span class="kw">public static double</span> <span class="fn">calcularCobroPorMinutos</span>(<span class="ty">LocalDateTime</span> entrada,
+                                                   <span class="ty">LocalDateTime</span> salida,
+                                                   <span class="kw">double</span> tarifaPorMinuto) {
+        <span class="kw">long</span> minutos = <span class="ty">ChronoUnit</span>.MINUTES.<span class="fn">between</span>(entrada, salida);
+        <span class="kw">return</span> <span class="fn">redondear</span>(minutos * tarifaPorMinuto);
+    }
+
+    <span class="cmt">// Aplica un porcentaje de descuento — útil para Cuenta o Reserva</span>
+    <span class="kw">public static double</span> <span class="fn">aplicarDescuento</span>(<span class="kw">double</span> total, <span class="kw">double</span> porcentaje) {
+        <span class="kw">return</span> <span class="fn">redondear</span>(total * (<span class="nu">1</span> - porcentaje / <span class="nu">100</span>));
+    }
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Utility de Strings — normalización y limpieza</h3>
+  <pre><code><span class="cmt">// util/TextoUtils.java</span>
+<span class="kw">public final class</span> <span class="ty">TextoUtils</span> {
+
+    <span class="kw">private</span> <span class="ty">TextoUtils</span>() {}
+
+    <span class="cmt">// Normaliza un nombre: quita espacios extra, primera letra mayúscula</span>
+    <span class="kw">public static</span> <span class="ty">String</span> <span class="fn">normalizarNombre</span>(<span class="ty">String</span> nombre) {
+        <span class="kw">if</span> (nombre == <span class="kw">null</span>) <span class="kw">return null</span>;
+        <span class="ty">String</span> limpio = nombre.<span class="fn">strip</span>().<span class="fn">replaceAll</span>(<span class="st">"\\s+"</span>, <span class="st">" "</span>);
+        <span class="kw">return</span> limpio.<span class="fn">substring</span>(<span class="nu">0</span>, <span class="nu">1</span>).<span class="fn">toUpperCase</span>()
+             + limpio.<span class="fn">substring</span>(<span class="nu">1</span>).<span class="fn">toLowerCase</span>();
+    }
+
+    <span class="cmt">// Compara dos strings ignorando mayúsculas y espacios</span>
+    <span class="kw">public static boolean</span> <span class="fn">sonIgualesNormalizados</span>(<span class="ty">String</span> a, <span class="ty">String</span> b) {
+        <span class="kw">if</span> (a == <span class="kw">null</span> || b == <span class="kw">null</span>) <span class="kw">return false</span>;
+        <span class="kw">return</span> a.<span class="fn">strip</span>().<span class="fn">equalsIgnoreCase</span>(b.<span class="fn">strip</span>());
+    }
+
+    <span class="cmt">// Genera un código de referencia legible (ej: para placas, pedidos, reservas)</span>
+    <span class="kw">public static</span> <span class="ty">String</span> <span class="fn">generarCodigo</span>(<span class="ty">String</span> prefijo, <span class="ty">Long</span> id) {
+        <span class="kw">return</span> prefijo + <span class="ty">String</span>.<span class="fn">format</span>(<span class="st">"%04d"</span>, id);  <span class="cmt">// ej: PLT-0001, RES-0007, PAR-0012</span>
+    }
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Cuándo usar @Component en vez de clase estática</h3>
+
+  <div class="grid-2">
+    <div style="background:#e8f7ef;border-radius:10px;padding:18px">
+      <div style="font-size:.75rem;font-weight:700;color:var(--verde);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">✅ Clase estática — para lógica pura</div>
+      <p style="font-size:.85rem;color:var(--gris-osc);line-height:1.65;margin-bottom:8px">Cuando los métodos no dependen de ningún bean de Spring ni de configuración externa. Solo reciben parámetros y devuelven un resultado.</p>
+      <pre style="margin:0;font-size:11px"><code><span class="cmt">// Uso directo sin inyección — en el Service o Validator</span>
+<span class="ty">TextoUtils</span>.<span class="fn">normalizarNombre</span>(plato.<span class="fn">getNombre</span>());
+<span class="ty">FechaUtils</span>.<span class="fn">esFechaFutura</span>(reserva.<span class="fn">getFechaHora</span>());
+<span class="ty">CalculoUtils</span>.<span class="fn">redondear</span>(precio * cantidad);</code></pre>
+    </div>
+    <div style="background:#fff3e8;border-radius:10px;padding:18px">
+      <div style="font-size:.75rem;font-weight:700;color:#8b5e3d;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">⚙️ @Component — cuando necesita configuración</div>
+      <p style="font-size:.85rem;color:var(--gris-osc);line-height:1.65;margin-bottom:8px">Cuando la utility necesita leer valores de <code>application.yml</code> con @Value. Raro — la mayoría de Utils son clases estáticas puras.</p>
+      <pre style="margin:0;font-size:11px"><code><span class="cmt">// Solo si necesitas leer application.yml</span>
+<span class="an">@Component</span>
+<span class="kw">public class</span> <span class="ty">ConfigUtils</span> {
+  <span class="an">@Value</span>(<span class="st">"${restaurante.capacidad-max}"</span>)
+  <span class="kw">private int</span> capacidadMaxima;
+
+  <span class="kw">public boolean</span> <span class="fn">superaCapacidad</span>(<span class="kw">int</span> comensales) {
+    <span class="kw">return</span> comensales > capacidadMaxima;
+  }
+}</code></pre>
+    </div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Cómo se conecta todo — mapa de dependencias</h3>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Quién usa qué — Validators y Utils en el flujo completo</div>
+    <div class="mermaid">
+flowchart TD
+    CT["Controller\n@RestController"]
+    MP["Mapper\n@Component"]
+    SV["ServiceImpl\n@Service"]
+    VA["Validator\n@Component / interfaz"]
+    UT["Utils\nClase estática"]
+    DO["Dominio\nObjetos de negocio"]
+    CT -- "inyecta" --> MP
+    CT -- "inyecta via interfaz" --> SV
+    SV -- "inyecta via interfaz" --> VA
+    SV -- "llama métodos estáticos" --> UT
+    SV -- "opera sobre" --> DO
+    VA -- "llama métodos estáticos" --> UT
+
+    style CT fill:#3d8b5e,color:#fff
+    style MP fill:#3a9bd5,color:#fff
+    style SV fill:#8b5e3d,color:#fff
+    style VA fill:#7c4dff,color:#fff
+    style UT fill:#f4a435,color:#fff
+    style DO fill:#e8f7ef,stroke:#6abf8a
+    style SV2 fill:#546e7a,color:#fff
+    </div>
+  </div>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div>
+      <strong>Resumen — la cadena de responsabilidades:</strong><br>
+      <strong>Dominio</strong> → comportamiento propio del objeto (estaDisponible, activar, desactivar, puedeTransicionarA)</br>
+      <strong>Validator</strong> → reglas de negocio que cruzan objetos (¿el nombre es único? ¿la mesa tiene cuenta?)<br>
+      <strong>Utils</strong> → cálculos y transformaciones genéricas sin lógica de negocio (formatear, calcular, normalizar)<br>
+      <strong>Service</strong> → orquesta: llama al Validator, usa Utils, opera sobre el dominio<br>
+      <strong>Mapper</strong> → traduce entre capas — RequestDTO a dominio y dominio a ResponseDTO. Con MapStruct es solo declarativo, sin lógica.<br>
+      <strong>Controller</strong> → recibe, delega al Service via Mapper, responde
+    </div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- CONTROLLER -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 06</div>
+    <div class="sc-title">El <span>Controller</span> —<br>recibe, traduce, delega</div>
+    <div class="sc-desc">El Controller no piensa — recibe el request, llama al Mapper, delega al Service, vuelve a llamar al Mapper y responde. Sin lógica de negocio, sin if/else de dominio.</div>
+  </div>
+  <div class="sc-right">🎮</div>
+</div>
+
+<section class="section" id="controller">
+  <div class="section-header">
+    <div class="section-icon">🎮</div>
+    <div>
+      <span class="section-num">Paso 06 — controller/</span>
+      <div class="section-title">Controller REST — endpoints por dominio</div>
+    </div>
+  </div>
+
+  <pre><code><span class="cmt">// controller/PlatoController.java</span>
+<span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="st">"/api/v1/platos"</span>)
+<span class="an">@RequiredArgsConstructor</span>
+<span class="an">@Slf4j</span>
+<span class="cmt">// Anotaciones Swagger (Paso 8)</span>
+<span class="an">@Tag</span>(name = <span class="st">"Platos"</span>, description = <span class="st">"Gestión de la carta del restaurante"</span>)
+<span class="kw">public class</span> <span class="ty">PlatoController</span> {
+
+    <span class="cmt">// ✅ El Mapper se inyecta AQUÍ — no en el Service</span>
+    <span class="kw">private final</span> <span class="ty">IPlatoService</span> platoService;
+    <span class="kw">private final</span> <span class="ty">PlatoMapper</span>   platoMapper;
+
+    <span class="cmt">// ── GET /api/v1/platos ──────────────────────────────────────</span>
+    <span class="an">@GetMapping</span>
+    <span class="an">@Operation</span>(summary = <span class="st">"Obtener todos los platos"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt;&gt; <span class="fn">obtenerTodos</span>() {
+        <span class="fn">log</span>.info(<span class="st">"GET /api/v1/platos"</span>);
+        <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; platos = platoService.<span class="fn">obtenerTodos</span>();
+        <span class="cmt">// MapperOut: List&lt;Plato&gt; → List&lt;PlatoResponseDTO&gt;</span>
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(
+            platos.<span class="fn">stream</span>().<span class="fn">map</span>(platoMapper::<span class="fn">toResponse</span>).<span class="fn">toList</span>()
+        );
+    }
+
+    <span class="cmt">// ── GET /api/v1/platos/{id} ─────────────────────────────────</span>
+    <span class="an">@GetMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="an">@Operation</span>(summary = <span class="st">"Obtener plato por ID"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">obtenerPorId</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        <span class="ty">Plato</span> plato = platoService.<span class="fn">obtenerPorId</span>(id);
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(platoMapper.<span class="fn">toResponse</span>(plato));
+    }
+
+    <span class="cmt">// ── POST /api/v1/platos ─────────────────────────────────────</span>
+    <span class="an">@PostMapping</span>
+    <span class="an">@Operation</span>(summary = <span class="st">"Crear un nuevo plato"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">crear</span>(
+            <span class="an">@RequestBody</span> <span class="an">@Valid</span> <span class="ty">PlatoRequestDTO</span> dto) {
+        <span class="fn">log</span>.info(<span class="st">"POST /api/v1/platos - nombre={}"</span>, dto.getNombre());
+
+        <span class="cmt">// MapperIn: RequestDTO → dominio</span>
+        <span class="ty">Plato</span> plato = platoMapper.<span class="fn">toDomain</span>(dto);
+
+        <span class="cmt">// Service recibe dominio, devuelve dominio</span>
+        <span class="ty">Plato</span> creado = platoService.<span class="fn">crear</span>(plato);
+
+        <span class="cmt">// MapperOut: dominio → ResponseDTO</span>
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>
+            .<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CREATED)  <span class="cmt">// ← 201, no 200</span>
+            .<span class="fn">body</span>(platoMapper.<span class="fn">toResponse</span>(creado));
+    }
+
+    <span class="cmt">// ── PATCH /api/v1/platos/{id}/disponible ────────────────────</span>
+    <span class="an">@PatchMapping</span>(<span class="st">"/{id}/disponible"</span>)
+    <span class="an">@Operation</span>(summary = <span class="st">"Cambiar disponibilidad de un plato"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">cambiarDisponibilidad</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id,
+            <span class="an">@RequestParam</span> <span class="kw">boolean</span> disponible) {
+        <span class="ty">Plato</span> actualizado = platoService.<span class="fn">cambiarDisponibilidad</span>(id, disponible);
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(platoMapper.<span class="fn">toResponse</span>(actualizado));
+    }
+
+    <span class="cmt">// ── DELETE /api/v1/platos/{id} ──────────────────────────────</span>
+    <span class="an">@DeleteMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="an">@Operation</span>(summary = <span class="st">"Eliminar un plato"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">Void</span>&gt; <span class="fn">eliminar</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        platoService.<span class="fn">eliminar</span>(id);
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">noContent</span>().<span class="fn">build</span>();  <span class="cmt">// ← 204, sin body</span>
+    }
+}</code></pre>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div><strong>El patrón del Controller tiene siempre la misma forma:</strong><br>
+    <code>1.</code> Recibe el request (con <code>@Valid</code> si tiene body)<br>
+    <code>2.</code> Llama al <strong>MapperIn</strong>: <code>platoMapper.toDomain(dto)</code><br>
+    <code>3.</code> Delega al <strong>Service</strong>: recibe objeto de dominio, obtiene objeto de dominio<br>
+    <code>4.</code> Llama al <strong>MapperOut</strong>: <code>platoMapper.toResponse(resultado)</code><br>
+    <code>5.</code> Responde con el <strong>código HTTP correcto</strong>: 200, 201, 204</div>
+  </div>
+
+  <div class="tut-check">
+    <strong>✅ ¿Nos funcionó a todos? — Prueba en Swagger</strong>
+    <ul>
+      <li>Levanta el proyecto: <code>mvn spring-boot:run</code></li>
+      <li>Abre: <code>http://localhost:8080/swagger-ui/index.html</code></li>
+      <li>Ejecuta un POST con datos válidos → ¿devuelve 201 con el body correcto?</li>
+      <li>Ejecuta un GET → ¿ves el plato creado?</li>
+      <li>Ejecuta un POST con body vacío → ¿devuelve 400 con mensajes de validación?</li>
+      <li>Ejecuta un GET con un ID que no existe → ¿devuelve 404 con mensaje claro?</li>
+    </ul>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- EXCEPCIONES -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 07</div>
+    <div class="sc-title">Excepciones y<br><span>GlobalExceptionHandler</span></div>
+    <div class="sc-desc">El gerente del restaurante. Intercepta todos los errores y les da una respuesta uniforme al cliente — sin try/catch en cada Controller, sin 500 sin contexto.</div>
+  </div>
+  <div class="sc-right">🧑‍💼</div>
+</div>
+
+<section class="section" id="excepciones">
+  <div class="section-header">
+    <div class="section-icon">🧑‍💼</div>
+    <div>
+      <span class="section-num">Paso 07 — exception/</span>
+      <div class="section-title">Excepciones personalizadas + GlobalExceptionHandler</div>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:14px;font-size:1rem">Paso 7.1 — Las excepciones del dominio</h3>
+  <pre><code><span class="cmt">// exception/RecursoNoEncontradoException.java</span>
+<span class="kw">public class</span> <span class="ty">RecursoNoEncontradoException</span> <span class="kw">extends</span> <span class="ty">RuntimeException</span> {
+    <span class="kw">public</span> <span class="ty">RecursoNoEncontradoException</span>(<span class="ty">String</span> recurso, <span class="ty">Long</span> id) {
+        <span class="kw">super</span>(<span class="st">"No existe "</span> + recurso + <span class="st">" con id="</span> + id);
+    }
+}
+
+<span class="cmt">// exception/ConflictoException.java — nombre duplicado, mesa ocupada, etc.</span>
+<span class="kw">public class</span> <span class="ty">ConflictoException</span> <span class="kw">extends</span> <span class="ty">RuntimeException</span> {
+    <span class="kw">public</span> <span class="ty">ConflictoException</span>(<span class="ty">String</span> mensaje) { <span class="kw">super</span>(mensaje); }
+}
+
+<span class="cmt">// exception/EstadoInvalidoException.java — transición de estado inválida</span>
+<span class="kw">public class</span> <span class="ty">EstadoInvalidoException</span> <span class="kw">extends</span> <span class="ty">RuntimeException</span> {
+    <span class="kw">public</span> <span class="ty">EstadoInvalidoException</span>(<span class="ty">String</span> mensaje) { <span class="kw">super</span>(mensaje); }
+}
+
+<span class="cmt">// exception/ReglaDeNegocioException.java — violación de regla del dominio</span>
+<span class="kw">public class</span> <span class="ty">ReglaDeNegocioException</span> <span class="kw">extends</span> <span class="ty">RuntimeException</span> {
+    <span class="kw">public</span> <span class="ty">ReglaDeNegocioException</span>(<span class="ty">String</span> mensaje) { <span class="kw">super</span>(mensaje); }
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Paso 7.2 — El ErrorResponseDTO (respuesta uniforme)</h3>
+  <pre><code><span class="cmt">// model/dto/response/ErrorResponseDTO.java</span>
+<span class="an">@Data</span> <span class="an">@Builder</span> <span class="an">@AllArgsConstructor</span> <span class="an">@NoArgsConstructor</span>
+<span class="kw">public class</span> <span class="ty">ErrorResponseDTO</span> {
+    <span class="kw">private</span> <span class="ty">LocalDateTime</span> timestamp;
+    <span class="kw">private</span> <span class="ty">int</span>           status;
+    <span class="kw">private</span> <span class="ty">String</span>        error;
+    <span class="kw">private</span> <span class="ty">String</span>        message;
+    <span class="kw">private</span> <span class="ty">String</span>        path;
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Paso 7.3 — El GlobalExceptionHandler</h3>
+  <pre><code><span class="cmt">// exception/GlobalExceptionHandler.java</span>
+<span class="an">@RestControllerAdvice</span>  <span class="cmt">// intercepta todos los Controllers</span>
+<span class="an">@Slf4j</span>
+<span class="kw">public class</span> <span class="ty">GlobalExceptionHandler</span> {
+
+    <span class="cmt">// 404 — Recurso no encontrado</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">RecursoNoEncontradoException</span>.<span class="kw">class</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ErrorResponseDTO</span>&gt; <span class="fn">handleNotFound</span>(
+            <span class="ty">RecursoNoEncontradoException</span> ex,
+            <span class="ty">HttpServletRequest</span> request) {
+        <span class="fn">log</span>.warn(<span class="st">"RecursoNoEncontrado: {}"</span>, ex.<span class="fn">getMessage</span>());
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.NOT_FOUND)
+                .<span class="fn">body</span>(<span class="fn">buildError</span>(<span class="nu">404</span>, <span class="st">"Not Found"</span>,
+                        ex.<span class="fn">getMessage</span>(), request.<span class="fn">getRequestURI</span>()));
+    }
+
+    <span class="cmt">// 409 — Conflicto (nombre duplicado, mesa ocupada, etc.)</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">ConflictoException</span>.<span class="kw">class</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ErrorResponseDTO</span>&gt; <span class="fn">handleConflicto</span>(
+            <span class="ty">ConflictoException</span> ex, <span class="ty">HttpServletRequest</span> request) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CONFLICT)
+                .<span class="fn">body</span>(<span class="fn">buildError</span>(<span class="nu">409</span>, <span class="st">"Conflict"</span>,
+                        ex.<span class="fn">getMessage</span>(), request.<span class="fn">getRequestURI</span>()));
+    }
+
+    <span class="cmt">// 422 — Regla de negocio / estado inválido</span>
+    <span class="an">@ExceptionHandler</span>({<span class="ty">EstadoInvalidoException</span>.<span class="kw">class</span>, <span class="ty">ReglaDeNegocioException</span>.<span class="kw">class</span>})
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ErrorResponseDTO</span>&gt; <span class="fn">handleNegocio</span>(
+            <span class="ty">RuntimeException</span> ex, <span class="ty">HttpServletRequest</span> request) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.UNPROCESSABLE_ENTITY)
+                .<span class="fn">body</span>(<span class="fn">buildError</span>(<span class="nu">422</span>, <span class="st">"Unprocessable Entity"</span>,
+                        ex.<span class="fn">getMessage</span>(), request.<span class="fn">getRequestURI</span>()));
+    }
+
+    <span class="cmt">// 400 — Validación de input (@Valid falló)</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">MethodArgumentNotValidException</span>.<span class="kw">class</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ErrorResponseDTO</span>&gt; <span class="fn">handleValidacion</span>(
+            <span class="ty">MethodArgumentNotValidException</span> ex,
+            <span class="ty">HttpServletRequest</span> request) {
+        <span class="ty">String</span> mensaje = ex.<span class="fn">getBindingResult</span>().<span class="fn">getFieldErrors</span>().<span class="fn">stream</span>()
+                .<span class="fn">map</span>(e -> e.<span class="fn">getField</span>() + <span class="st">": "</span> + e.<span class="fn">getDefaultMessage</span>())
+                .<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">joining</span>(<span class="st">", "</span>));
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.BAD_REQUEST)
+                .<span class="fn">body</span>(<span class="fn">buildError</span>(<span class="nu">400</span>, <span class="st">"Bad Request"</span>,
+                        mensaje, request.<span class="fn">getRequestURI</span>()));
+    }
+
+    <span class="cmt">// 500 — Genérico (siempre al final — el más general)</span>
+    <span class="an">@ExceptionHandler</span>(<span class="ty">Exception</span>.<span class="kw">class</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">ErrorResponseDTO</span>&gt; <span class="fn">handleGenerico</span>(
+            <span class="ty">Exception</span> ex, <span class="ty">HttpServletRequest</span> request) {
+        <span class="fn">log</span>.error(<span class="st">"Error inesperado: {}"</span>, ex.<span class="fn">getMessage</span>(), ex);
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.INTERNAL_SERVER_ERROR)
+                .<span class="fn">body</span>(<span class="fn">buildError</span>(<span class="nu">500</span>, <span class="st">"Internal Server Error"</span>,
+                        <span class="st">"Error inesperado del servidor"</span>,
+                        request.<span class="fn">getRequestURI</span>()));
+    }
+
+    <span class="kw">private</span> <span class="ty">ErrorResponseDTO</span> <span class="fn">buildError</span>(<span class="kw">int</span> status, <span class="ty">String</span> error,
+                                            <span class="ty">String</span> message, <span class="ty">String</span> path) {
+        <span class="kw">return</span> <span class="ty">ErrorResponseDTO</span>.builder()
+                .timestamp(<span class="ty">LocalDateTime</span>.<span class="fn">now</span>())
+                .status(status)
+                .error(error)
+                .message(message)
+                .path(path)
+                .build();
+    }
+}</code></pre>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div><strong>¿Por qué el @ExceptionHandler de Exception.class va al final?</strong> Spring evalúa los handlers de más específico a más general. Si el genérico estuviera primero, capturaría todo antes de que los específicos puedan actuar. Siempre: excepciones específicas primero, Exception.class al final.</div>
+  </div>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Pausa rápida</span>
+      <span class="qi-title">Excepciones — prueba en vivo</span>
+    </div>
+    <div class="qi-q">Haz un POST con body vacío — ¿recibes 400 con el ErrorResponseDTO?</div>
+    <div class="qi-a">Si recibes un HTML o un stack trace crudo → el GlobalExceptionHandler no está configurado o hay un error de compilación. Si recibes 400 con JSON → funciona correctamente.</div>
+    <div class="qi-q">Haz un GET con un ID que no existe — ¿recibes 404 con mensaje claro?</div>
+    <div class="qi-a">Debe llegar: <code>{ "status": 404, "error": "Not Found", "message": "No existe Plato con id=99", "path": "/api/v1/platos/99" }</code></div>
+    <div class="qi-q">¿Qué pasa si no tienes @ExceptionHandler para una excepción específica?</div>
+    <div class="qi-a">Cae en el @ExceptionHandler(Exception.class) genérico → devuelve 500 con mensaje genérico. Por eso es importante tener un handler específico para cada excepción del dominio.</div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- SWAGGER -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 08</div>
+    <div class="sc-title"><span>Swagger</span> —<br>la doc que se escribe sola</div>
+    <div class="sc-desc">La documentación va en una interfaz que el Controller implementa. Documentación e implementación separadas — el Controller queda limpio, la doc en su propio archivo.</div>
+  </div>
+  <div class="sc-right">📖</div>
+</div>
+
+<section class="section" id="swagger">
+  <div class="section-header">
+    <div class="section-icon">📖</div>
+    <div>
+      <span class="section-num">Paso 08 — OpenAPI / Swagger</span>
+      <div class="section-title">Documentación como interfaz — separada de la implementación</div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:18px;font-size:.95rem">La documentación Swagger mezclada con el Controller lo ensucia — un método con 4 anotaciones de Spring más 6 de Swagger es difícil de leer. La solución: crear una interfaz que lleva toda la documentación, y el Controller la implementa. <strong>El Controller queda limpio. La documentación queda en su propio archivo.</strong></p>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>Por qué es un buen patrón:</strong> Documentación e implementación tienen razones de cambio distintas. Si cambias el summary de un endpoint no deberías tocar el Controller. Si cambias la lógica de un método no deberías tocar la documentación. Separarlos aplica SRP a nivel de archivo.</div>
+  </div>
+
+  <h3 style="margin:20px 0 14px;font-size:1rem">Dependencia en pom.xml</h3>
+  <pre><code><span class="cmt">&lt;!-- springdoc-openapi para Spring Boot 3 --&gt;</span>
+&lt;<span class="fn">dependency</span>&gt;
+    &lt;<span class="fn">groupId</span>&gt;org.springdoc&lt;/<span class="fn">groupId</span>&gt;
+    &lt;<span class="fn">artifactId</span>&gt;springdoc-openapi-starter-webmvc-ui&lt;/<span class="fn">artifactId</span>&gt;
+    &lt;<span class="fn">version</span>&gt;2.5.0&lt;/<span class="fn">version</span>&gt;
+&lt;/<span class="fn">dependency</span>&gt;</code></pre>
+
+  <h3 style="margin:22px 0 14px;font-size:1rem">Configuración global — una sola vez</h3>
+  <pre><code><span class="cmt">// config/SwaggerConfig.java</span>
+<span class="an">@Configuration</span>
+<span class="kw">public class</span> <span class="ty">SwaggerConfig</span> {
+    <span class="an">@Bean</span>
+    <span class="kw">public</span> <span class="ty">OpenAPI</span> <span class="fn">openAPI</span>() {
+        <span class="kw">return new</span> <span class="ty">OpenAPI</span>()
+            .<span class="fn">info</span>(<span class="kw">new</span> <span class="ty">Info</span>()
+                .<span class="fn">title</span>(<span class="st">"API Restaurante — DOSW"</span>)
+                .<span class="fn">description</span>(<span class="st">"API REST del restaurante sin persistencia"</span>)
+                .<span class="fn">version</span>(<span class="st">"v1.0"</span>));
+    }
+}</code></pre>
+
+  <h3 style="margin:22px 0 14px;font-size:1rem">El patrón — interfaz de documentación + Controller limpio</h3>
+
+  <pre><code><span class="cmt">// controller/docs/PlatoApi.java — TODA la documentación va aquí</span>
+<span class="an">@Tag</span>(name = <span class="st">"Platos"</span>, description = <span class="st">"Administración de la carta del restaurante"</span>)
+<span class="kw">public interface</span> <span class="ty">PlatoApi</span> {
+
+    <span class="an">@Operation</span>(summary = <span class="st">"Listar todos los platos"</span>)
+    <span class="an">@ApiResponse</span>(responseCode = <span class="st">"200"</span>, description = <span class="st">"Lista de platos"</span>)
+    <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt;&gt; <span class="fn">listar</span>();
+
+    <span class="an">@Operation</span>(summary = <span class="st">"Obtener plato por ID"</span>)
+    <span class="an">@ApiResponses</span>({
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"200"</span>, description = <span class="st">"Plato encontrado"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"404"</span>, description = <span class="st">"Plato no existe"</span>)
+    })
+    <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">obtener</span>(<span class="ty">Long</span> id);
+
+    <span class="an">@Operation</span>(summary = <span class="st">"Crear un nuevo plato"</span>)
+    <span class="an">@ApiResponses</span>({
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"201"</span>, description = <span class="st">"Plato creado"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"400"</span>, description = <span class="st">"Datos inválidos"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"409"</span>, description = <span class="st">"Nombre duplicado"</span>)
+    })
+    <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">crear</span>(<span class="ty">PlatoRequestDTO</span> dto);
+
+    <span class="an">@Operation</span>(summary = <span class="st">"Actualizar plato completo"</span>)
+    <span class="an">@ApiResponses</span>({
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"200"</span>, description = <span class="st">"Plato actualizado"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"400"</span>, description = <span class="st">"Datos inválidos"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"404"</span>, description = <span class="st">"Plato no existe"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"409"</span>, description = <span class="st">"Nombre duplicado"</span>)
+    })
+    <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">actualizar</span>(<span class="ty">Long</span> id, <span class="ty">PlatoRequestDTO</span> dto);
+
+    <span class="an">@Operation</span>(summary = <span class="st">"Activar o desactivar un plato"</span>)
+    <span class="an">@ApiResponses</span>({
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"200"</span>, description = <span class="st">"Disponibilidad actualizada"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"404"</span>, description = <span class="st">"Plato no existe"</span>)
+    })
+    <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">cambiarDisponibilidad</span>(<span class="ty">Long</span> id, <span class="kw">boolean</span> disponible);
+
+    <span class="an">@Operation</span>(summary = <span class="st">"Eliminar un plato"</span>)
+    <span class="an">@ApiResponses</span>({
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"204"</span>, description = <span class="st">"Plato eliminado"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"404"</span>, description = <span class="st">"Plato no existe"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"409"</span>, description = <span class="st">"Tiene pedidos activos"</span>)
+    })
+    <span class="ty">ResponseEntity</span>&lt;<span class="ty">Void</span>&gt; <span class="fn">eliminar</span>(<span class="ty">Long</span> id);
+}</code></pre>
+
+  <pre><code><span class="cmt">// controller/PlatoController.java — implementa la interfaz, sin una sola anotación Swagger</span>
+<span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="st">"/api/v1/platos"</span>)
+<span class="an">@RequiredArgsConstructor</span>
+<span class="an">@Slf4j</span>
+<span class="kw">public class</span> <span class="ty">PlatoController</span> <span class="kw">implements</span> <span class="ty">PlatoApi</span> {
+
+    <span class="kw">private final</span> <span class="ty">IPlatoService</span> platoService;
+    <span class="kw">private final</span> <span class="ty">PlatoMapper</span>   platoMapper;
+
+    <span class="an">@Override</span>
+    <span class="an">@GetMapping</span>
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt;&gt; <span class="fn">listar</span>() {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(
+            platoService.<span class="fn">obtenerTodos</span>().<span class="fn">stream</span>()
+                .<span class="fn">map</span>(platoMapper::<span class="fn">toResponse</span>).<span class="fn">toList</span>());
+    }
+
+    <span class="an">@Override</span>
+    <span class="an">@GetMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">obtener</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(platoMapper.<span class="fn">toResponse</span>(platoService.<span class="fn">obtenerPorId</span>(id)));
+    }
+
+    <span class="an">@Override</span>
+    <span class="an">@PostMapping</span>
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">crear</span>(<span class="an">@RequestBody</span> <span class="an">@Valid</span> <span class="ty">PlatoRequestDTO</span> dto) {
+        <span class="ty">Plato</span> creado = platoService.<span class="fn">crear</span>(platoMapper.<span class="fn">toDomain</span>(dto));
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CREATED)
+                              .<span class="fn">body</span>(platoMapper.<span class="fn">toResponse</span>(creado));
+    }
+
+    <span class="an">@Override</span>
+    <span class="an">@PutMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">actualizar</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id,
+            <span class="an">@RequestBody</span> <span class="an">@Valid</span> <span class="ty">PlatoRequestDTO</span> dto) {
+        <span class="ty">Plato</span> actualizado = platoService.<span class="fn">actualizar</span>(id, platoMapper.<span class="fn">toDomain</span>(dto));
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(platoMapper.<span class="fn">toResponse</span>(actualizado));
+    }
+
+    <span class="an">@Override</span>
+    <span class="an">@PatchMapping</span>(<span class="st">"/{id}/disponible"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">cambiarDisponibilidad</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id,
+            <span class="an">@RequestParam</span> <span class="kw">boolean</span> disponible) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(
+            platoMapper.<span class="fn">toResponse</span>(platoService.<span class="fn">cambiarDisponibilidad</span>(id, disponible)));
+    }
+
+    <span class="an">@Override</span>
+    <span class="an">@DeleteMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">Void</span>&gt; <span class="fn">eliminar</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        platoService.<span class="fn">eliminar</span>(id);
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">noContent</span>().<span class="fn">build</span>();
+    }
+}</code></pre>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div>
+      <strong>La estructura de archivos queda así:</strong><br>
+      <code>controller/docs/PlatoApi.java</code> → interfaz con toda la documentación Swagger<br>
+      <code>controller/docs/MenuApi.java</code> → interfaz con la documentación del Menú<br>
+      <code>controller/PlatoController.java</code> → implements PlatoApi, solo @RestController + mapping + lógica<br>
+      <code>controller/MenuController.java</code> → implements MenuApi, solo @RestController + mapping + lógica<br><br>
+      Cuando Swagger escanea el Controller encuentra las anotaciones en la interfaz que implementa — funciona exactamente igual, solo que la documentación está en su propio archivo.
+    </div>
+  </div>
+
+  <div class="tut-check">
+    <strong>✅ Verificación — Swagger levantado correctamente</strong>
+    <ul>
+      <li>Abre: <code>http://localhost:8080/swagger-ui/index.html</code></li>
+      <li>¿Ves los grupos <strong>Platos</strong> y <strong>Menú</strong> por separado?</li>
+      <li>¿Todas las rutas muestran <code>/api/v1/</code> como prefijo?</li>
+      <li>¿Cada endpoint muestra los códigos de error documentados?</li>
+      <li>¿El PlatoController.java no tiene ninguna anotación <code>@Tag</code>, <code>@Operation</code> ni <code>@ApiResponse</code>?</li>
+    </ul>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- EJERCICIO -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Ejercicio guiado</div>
+    <div class="sc-title">Implementa <span>Plato y Menú</span><br>y sigue el patrón</div>
+    <div class="sc-desc">Plato y Menú comparten el mismo Service pero tienen Controllers distintos. Al terminar este ejercicio sabrás exactamente cómo implementar los demás dominios del restaurante.</div>
+  </div>
+  <div class="sc-right">🛠️</div>
+</div>
+
+<section class="section" id="ejercicio">
+  <div class="section-header">
+    <div class="section-icon">🛠️</div>
+    <div>
+      <span class="section-num">Ejercicio guiado</span>
+      <div class="section-title">PlatoController + MenuController — mismo Service, dos endpoints</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>¿Menú es lo mismo que Plato?</strong> La lógica es la misma — ambos trabajan con objetos <code>Plato</code>. La diferencia es semántica y de actor: el Menú es lo que <strong>ve el cliente</strong> (solo disponibles, filtrado por categoría), los Platos son lo que <strong>administra el gerente</strong> (CRUD completo). Mismo <code>IPlatoService</code>, distintos Controllers, distintas rutas, distintas validaciones.</div>
+  </div>
+
+  <h3 style="margin:0 0 16px;font-size:1rem">Los dos Controllers y sus endpoints</h3>
+
+  <div class="grid-2">
+    <div>
+      <div style="background:#e8f7ef;border-radius:10px 10px 0 0;padding:12px 18px;border-bottom:2px solid var(--verde)">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;color:var(--verde)">PlatoController — /api/v1/platos</div>
+        <div style="font-size:.78rem;color:var(--gris-med);margin-top:3px">El gerente administra la carta</div>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0"><thead><tr><th>Verbo</th><th>Ruta</th><th>Código</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET</code></td><td><code>/api/v1/platos</code></td><td><code>200</code></td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/platos/{id}</code></td><td><code>200</code> / <code>404</code></td></tr>
+          <tr><td><code>POST</code></td><td><code>/api/v1/platos</code></td><td><code>201</code> / <code>400</code> / <code>409</code></td></tr>
+          <tr><td><code>PUT</code></td><td><code>/api/v1/platos/{id}</code></td><td><code>200</code> / <code>400</code> / <code>404</code> / <code>409</code></td></tr>
+          <tr><td><code>PATCH</code></td><td><code>/api/v1/platos/{id}/disponible</code></td><td><code>200</code> / <code>404</code></td></tr>
+          <tr><td><code>DELETE</code></td><td><code>/api/v1/platos/{id}</code></td><td><code>204</code> / <code>404</code> / <code>409</code></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div>
+      <div style="background:#eaf5fb;border-radius:10px 10px 0 0;padding:12px 18px;border-bottom:2px solid var(--info)">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;color:var(--info)">MenuController — /api/v1/menu</div>
+        <div style="font-size:.78rem;color:var(--gris-med);margin-top:3px">El cliente consulta la carta</div>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0"><thead><tr><th>Verbo</th><th>Ruta</th><th>Código</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET</code></td><td><code>/api/v1/menu</code></td><td><code>200</code></td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/menu/{id}</code></td><td><code>200</code> / <code>404</code></td></tr>
+          <tr><td><code>GET</code></td><td><code>/api/v1/menu/categoria/{cat}</code></td><td><code>200</code></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin:26px 0 14px;font-size:1rem">El código — paso a paso</h3>
+
+  <pre><code><span class="cmt">// controller/PlatoController.java — implementa PlatoApi, sin ninguna anotación Swagger</span>
+<span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="st">"/api/v1/platos"</span>)
+<span class="an">@RequiredArgsConstructor</span>
+<span class="an">@Slf4j</span>
+<span class="kw">public class</span> <span class="ty">PlatoController</span> <span class="kw">implements</span> <span class="ty">PlatoApi</span> {
+
+    <span class="kw">private final</span> <span class="ty">IPlatoService</span> platoService;
+    <span class="kw">private final</span> <span class="ty">PlatoMapper</span>   platoMapper;
+
+    <span class="an">@Override</span> <span class="an">@GetMapping</span>
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt;&gt; <span class="fn">listar</span>() {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(
+            platoService.<span class="fn">obtenerTodos</span>().<span class="fn">stream</span>()
+                .<span class="fn">map</span>(platoMapper::<span class="fn">toResponse</span>).<span class="fn">toList</span>());
+    }
+
+    <span class="an">@Override</span> <span class="an">@GetMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">obtener</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(platoMapper.<span class="fn">toResponse</span>(platoService.<span class="fn">obtenerPorId</span>(id)));
+    }
+
+    <span class="an">@Override</span> <span class="an">@PostMapping</span>
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">crear</span>(
+            <span class="an">@RequestBody</span> <span class="an">@Valid</span> <span class="ty">PlatoRequestDTO</span> dto) {
+        <span class="ty">Plato</span> creado = platoService.<span class="fn">crear</span>(platoMapper.<span class="fn">toDomain</span>(dto));
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">status</span>(<span class="ty">HttpStatus</span>.CREATED)
+                              .<span class="fn">body</span>(platoMapper.<span class="fn">toResponse</span>(creado));
+    }
+
+    <span class="an">@Override</span> <span class="an">@PutMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">actualizar</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id,
+            <span class="an">@RequestBody</span> <span class="an">@Valid</span> <span class="ty">PlatoRequestDTO</span> dto) {
+        <span class="ty">Plato</span> actualizado = platoService.<span class="fn">actualizar</span>(id, platoMapper.<span class="fn">toDomain</span>(dto));
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(platoMapper.<span class="fn">toResponse</span>(actualizado));
+    }
+
+    <span class="an">@Override</span> <span class="an">@PatchMapping</span>(<span class="st">"/{id}/disponible"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">cambiarDisponibilidad</span>(
+            <span class="an">@PathVariable</span> <span class="ty">Long</span> id,
+            <span class="an">@RequestParam</span> <span class="kw">boolean</span> disponible) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(
+            platoMapper.<span class="fn">toResponse</span>(platoService.<span class="fn">cambiarDisponibilidad</span>(id, disponible)));
+    }
+
+    <span class="an">@Override</span> <span class="an">@DeleteMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">Void</span>&gt; <span class="fn">eliminar</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        platoService.<span class="fn">eliminar</span>(id);
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">noContent</span>().<span class="fn">build</span>();
+    }
+}</code></pre>
+
+  <pre><code><span class="cmt">// controller/MenuController.java — vista del cliente
+// Mismo IPlatoService, endpoints de solo lectura, solo platos disponibles</span>
+<span class="an">@RestController</span>
+<span class="an">@RequestMapping</span>(<span class="st">"/api/v1/menu"</span>)
+<span class="an">@RequiredArgsConstructor</span>
+<span class="an">@Tag</span>(name = <span class="st">"Menú"</span>, description = <span class="st">"Consulta de la carta — vista del cliente"</span>)
+<span class="kw">public class</span> <span class="ty">MenuController</span> {
+
+    <span class="cmt">// ✅ Mismo service que PlatoController — sin duplicar lógica</span>
+    <span class="kw">private final</span> <span class="ty">IPlatoService</span> platoService;
+    <span class="kw">private final</span> <span class="ty">PlatoMapper</span>   platoMapper;
+
+    <span class="cmt">// Solo devuelve platos disponibles — el cliente no ve los agotados</span>
+    <span class="an">@GetMapping</span>
+    <span class="an">@Operation</span>(summary = <span class="st">"Ver carta del restaurante"</span>)
+    <span class="an">@ApiResponse</span>(responseCode = <span class="st">"200"</span>, description = <span class="st">"Platos disponibles"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt;&gt; <span class="fn">verCarta</span>() {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(
+            platoService.<span class="fn">obtenerDisponibles</span>().<span class="fn">stream</span>()
+                .<span class="fn">map</span>(platoMapper::<span class="fn">toResponse</span>)
+                .<span class="fn">toList</span>()
+        );
+    }
+
+    <span class="cmt">// Un plato específico — solo si está disponible</span>
+    <span class="an">@GetMapping</span>(<span class="st">"/{id}"</span>)
+    <span class="an">@Operation</span>(summary = <span class="st">"Ver detalle de un plato"</span>)
+    <span class="an">@ApiResponses</span>({
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"200"</span>, description = <span class="st">"Plato encontrado"</span>),
+        <span class="an">@ApiResponse</span>(responseCode = <span class="st">"404"</span>, description = <span class="st">"Plato no existe o no disponible"</span>)
+    })
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt; <span class="fn">verDetalle</span>(<span class="an">@PathVariable</span> <span class="ty">Long</span> id) {
+        <span class="ty">Plato</span> plato = platoService.<span class="fn">obtenerPorId</span>(id);
+        <span class="kw">if</span> (!plato.<span class="fn">estaDisponible</span>()) {
+            <span class="kw">throw new</span> <span class="ty">RecursoNoEncontradoException</span>(<span class="st">"Plato disponible"</span>, id);
+        }
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(platoMapper.<span class="fn">toResponse</span>(plato));
+    }
+
+    <span class="cmt">// Filtrar por categoría — sin paginación por ahora</span>
+    <span class="an">@GetMapping</span>(<span class="st">"/categoria/{categoria}"</span>)
+    <span class="an">@Operation</span>(summary = <span class="st">"Ver carta filtrada por categoría"</span>)
+    <span class="an">@ApiResponse</span>(responseCode = <span class="st">"200"</span>, description = <span class="st">"Platos de la categoría"</span>)
+    <span class="kw">public</span> <span class="ty">ResponseEntity</span>&lt;<span class="ty">List</span>&lt;<span class="ty">PlatoResponseDTO</span>&gt;&gt; <span class="fn">porCategoria</span>(
+            <span class="an">@PathVariable</span> <span class="ty">String</span> categoria) {
+        <span class="kw">return</span> <span class="ty">ResponseEntity</span>.<span class="fn">ok</span>(
+            platoService.<span class="fn">obtenerPorCategoria</span>(categoria).<span class="fn">stream</span>()
+                .<span class="fn">filter</span>(<span class="ty">Plato</span>::<span class="fn">estaDisponible</span>)
+                .<span class="fn">map</span>(platoMapper::<span class="fn">toResponse</span>)
+                .<span class="fn">toList</span>()
+        );
+    }
+}</code></pre>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div><strong>El patrón para los demás Controllers del restaurante:</strong> una vez que tienes Plato y Menú funcionando, Pedido, Mesa, Reserva, Parqueadero y Reportes siguen exactamente el mismo esquema. Dominio → DTO → Mapper → Interfaz Service → ServiceImpl (con Streams) → Validator → Controller. El Controller nunca tiene lógica — solo llama, traduce y responde.</div>
+  </div>
+
+  <div class="tut-check">
+    <strong>✅ Verifica antes de pasar al siguiente dominio</strong>
+    <ul>
+      <li><code>GET /api/v1/platos</code> → 200 con lista (vacía al inicio está bien)</li>
+      <li><code>POST /api/v1/platos</code> con body válido → 201 con el objeto creado</li>
+      <li><code>POST /api/v1/platos</code> con body vacío → 400 con los mensajes de @Valid</li>
+      <li><code>POST /api/v1/platos</code> con nombre repetido → 409 con mensaje claro</li>
+      <li><code>GET /api/v1/platos/999</code> → 404 con ErrorResponseDTO</li>
+      <li><code>DELETE /api/v1/platos/{id}</code> → 204 sin body</li>
+      <li><code>GET /api/v1/menu</code> → 200 solo con los disponibles</li>
+      <li><code>GET /api/v1/menu/categoria/ENTRADAS</code> → 200 filtrado</li>
+    </ul>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- PRUEBAS -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 09</div>
+    <div class="sc-title">Pruebas —<br><span>confía pero verifica</span></div>
+    <div class="sc-desc">JUnit 5 + Mockito. Se prueba el ServiceImpl aislado de Spring, con el Validator mockeado. También cómo probar los Validators con lógica real y las Utils con casos límite.</div>
+  </div>
+  <div class="sc-right">🧪</div>
+</div>
+
+<section class="section" id="pruebas">
+  <div class="section-header">
+    <div class="section-icon">🧪</div>
+    <div>
+      <span class="section-num">Paso 09 — src/test/</span>
+      <div class="section-title">Pruebas del Service, Validator y Utils</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>¿Qué se prueba y qué no?</strong> Se prueba la lógica — ServiceImpl, Validator, Utils. No se prueba el Controller con pruebas unitarias (eso es prueba de integración). El Controller no tiene lógica propia — su corrección se verifica en Swagger/Postman.</div>
+  </div>
+
+  <h3 style="margin:0 0 14px;font-size:1rem">Pruebas del ServiceImpl — con Mockito</h3>
+
+  <pre><code><span class="cmt">// PlatoServiceImplTest.java</span>
+<span class="an">@ExtendWith</span>(<span class="ty">MockitoExtension</span>.<span class="kw">class</span>)
+<span class="kw">class</span> <span class="ty">PlatoServiceImplTest</span> {
+
+    <span class="an">@Mock</span>
+    <span class="kw">private</span> <span class="ty">IPlatoValidator</span> validator;  <span class="cmt">// doble controlado — no ejecuta lógica real</span>
+
+    <span class="an">@InjectMocks</span>
+    <span class="kw">private</span> <span class="ty">PlatoServiceImpl</span> service;  <span class="cmt">// la clase real con el mock inyectado</span>
+
+    <span class="cmt">// ── Caso exitoso ────────────────────────────────────────────</span>
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"crear - guarda el plato y le asigna un ID"</span>)
+    <span class="kw">void</span> <span class="fn">crear_platoCorrecto_guardaYRetorna</span>() {
+        <span class="ty">Plato</span> entrada = <span class="ty">Plato</span>.builder()
+                .nombre(<span class="st">"Bandeja Paisa"</span>).precio(<span class="nu">28000.0</span>)
+                .categoria(<span class="st">"PRINCIPALES"</span>).disponible(<span class="kw">true</span>).build();
+
+        <span class="ty">Plato</span> resultado = service.<span class="fn">crear</span>(entrada);
+
+        assertNotNull(resultado.getId());
+        assertEquals(<span class="st">"Bandeja Paisa"</span>, resultado.getNombre());
+        <span class="cmt">// Verifica que el validator fue llamado exactamente 1 vez</span>
+        verify(validator, times(<span class="nu">1</span>)).<span class="fn">validarNombreUnico</span>(
+                eq(<span class="st">"Bandeja Paisa"</span>), any());
+    }
+
+    <span class="cmt">// ── Recurso no encontrado ────────────────────────────────────</span>
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"obtenerPorId - ID inexistente lanza RecursoNoEncontradoException"</span>)
+    <span class="kw">void</span> <span class="fn">obtenerPorId_noExiste_lanzaExcepcion</span>() {
+        assertThrows(<span class="ty">RecursoNoEncontradoException</span>.<span class="kw">class</span>,
+                () -> service.<span class="fn">obtenerPorId</span>(<span class="nu">99L</span>));
+    }
+
+    <span class="cmt">// ── El validator rechaza (nombre duplicado) ──────────────────</span>
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"crear - nombre duplicado lanza ConflictoException"</span>)
+    <span class="kw">void</span> <span class="fn">crear_nombreDuplicado_lanzaConflicto</span>() {
+        <span class="cmt">// Configura el mock para que lance la excepción al llamar validarNombreUnico</span>
+        doThrow(<span class="kw">new</span> <span class="ty">ConflictoException</span>(<span class="st">"Nombre duplicado"</span>))
+                .<span class="fn">when</span>(validator).<span class="fn">validarNombreUnico</span>(any(), any());
+
+        <span class="ty">Plato</span> plato = <span class="ty">Plato</span>.builder().nombre(<span class="st">"Bandeja Paisa"</span>)
+                .precio(<span class="nu">28000.0</span>).categoria(<span class="st">"PRINCIPALES"</span>).build();
+
+        assertThrows(<span class="ty">ConflictoException</span>.<span class="kw">class</span>,
+                () -> service.<span class="fn">crear</span>(plato));
+    }
+
+    <span class="cmt">// ── Lista vacía devuelve lista vacía, no null ────────────────</span>
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"obtenerTodos - sin platos devuelve lista vacía"</span>)
+    <span class="kw">void</span> <span class="fn">obtenerTodos_sinPlatos_devuelveListaVacia</span>() {
+        <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; resultado = service.<span class="fn">obtenerTodos</span>();
+        assertNotNull(resultado);
+        assertTrue(resultado.<span class="fn">isEmpty</span>());
+    }
+
+    <span class="cmt">// ── Solo devuelve los disponibles ────────────────────────────</span>
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"obtenerDisponibles - filtra correctamente"</span>)
+    <span class="kw">void</span> <span class="fn">obtenerDisponibles_filtraSoloDisponibles</span>() {
+        service.<span class="fn">crear</span>(<span class="ty">Plato</span>.builder().nombre(<span class="st">"A"</span>).precio(<span class="nu">10.0</span>)
+                .categoria(<span class="st">"X"</span>).disponible(<span class="kw">true</span>).build());
+        service.<span class="fn">crear</span>(<span class="ty">Plato</span>.builder().nombre(<span class="st">"B"</span>).precio(<span class="nu">10.0</span>)
+                .categoria(<span class="st">"X"</span>).disponible(<span class="kw">false</span>).build());
+
+        <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; resultado = service.<span class="fn">obtenerDisponibles</span>();
+
+        assertEquals(<span class="nu">1</span>, resultado.<span class="fn">size</span>());
+        assertEquals(<span class="st">"A"</span>, resultado.<span class="fn">get</span>(<span class="nu">0</span>).getNombre());
+    }
+
+    <span class="cmt">// ── cambiarDisponibilidad ────────────────────────────────────</span>
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"cambiarDisponibilidad - desactiva un plato existente"</span>)
+    <span class="kw">void</span> <span class="fn">cambiarDisponibilidad_desactiva_correctamente</span>() {
+        <span class="ty">Plato</span> creado = service.<span class="fn">crear</span>(<span class="ty">Plato</span>.builder().nombre(<span class="st">"Sopa"</span>)
+                .precio(<span class="nu">15.0</span>).categoria(<span class="st">"ENTRADAS"</span>).disponible(<span class="kw">true</span>).build());
+
+        <span class="ty">Plato</span> resultado = service.<span class="fn">cambiarDisponibilidad</span>(creado.getId(), <span class="kw">false</span>);
+
+        assertFalse(resultado.<span class="fn">estaDisponible</span>());
+    }
+}</code></pre>
+
+  <h3 style="margin:26px 0 14px;font-size:1rem">Pruebas del Validator — sin mocks, lógica real</h3>
+
+  <pre><code><span class="cmt">// PlatoValidatorTest.java
+// El Validator NO tiene dependencias — se prueba sin mocks</span>
+<span class="kw">class</span> <span class="ty">PlatoValidatorTest</span> {
+
+    <span class="kw">private final</span> <span class="ty">PlatoValidator</span> validator = <span class="kw">new</span> <span class="ty">PlatoValidator</span>();
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"validarNombreUnico - nombre nuevo no lanza excepción"</span>)
+    <span class="kw">void</span> <span class="fn">validarNombreUnico_nombreNuevo_noLanza</span>() {
+        <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; existentes = <span class="ty">List</span>.of(
+            <span class="ty">Plato</span>.builder().nombre(<span class="st">"Ajiaco"</span>).build()
+        );
+        <span class="cmt">// No debe lanzar excepción</span>
+        assertDoesNotThrow(() ->
+            validator.<span class="fn">validarNombreUnico</span>(<span class="st">"Bandeja Paisa"</span>, existentes));
+    }
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"validarNombreUnico - nombre duplicado (case-insensitive) lanza ConflictoException"</span>)
+    <span class="kw">void</span> <span class="fn">validarNombreUnico_nombreDuplicado_lanzaConflicto</span>() {
+        <span class="ty">List</span>&lt;<span class="ty">Plato</span>&gt; existentes = <span class="ty">List</span>.of(
+            <span class="ty">Plato</span>.builder().nombre(<span class="st">"Ajiaco"</span>).build()
+        );
+        assertThrows(<span class="ty">ConflictoException</span>.<span class="kw">class</span>, () ->
+            validator.<span class="fn">validarNombreUnico</span>(<span class="st">"AJIACO"</span>, existentes));
+    }
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"validarDisponibleParaPedido - plato agotado lanza ReglaDeNegocioException"</span>)
+    <span class="kw">void</span> <span class="fn">validarDisponible_platoAgotado_lanza</span>() {
+        <span class="ty">Plato</span> agotado = <span class="ty">Plato</span>.builder().disponible(<span class="kw">false</span>).nombre(<span class="st">"Ajiaco"</span>).build();
+        assertThrows(<span class="ty">ReglaDeNegocioException</span>.<span class="kw">class</span>, () ->
+            validator.<span class="fn">validarDisponibleParaPedido</span>(agotado));
+    }
+}</code></pre>
+
+  <h3 style="margin:26px 0 14px;font-size:1rem">Pruebas de Utils — casos límite y valores nulos</h3>
+
+  <pre><code><span class="cmt">// FechaUtilsTest.java</span>
+<span class="kw">class</span> <span class="ty">FechaUtilsTest</span> {
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"formatearFecha - null devuelve 'Sin fecha'"</span>)
+    <span class="kw">void</span> <span class="fn">formatear_null_devuelveSinFecha</span>() {
+        assertEquals(<span class="st">"Sin fecha"</span>, <span class="ty">FechaUtils</span>.<span class="fn">formatearFecha</span>(<span class="kw">null</span>));
+    }
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"esFechaFutura - fecha pasada devuelve false"</span>)
+    <span class="kw">void</span> <span class="fn">esFechaFutura_fechaPasada_devuelveFalse</span>() {
+        assertFalse(<span class="ty">FechaUtils</span>.<span class="fn">esFechaFutura</span>(<span class="ty">LocalDateTime</span>.now().minusDays(<span class="nu">1</span>)));
+    }
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"seSolapan - reservas consecutivas no se solapan"</span>)
+    <span class="kw">void</span> <span class="fn">seSolapan_consecutivas_noSolapan</span>() {
+        <span class="ty">LocalDateTime</span> inicio1 = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">12</span>, <span class="nu">0</span>);
+        <span class="ty">LocalDateTime</span> fin1    = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">13</span>, <span class="nu">0</span>);
+        <span class="ty">LocalDateTime</span> inicio2 = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">13</span>, <span class="nu">0</span>);
+        <span class="ty">LocalDateTime</span> fin2    = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">14</span>, <span class="nu">0</span>);
+        assertFalse(<span class="ty">FechaUtils</span>.<span class="fn">seSolapan</span>(inicio1, fin1, inicio2, fin2));
+    }
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"seSolapan - reservas superpuestas sí se solapan"</span>)
+    <span class="kw">void</span> <span class="fn">seSolapan_superpuestas_solapan</span>() {
+        <span class="ty">LocalDateTime</span> inicio1 = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">12</span>, <span class="nu">0</span>);
+        <span class="ty">LocalDateTime</span> fin1    = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">13</span>, <span class="nu">30</span>);
+        <span class="ty">LocalDateTime</span> inicio2 = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">13</span>, <span class="nu">0</span>);
+        <span class="ty">LocalDateTime</span> fin2    = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">14</span>, <span class="nu">0</span>);
+        assertTrue(<span class="ty">FechaUtils</span>.<span class="fn">seSolapan</span>(inicio1, fin1, inicio2, fin2));
+    }
+}
+
+<span class="cmt">// CalculoUtilsTest.java</span>
+<span class="kw">class</span> <span class="ty">CalculoUtilsTest</span> {
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"redondear - valor con muchos decimales queda en 2"</span>)
+    <span class="kw">void</span> <span class="fn">redondear_valorConDecimaes_quedaEnDos</span>() {
+        assertEquals(<span class="nu">12.35</span>, <span class="ty">CalculoUtils</span>.<span class="fn">redondear</span>(<span class="nu">12.3456789</span>));
+    }
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"calcularCobroPorMinutos - 60 minutos a tarifa 100 = 6000"</span>)
+    <span class="kw">void</span> <span class="fn">calcularCobro_60Minutos_retornaTotalCorrecto</span>() {
+        <span class="ty">LocalDateTime</span> entrada = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">10</span>, <span class="nu">0</span>);
+        <span class="ty">LocalDateTime</span> salida  = <span class="ty">LocalDateTime</span>.of(<span class="nu">2025</span>, <span class="nu">1</span>, <span class="nu">1</span>, <span class="nu">11</span>, <span class="nu">0</span>);
+        assertEquals(<span class="nu">6000.0</span>, <span class="ty">CalculoUtils</span>.<span class="fn">calcularCobroPorMinutos</span>(entrada, salida, <span class="nu">100.0</span>));
+    }
+
+    <span class="an">@Test</span>
+    <span class="an">@DisplayName</span>(<span class="st">"aplicarDescuento - 10% de descuento sobre 10000 = 9000"</span>)
+    <span class="kw">void</span> <span class="fn">aplicarDescuento_10Porciento_retornaValorCorrecto</span>() {
+        assertEquals(<span class="nu">9000.0</span>, <span class="ty">CalculoUtils</span>.<span class="fn">aplicarDescuento</span>(<span class="nu">10000.0</span>, <span class="nu">10.0</span>));
+    }
+}</code></pre>
+
+  <div class="rule-box">
+    <h4>Los 5 escenarios que siempre debes cubrir en el Service</h4>
+    <div class="rule-item"><span class="rule-ok">✅</span><div><strong>Happy path</strong> — el flujo normal funciona y devuelve el objeto correcto</div></div>
+    <div class="rule-item"><span class="rule-ok">✅</span><div><strong>Recurso no encontrado</strong> — lanza <code>RecursoNoEncontradoException</code> con el ID correcto</div></div>
+    <div class="rule-item"><span class="rule-ok">✅</span><div><strong>Duplicado / conflicto</strong> — el validator rechaza y lanza <code>ConflictoException</code></div></div>
+    <div class="rule-item"><span class="rule-ok">✅</span><div><strong>Estado inválido</strong> — transición rechazada lanza <code>EstadoInvalidoException</code></div></div>
+    <div class="rule-item"><span class="rule-ok">✅</span><div><strong>Lista vacía</strong> — devuelve lista vacía, nunca null ni excepción</div></div>
+  </div>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Pausa rápida</span>
+      <span class="qi-title">Pruebas — comprueba que entiendes</span>
+    </div>
+    <div class="qi-q">¿Cuál es la diferencia entre @Mock y @InjectMocks?</div>
+    <div class="qi-a">@Mock crea un doble vacío de una dependencia — no ejecuta código real. @InjectMocks crea la clase real bajo prueba e inyecta los @Mock en su constructor. El SUT (Subject Under Test) siempre es @InjectMocks.</div>
+    <div class="qi-q">¿Por qué el Validator se prueba sin mocks?</div>
+    <div class="qi-a">Porque el Validator no tiene dependencias inyectadas — solo recibe parámetros. Lo que quieres probar es su lógica real: que sí rechaza un nombre duplicado y que no rechaza uno nuevo. Con un mock estarías probando el mock, no el Validator.</div>
+    <div class="qi-q">¿Qué hace verify(validator, times(1)).metodo()?</div>
+    <div class="qi-a">Verifica que el mock fue llamado exactamente 1 vez con ese método. Es útil para confirmar que el Service sí delegó la validación al Validator, sin que el test dependa del resultado de esa validación.</div>
+  </div>
+
+</section>
+
+<div class="sep"></div>
+
+<!-- CHECKLIST -->
+<section class="section" id="checklist">
+  <div class="section-header">
+    <div class="section-icon">☑️</div>
+    <div>
+      <span class="section-num">Checklist final</span>
+      <div class="section-title">¿Tu Controller está completo? — Revisa antes de pasar al siguiente dominio</div>
+    </div>
+  </div>
+
+  <div class="rule-box">
+    <h4>Por cada dominio del restaurante</h4>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Dominio</strong> — <code>model/domain/</code>. @Data @Builder @AllArgsConstructor. Métodos de comportamiento propios (no validaciones de formato). Enum con lógica de transición si tiene estados.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>RequestDTO</strong> — <code>model/dto/request/</code>. Solo Bean Validation (@NotBlank, @Positive…). Sin lógica.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>ResponseDTO</strong> — <code>model/dto/response/</code>. Solo los campos que el cliente necesita. Sin lógica.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Mapper</strong> — <code>mapper/</code>. Interfaz con @Mapper(componentModel="spring"). toDomain() + toResponse() + toResponseList(). Inyectado en el Controller.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Interfaz Service</strong> — <code>service/</code>. Métodos reciben y devuelven dominio. Nunca DTOs.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>ServiceImpl</strong> — <code>service/impl/</code>. @Service @Slf4j @RequiredArgsConstructor. ConcurrentHashMap + AtomicLong. Streams en todos los métodos. Logs en operaciones clave.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Interfaz Validator</strong> — <code>validator/</code>. Contrato de validaciones de negocio. Inyectada en ServiceImpl via interfaz.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>ValidatorImpl</strong> — @Component. Cada método valida una regla, lanza excepción tipada. Sin anotaciones de Spring MVC.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Utils</strong> (si aplica) — <code>util/</code>. Clase final estática con constructor privado. Solo si la lógica es compartida entre dominios.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Controller</strong> — <code>controller/</code>. @RequestMapping("/api/v1/nombre"). Inyecta Service + Mapper. Patrón: toDomain → service → toResponse. @Valid en @RequestBody. Códigos HTTP correctos.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Excepciones</strong> — Una clase por tipo de error. GlobalExceptionHandler las captura todas. Handlers específicos antes que Exception.class.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Swagger</strong> — @Tag en la clase. @Operation + @ApiResponses en cada endpoint. Códigos de éxito y error documentados.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Pruebas</strong> — ServiceImpl con @Mock validator + @InjectMocks service. Validator sin mocks. Utils con casos límite y nulls. Los 5 escenarios cubiertos.</div></div>
+  </div>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div>
+      <strong>Los 5 errores más comunes — revisa que no los tengas:</strong><br>
+      ❌ El Mapper inyectado en el ServiceImpl — va en el Controller<br>
+      ❌ El Service recibiendo o devolviendo DTOs — solo dominio<br>
+      ❌ El Controller con lógica de negocio — solo recibe, traduce y delega<br>
+      ❌ Validaciones de formato en el Validator — eso es del DTO con @Valid<br>
+      ❌ POST respondiendo 200 en vez de 201, DELETE con body en vez de 204 sin body
+    </div>
+  </div>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Repaso de cierre</span>
+      <span class="qi-title">Sin mirar la guía — ¿puedes responder estas?</span>
+    </div>
+    <div class="qi-q">¿Por qué MenuController y PlatoController inyectan el mismo IPlatoService?</div>
+    <div class="qi-a">Porque la lógica es la misma — ambos trabajan con objetos Plato. La diferencia es semántica: el Menú filtra solo disponibles y no tiene endpoints de escritura. Duplicar el Service para eso generaría deuda técnica y dos lugares donde corregir bugs.</div>
+    <div class="qi-q">Un PUT recibe un nombre que ya tiene el propio plato. ¿Debe lanzar 409?</div>
+    <div class="qi-a">No. Al validar nombre único en actualizar(), debes excluir el propio plato del stream con .filter(p -> !p.getId().equals(id)). Si no lo haces, el PUT del mismo nombre siempre falla aunque sea el nombre correcto del plato.</div>
+    <div class="qi-q">¿Qué código devuelve un DELETE exitoso y qué body tiene?</div>
+    <div class="qi-a">204 No Content, sin body: <code>ResponseEntity.noContent().build()</code>. Si devuelve 200 o body, está mal.</div>
+    <div class="qi-q">¿Cuándo se usa 409 y cuándo 422?</div>
+    <div class="qi-a">409 Conflict: hay un conflicto de estado — el recurso ya existe con ese nombre, o la mesa ya tiene cuenta abierta. 422 Unprocessable Entity: el formato del request es válido pero la regla de negocio lo rechaza — intentar pasar un pedido de LISTO a RECIBIDO, o eliminar un plato con pedidos activos.</div>
+  </div>
+
+</section>
+
+</div>
+
+<footer>
+  🌿 <span>Guía Turtwig de Studio</span> &nbsp;·&nbsp; Implementación de Controllers &nbsp;·&nbsp; DOSW · Escuela Colombiana de Ingeniería
+</footer>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true, theme: 'base',
+  themeVariables: {
+    primaryColor: '#e8f7ef', primaryTextColor: '#1e2a24',
+    primaryBorderColor: '#6abf8a', lineColor: '#4a5e54',
+    secondaryColor: '#f0f7f3', tertiaryColor: '#fff',
+    background: '#fff', fontFamily: 'Space Grotesk, sans-serif', fontSize: '13px'
+  },
+  flowchart: { curve: 'basis', padding: 20 }
+});
+</script>
+</body>
+</html>

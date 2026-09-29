@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PedidoServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BITACORA-TERCIO2</a> &gt; <a href="index.source.html" class="el_package">com.dows.bitacora2.restaurante.service</a> &gt; <span class="el_source">PedidoServiceImpl.java</span></div><h1>PedidoServiceImpl.java</h1><pre class="source lang-java linenums">package com.dows.bitacora2.restaurante.service;
+
+import com.dows.bitacora2.restaurante.exception.EstadoInvalidoException;
+import com.dows.bitacora2.restaurante.exception.RecursoNoEncontradoException;
+import com.dows.bitacora2.restaurante.exception.ReglaDeNegocioException;
+import com.dows.bitacora2.restaurante.exception.ToppingsExcedidosException;
+import com.dows.bitacora2.restaurante.exception.TransicionEstadoInvalidaException;
+import com.dows.bitacora2.restaurante.mapper.PedidoEntityMapper;
+import com.dows.bitacora2.restaurante.model.domain.EstadoPedido;
+import com.dows.bitacora2.restaurante.model.domain.ItemPedido;
+import com.dows.bitacora2.restaurante.model.domain.Pedido;
+import com.dows.bitacora2.restaurante.model.domain.Plato;
+import com.dows.bitacora2.restaurante.persistence.entity.PedidoEntity;
+import com.dows.bitacora2.restaurante.repository.PedidoRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+@Service
+public class PedidoServiceImpl implements IPedidoService {
+<span class="fc" id="L24">    private static final Logger log = LoggerFactory.getLogger(PedidoServiceImpl.class);</span>
+
+    private final PedidoRepository pedidoRepository;
+    private final PedidoEntityMapper entityMapper;
+    private final IPlatoService platoService;
+    private final IMesaService mesaService;
+    private final com.dows.bitacora2.restaurante.repository.EventoPedidoMongoRepository eventoMongoRepo;
+
+    public PedidoServiceImpl(PedidoRepository pedidoRepository, PedidoEntityMapper entityMapper, 
+                             IPlatoService platoService, IMesaService mesaService,
+<span class="fc" id="L34">                             com.dows.bitacora2.restaurante.repository.EventoPedidoMongoRepository eventoMongoRepo) {</span>
+<span class="fc" id="L35">        this.pedidoRepository = pedidoRepository;</span>
+<span class="fc" id="L36">        this.entityMapper = entityMapper;</span>
+<span class="fc" id="L37">        this.platoService = platoService;</span>
+<span class="fc" id="L38">        this.mesaService = mesaService;</span>
+<span class="fc" id="L39">        this.eventoMongoRepo = eventoMongoRepo;</span>
+<span class="fc" id="L40">    }</span>
+
+    @Override
+    public List&lt;Pedido&gt; obtenerTodos() {
+<span class="nc" id="L44">        log.info(&quot;Obteniendo todos los pedidos&quot;);</span>
+<span class="nc" id="L45">        return entityMapper.toDomainList(pedidoRepository.findAll());</span>
+    }
+
+    @Override
+    public Pedido obtenerPorId(Long id) {
+<span class="fc" id="L50">        return pedidoRepository.findById(id)</span>
+<span class="fc" id="L51">                .map(entityMapper::toDomain)</span>
+<span class="fc" id="L52">                .orElseThrow(() -&gt; {</span>
+<span class="nc" id="L53">                    log.warn(&quot;Pedido no encontrado: id={}&quot;, id);</span>
+<span class="nc" id="L54">                    return new RecursoNoEncontradoException(&quot;Pedido&quot;, id);</span>
+                });
+    }
+
+    @Override
+    @Transactional
+    public Pedido crear(Pedido pedido) {
+<span class="fc" id="L61">        mesaService.obtenerPorId(pedido.getIdMesa());</span>
+
+<span class="fc" id="L63">        validarYCompletarItems(pedido.getItems());</span>
+        
+<span class="fc" id="L65">        pedido.setEstado(EstadoPedido.RECIBIDO);</span>
+<span class="fc" id="L66">        PedidoEntity nuevo = pedidoRepository.save(entityMapper.toEntity(pedido));</span>
+<span class="fc" id="L67">        log.info(&quot;Pedido creado: id={}, mesa={}&quot;, nuevo.getId(), nuevo.getIdMesa());</span>
+
+<span class="fc" id="L69">        java.util.concurrent.CompletableFuture.runAsync(() -&gt; {</span>
+<span class="fc" id="L70">            eventoMongoRepo.save(new com.dows.bitacora2.restaurante.persistence.document.EventoPedidoDocument(</span>
+<span class="fc" id="L71">                nuevo.getId(), null, &quot;RECIBIDO&quot;, java.time.LocalDateTime.now(), &quot;Pedido inicializado&quot;</span>
+            ));
+<span class="fc" id="L73">        });</span>
+
+<span class="fc" id="L75">        return entityMapper.toDomain(nuevo);</span>
+    }
+
+    @Override
+    @Transactional
+    public Pedido actualizar(Long id, Pedido nuevosDatos) {
+<span class="fc" id="L81">        Pedido existente = obtenerPorId(id);</span>
+        
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if (!existente.puedeModificarse()) {</span>
+<span class="fc" id="L84">            throw new ReglaDeNegocioException(&quot;RN-04: El pedido solo puede modificarse en estado RECIBIDO.&quot;);</span>
+        }
+
+<span class="nc" id="L87">        validarYCompletarItems(nuevosDatos.getItems());</span>
+<span class="nc" id="L88">        existente.setItems(nuevosDatos.getItems());</span>
+        
+<span class="nc" id="L90">        PedidoEntity entity = pedidoRepository.save(entityMapper.toEntity(existente));</span>
+<span class="nc" id="L91">        log.info(&quot;Pedido actualizado: id={}&quot;, id);</span>
+<span class="nc" id="L92">        return entityMapper.toDomain(entity);</span>
+    }
+
+    @Override
+    @Transactional
+    public Pedido cambiarEstado(Long id, String estadoStr) {
+<span class="fc" id="L98">        Pedido pedido = obtenerPorId(id);</span>
+        try {
+<span class="fc" id="L100">            EstadoPedido nuevoEstado = EstadoPedido.valueOf(estadoStr.toUpperCase());</span>
+            
+<span class="fc bfc" id="L102" title="All 2 branches covered.">            if (!pedido.getEstado().puedeTransicionarA(nuevoEstado)) {</span>
+<span class="fc" id="L103">                throw new TransicionEstadoInvalidaException(&quot;No se puede pasar de &quot; + pedido.getEstado() + &quot; a &quot; + nuevoEstado);</span>
+            }
+            
+<span class="fc" id="L106">            String estadoAnterior = pedido.getEstado().name();</span>
+<span class="fc" id="L107">            pedido.setEstado(nuevoEstado);</span>
+<span class="fc" id="L108">            PedidoEntity entity = pedidoRepository.save(entityMapper.toEntity(pedido));</span>
+<span class="fc" id="L109">            log.info(&quot;Estado de pedido id={} cambiado a {}&quot;, id, nuevoEstado);</span>
+
+<span class="fc" id="L111">            java.util.concurrent.CompletableFuture.runAsync(() -&gt; {</span>
+<span class="fc" id="L112">                eventoMongoRepo.save(new com.dows.bitacora2.restaurante.persistence.document.EventoPedidoDocument(</span>
+<span class="fc" id="L113">                    id, estadoAnterior, nuevoEstado.name(), java.time.LocalDateTime.now(), &quot;Cambio de estado&quot;</span>
+                ));
+<span class="fc" id="L115">            });</span>
+
+<span class="fc" id="L117">            return entityMapper.toDomain(entity);</span>
+<span class="nc" id="L118">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L119">            throw new EstadoInvalidoException(&quot;Estado de pedido inválido: &quot; + estadoStr);</span>
+        }
+    }
+
+    @Override
+    @Transactional
+    public void eliminar(Long id) {
+<span class="nc" id="L126">        Pedido pedido = obtenerPorId(id);</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (!pedido.puedeModificarse()) {</span>
+<span class="nc" id="L128">            throw new ReglaDeNegocioException(&quot;El pedido no se puede eliminar porque ya está en preparación o listo.&quot;);</span>
+        }
+<span class="nc" id="L130">        String estadoAnterior = pedido.getEstado().name();</span>
+<span class="nc" id="L131">        pedido.setEstado(EstadoPedido.CANCELADO);</span>
+<span class="nc" id="L132">        pedidoRepository.save(entityMapper.toEntity(pedido));</span>
+<span class="nc" id="L133">        log.info(&quot;Pedido cancelado: id={}&quot;, id);</span>
+
+<span class="nc" id="L135">        java.util.concurrent.CompletableFuture.runAsync(() -&gt; {</span>
+<span class="nc" id="L136">            eventoMongoRepo.save(new com.dows.bitacora2.restaurante.persistence.document.EventoPedidoDocument(</span>
+<span class="nc" id="L137">                id, estadoAnterior, &quot;CANCELADO&quot;, java.time.LocalDateTime.now(), &quot;Pedido cancelado&quot;</span>
+            ));
+<span class="nc" id="L139">        });</span>
+<span class="nc" id="L140">    }</span>
+
+    private void validarYCompletarItems(List&lt;ItemPedido&gt; items) {
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        for (ItemPedido item : items) {</span>
+<span class="fc" id="L144">            Plato plato = platoService.obtenerPorId(item.getIdPlato());</span>
+            
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">            if (!plato.estaDisponible()) {</span>
+<span class="nc" id="L147">                throw new ReglaDeNegocioException(&quot;El plato &quot; + plato.getNombre() + &quot; no está disponible.&quot;);</span>
+            }
+
+<span class="fc" id="L150">            item.setNombrePlato(plato.getNombre());</span>
+<span class="fc" id="L151">            item.setPrecioCongelado(plato.getPrecio());</span>
+
+<span class="fc" id="L153">            boolean esPizza = &quot;Pizza&quot;.equalsIgnoreCase(plato.getCategoria());</span>
+<span class="fc" id="L154">            boolean esPasta = &quot;Pasta&quot;.equalsIgnoreCase(plato.getCategoria());</span>
+
+<span class="pc bpc" id="L156" title="3 of 4 branches missed.">            if (esPizza || esPasta) {</span>
+<span class="pc bpc" id="L157" title="1 of 4 branches missed.">                if (item.getMasa() == null || item.getMasa().trim().isEmpty() ||</span>
+<span class="pc bpc" id="L158" title="2 of 4 branches missed.">                    item.getSalsa() == null || item.getSalsa().trim().isEmpty()) {</span>
+<span class="fc" id="L159">                    throw new ReglaDeNegocioException(&quot;RN-01: Todo plato personalizable debe tener masa base y salsa primaria.&quot;);</span>
+                }
+            }
+
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">            if (esPizza) {</span>
+<span class="pc bpc" id="L164" title="1 of 4 branches missed.">                if (item.getToppings() != null &amp;&amp; item.getToppings().size() &gt; 5) {</span>
+<span class="fc" id="L165">                    throw new ToppingsExcedidosException(&quot;RN-02: Una pizza no puede llevar más de 5 toppings.&quot;);</span>
+                }
+            }
+<span class="fc" id="L168">        }</span>
+<span class="fc" id="L169">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

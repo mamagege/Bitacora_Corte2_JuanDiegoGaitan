@@ -1,0 +1,2792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Guía Turtwig de Studio — Semana 8</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+  :root {
+    --verde: #3d8b5e; --verde-claro: #6abf8a; --verde-hoja: #a8d5b5;
+    --verde-fondo: #f0f7f3; --tierra: #5c3d2e; --amarillo: #d4e157;
+    --gris-osc: #1e2a24; --gris-med: #4a5e54; --gris-cl: #c8d8cf;
+    --blanco: #fff; --code-bg: #1a2e24; --code-txt: #a8d5b5;
+    --warn: #f4a435; --info: #3a9bd5; --tip: #7c4dff; --danger: #e53935;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--verde-fondo);color:var(--gris-osc);line-height:1.7;font-size:16px}
+
+  /* HERO */
+  .hero{background:var(--gris-osc);color:#fff;padding:60px 40px 50px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-40px;right:-60px;width:300px;height:300px;background:var(--verde);border-radius:50%;opacity:.15}
+  .hero::after{content:'';position:absolute;bottom:-60px;left:10%;width:200px;height:200px;background:var(--amarillo);border-radius:50%;opacity:.08}
+  .hero-inner{max-width:1140px;margin:0 auto;position:relative;z-index:1}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--verde);color:#fff;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;letter-spacing:.5px;margin-bottom:20px;text-transform:uppercase}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:700;line-height:1.15;margin-bottom:16px}
+  .hero h1 span{color:var(--verde-claro)}
+  .hero-sub{font-size:1rem;color:var(--gris-cl);max-width:620px;font-weight:300}
+  .hero-meta{margin-top:28px;display:flex;gap:20px;flex-wrap:wrap}
+  .meta-chip{font-size:13px;color:var(--verde-hoja);font-family:'JetBrains Mono',monospace}
+
+  /* TIMELINE CLASE */
+  .timeline{background:var(--gris-osc);border-radius:12px;padding:28px 32px;margin:32px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+  .tl-item{background:rgba(255,255,255,.06);border-radius:8px;padding:14px 16px;border-left:3px solid var(--verde-claro)}
+  .tl-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--verde-claro);letter-spacing:.5px;margin-bottom:4px}
+  .tl-title{font-size:.88rem;font-weight:600;color:#fff;margin-bottom:2px}
+  .tl-sub{font-size:.78rem;color:var(--gris-cl)}
+
+  /* NAV */
+  .nav-toc{background:var(--blanco);border-bottom:2px solid var(--verde-hoja);padding:0 40px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(30,42,36,.08)}
+  .nav-toc ul{max-width:1140px;margin:0 auto;display:flex;gap:0;list-style:none;overflow-x:auto}
+  .nav-toc ul li a{display:block;padding:13px 15px;font-size:12px;font-weight:600;color:var(--gris-med);text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;text-transform:uppercase;letter-spacing:.3px}
+  .nav-toc ul li a:hover{color:var(--verde);border-bottom-color:var(--verde)}
+
+  /* CONTENT */
+  .content{max-width:1140px;margin:0 auto;padding:50px 48px 80px}
+
+  /* SECTIONS */
+  .section{margin-bottom:72px;scroll-margin-top:60px}
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:14px;border-bottom:2px solid var(--verde-hoja)}
+  .section-icon{width:44px;height:44px;background:var(--verde);color:#fff;font-size:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .section-title{font-size:1.45rem;font-weight:700}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--verde);letter-spacing:1px;display:block}
+
+  /* SECTION COVER — portada grande entre secciones */
+  .section-cover{background:var(--gris-osc);margin:0 -48px;padding:52px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:48px}
+  .sc-left{flex:1}
+  .sc-badge{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--verde-claro);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px}
+  .sc-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:10px}
+  .sc-title span{color:var(--verde-claro)}
+  .sc-desc{font-size:.95rem;color:var(--gris-cl);max-width:520px;line-height:1.7}
+  .sc-right{font-size:5rem;opacity:.25;flex-shrink:0}
+
+  /* TUTORIAL BLOCK — explicación → código → verificación */
+  .tutorial-block{margin:28px 0}
+  .tut-step{display:flex;gap:0;margin-bottom:0}
+  .tut-label{writing-mode:vertical-rl;text-orientation:mixed;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:16px 10px;border-radius:8px 0 0 8px;min-width:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .tut-label.explain{background:var(--info);color:#fff}
+  .tut-label.code{background:var(--verde);color:#fff}
+  .tut-label.check{background:var(--warn);color:#fff}
+  .tut-body{flex:1;border-radius:0 8px 8px 0;overflow:hidden}
+  .tut-body pre{margin:0;border-radius:0 8px 8px 0}
+  .tut-explain{background:#eaf5fb;border:1px solid #b3d9f0;border-radius:0 8px 8px 0;padding:16px 20px;font-size:.9rem;color:var(--gris-osc);line-height:1.7}
+  .tut-check-box{background:#fff8ec;border:1px solid #f4a435;border-radius:0 8px 8px 0;padding:16px 20px;font-size:.9rem;line-height:1.7}
+  .tut-check-box strong{color:var(--warn);display:block;margin-bottom:6px}
+  .tut-check-box ul{padding-left:18px;margin:0}
+  .tut-check-box li{padding:2px 0;color:var(--gris-osc)}
+  .tut-connector{width:2px;background:var(--gris-cl);margin:0 15px;min-height:12px}
+
+  /* QUIZ INLINE — se intercala entre secciones */
+  .quiz-inline{background:var(--gris-osc);border-radius:12px;padding:24px 28px;margin:36px 0;border-left:5px solid var(--amarillo)}
+  .qi-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .qi-badge{background:var(--amarillo);color:var(--gris-osc);font-size:10px;font-weight:800;padding:4px 12px;border-radius:10px;text-transform:uppercase;letter-spacing:.6px}
+  .qi-title{font-size:.85rem;color:var(--verde-hoja);font-weight:600}
+  .qi-q{color:#fff;font-size:.92rem;font-weight:600;margin-bottom:4px}
+  .qi-a{color:var(--verde-claro);font-size:.84rem;font-style:italic;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(168,213,181,.15)}
+  .qi-a:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+
+  /* CARDS */
+  .concepto{background:var(--blanco);border-radius:12px;padding:22px 26px;margin-bottom:14px;border-left:4px solid var(--verde);box-shadow:0 2px 8px rgba(30,42,36,.06)}
+  .concepto h3{font-size:.95rem;font-weight:600;color:var(--verde);margin-bottom:6px}
+  .concepto p{font-size:.92rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:16px 0}
+  @media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+  /* CALLOUTS */
+  .callout{border-radius:10px;padding:16px 20px;margin:18px 0;display:flex;gap:12px;font-size:.9rem}
+  .callout-icon{font-size:19px;flex-shrink:0;line-height:1.5}
+  .callout.tip{background:#f3eeff;border-left:4px solid var(--tip)}
+  .callout.warn{background:#fff8ec;border-left:4px solid var(--warn)}
+  .callout.info{background:#eaf5fb;border-left:4px solid var(--info)}
+  .callout.key{background:#e8f7ef;border-left:4px solid var(--verde)}
+  .callout.danger{background:#fdecea;border-left:4px solid var(--danger)}
+  .callout strong{display:block;font-weight:600;margin-bottom:3px}
+
+  /* MERMAID */
+  .diagram-wrap{background:var(--blanco);border-radius:12px;padding:26px;margin:22px 0;box-shadow:0 2px 12px rgba(30,42,36,.08);overflow-x:auto}
+  .diagram-label{font-size:12px;font-weight:600;color:var(--verde);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+  .diagram-label::before{content:'◆';font-size:8px}
+  .mermaid svg{max-width:100%;height:auto}
+
+  /* CODE */
+  pre{background:var(--code-bg);color:var(--code-txt);border-radius:10px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:13px;overflow-x:auto;line-height:1.65;margin:14px 0}
+  code{font-family:'JetBrains Mono',monospace;background:rgba(61,139,94,.12);color:var(--verde);padding:2px 7px;border-radius:4px;font-size:.86em}
+  pre code{background:none;color:inherit;padding:0}
+
+  /* TABLA */
+  .tabla-wrap{overflow-x:auto;margin:18px 0;border-radius:10px;box-shadow:0 2px 8px rgba(30,42,36,.07)}
+  table{width:100%;border-collapse:collapse;background:var(--blanco)}
+  th{background:var(--gris-osc);color:#fff;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;text-align:left}
+  td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid var(--verde-hoja);color:var(--gris-osc)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:var(--verde-fondo)}
+  .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+  .badge.ok{background:#d1f5e0;color:#1a7a3f}
+  .badge.err{background:#fde8e8;color:#b71c1c}
+  .badge.warn-b{background:#fff3cd;color:#7d5800}
+
+  /* STEP LIST */
+  .steps{counter-reset:step;list-style:none;margin:16px 0}
+  .steps li{counter-increment:step;display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+  .steps li::before{content:counter(step);min-width:28px;height:28px;background:var(--verde);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px}
+  .steps li .step-body{flex:1}
+  .steps li .step-title{font-weight:600;font-size:.95rem;margin-bottom:3px}
+  .steps li .step-desc{font-size:.88rem;color:var(--gris-med)}
+
+  /* COMPARE */
+  .compare{display:grid;grid-template-columns:1fr 1fr;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(30,42,36,.08);margin:18px 0}
+  .compare-col{padding:20px 22px}
+  .compare-col.a{background:#fdecea}
+  .compare-col.b{background:#e8f7ef}
+  .compare-col h4{font-size:.9rem;font-weight:700;margin-bottom:10px}
+  .compare-col.a h4{color:var(--danger)}
+  .compare-col.b h4{color:var(--verde)}
+  .compare-col ul{list-style:none;font-size:.88rem}
+  .compare-col ul li{padding:3px 0}
+  .compare-col.a ul li::before{content:'✗ ';color:var(--danger);font-weight:700}
+  .compare-col.b ul li::before{content:'✓ ';color:var(--verde);font-weight:700}
+  @media(max-width:600px){.compare{grid-template-columns:1fr}}
+
+  /* QUIZ */
+  .quiz-box{background:var(--gris-osc);color:var(--verde-hoja);border-radius:12px;padding:26px;margin:22px 0}
+  .quiz-box h4{font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--amarillo);margin-bottom:14px}
+  .quiz-item{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(168,213,181,.15);font-size:.9rem}
+  .quiz-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .quiz-q{color:#fff;font-weight:500;margin-bottom:3px}
+  .quiz-a{color:var(--verde-claro);font-size:.85rem;font-style:italic}
+
+  /* RESTAURANTE BOX */
+  .rest-box{background:linear-gradient(135deg,#1e2a24 0%,#2d4a38 100%);border-radius:14px;padding:28px 32px;margin:24px 0;color:#fff}
+  .rest-box h3{color:var(--verde-claro);font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .rest-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 24px;font-size:.88rem}
+  .rest-label{color:var(--verde-hoja);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:.8rem}
+  .rest-val{color:#fff}
+
+  /* SEP */
+  .sep{height:1px;background:linear-gradient(90deg,var(--verde-hoja),transparent);margin:56px 0}
+
+  /* CHECKLIST */
+  .checklist{list-style:none;margin:14px 0}
+  .checklist li{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:.92rem;border-bottom:1px solid var(--verde-hoja)}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li::before{content:'☐';color:var(--verde);font-size:1.1rem;flex-shrink:0;margin-top:1px}
+
+  /* FOOTER */
+  footer{background:var(--gris-osc);color:var(--gris-cl);text-align:center;padding:28px;font-size:13px}
+  footer span{color:var(--verde-claro)}
+
+  /* HTTP STATUS COLORS */
+  .s2{background:#d1f5e0;color:#1a7a3f;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+  .s4{background:#fff3cd;color:#7d5800;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+  .s5{background:#fde8e8;color:#b71c1c;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🌿 Guía Turtwig de Studio — Semana 8</div>
+    <h1>Tu restaurante,<br><span>completo y funcionando</span></h1>
+    <p class="hero-sub">Esta guía cubre todo lo que necesitas construir: los objetos centrales del dominio, cada funcionalidad del sistema, validaciones, errores, Swagger, logs, pruebas con mocks y diagramas. De adentro hacia afuera.</p>
+    <div class="hero-meta">
+      <span class="meta-chip">🏗️ Objetos centrales</span>
+      <span class="meta-chip">✅ Validaciones</span>
+      <span class="meta-chip">⚠️ Exception Handler</span>
+      <span class="meta-chip">📖 Swagger</span>
+      <span class="meta-chip">🪵 Logs</span>
+      <span class="meta-chip">🧪 Mocks</span>
+      <span class="meta-chip">📐 Secuencia</span>
+    </div>
+  </div>
+</div>
+
+<!-- RESTAURANT MAP — SVG illustrated overview -->
+<div style="background:#f8fbf9;border-bottom:2px solid #a8d5b5;overflow:hidden">
+<div style="max-width:1140px;margin:0 auto;padding:48px 48px 52px">
+
+  <div style="text-align:center;margin-bottom:36px">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#3d8b5e;text-transform:uppercase;letter-spacing:1px">El sistema completo</span>
+    <h2 style="font-size:1.6rem;font-weight:700;color:#1e2a24;margin-top:8px">El sistema completo — dominios y objetos</h2>
+    <p style="font-size:.95rem;color:#4a5e54;max-width:560px;margin:10px auto 0">Antes de escribir una línea de código, necesitas ver el sistema completo. Estos son los <strong>dominios funcionales</strong> y los <strong>objetos centrales</strong> que los conectan.</p>
+  </div>
+
+  <!-- Restaurant floor plan SVG -->
+  <svg viewBox="0 0 960 580" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1060px;display:block;margin:0 auto;font-family:'Space Grotesk',sans-serif">
+    <defs>
+      <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1e2a24" flood-opacity="0.10"/>
+      </filter>
+      <linearGradient id="gVerde" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#3d8b5e;stop-opacity:1"/>
+        <stop offset="100%" style="stop-color:#2d6e47;stop-opacity:1"/>
+      </linearGradient>
+      <linearGradient id="gAzul" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#3a9bd5;stop-opacity:1"/>
+        <stop offset="100%" style="stop-color:#2676a8;stop-opacity:1"/>
+      </linearGradient>
+      <linearGradient id="gTierra" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#8b5e3d;stop-opacity:1"/>
+        <stop offset="100%" style="stop-color:#6e4227;stop-opacity:1"/>
+      </linearGradient>
+      <linearGradient id="gPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#7c4dff;stop-opacity:1"/>
+        <stop offset="100%" style="stop-color:#5e35d1;stop-opacity:1"/>
+      </linearGradient>
+      <linearGradient id="gOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#f4a435;stop-opacity:1"/>
+        <stop offset="100%" style="stop-color:#d48520;stop-opacity:1"/>
+      </linearGradient>
+      <linearGradient id="gSlate" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#546e7a;stop-opacity:1"/>
+        <stop offset="100%" style="stop-color:#37474f;stop-opacity:1"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Background floor -->
+    <rect x="10" y="10" width="940" height="560" rx="16" fill="#f0f7f3" stroke="#a8d5b5" stroke-width="1.5"/>
+
+    <!-- Floor grid lines (subtle) -->
+    <g stroke="#d4ead9" stroke-width="0.5" opacity="0.6">
+      <line x1="10" y1="90" x2="950" y2="90"/>
+      <line x1="10" y1="180" x2="950" y2="180"/>
+      <line x1="10" y1="270" x2="950" y2="270"/>
+      <line x1="10" y1="360" x2="950" y2="360"/>
+      <line x1="10" y1="460" x2="950" y2="460"/>
+      <line x1="245" y1="10" x2="245" y2="550"/>
+      <line x1="480" y1="10" x2="480" y2="550"/>
+      <line x1="715" y1="10" x2="715" y2="550"/>
+    </g>
+
+    <!-- 1. CARTA & PLATOS (top-left) -->
+    <g filter="url(#shadow)">
+      <rect x="28" y="28" width="205" height="140" rx="12" fill="url(#gVerde)"/>
+    </g>
+    <text x="48" y="56" font-size="22" fill="rgba(255,255,255,0.25)">🍽️</text>
+    <text x="48" y="80" font-size="13" font-weight="700" fill="white">CARTA &amp; PLATOS</text>
+    <text x="48" y="98" font-size="10" fill="rgba(255,255,255,0.75)">El menú que ve el cliente</text>
+    <line x1="48" y1="108" x2="215" y2="108" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="48" y="123" font-size="9.5" fill="rgba(255,255,255,0.85)">• Ver carta (por categoría)</text>
+    <text x="48" y="138" font-size="9.5" fill="rgba(255,255,255,0.85)">• Crear / editar / eliminar plato</text>
+    <text x="48" y="153" font-size="9.5" fill="rgba(255,255,255,0.85)">• Marcar disponible / agotado</text>
+
+    <!-- 2. MESAS (top-center-left) -->
+    <g filter="url(#shadow)">
+      <rect x="255" y="28" width="205" height="140" rx="12" fill="url(#gAzul)"/>
+    </g>
+    <text x="275" y="56" font-size="22" fill="rgba(255,255,255,0.25)">🪑</text>
+    <text x="275" y="80" font-size="13" font-weight="700" fill="white">MESAS</text>
+    <text x="275" y="98" font-size="10" fill="rgba(255,255,255,0.75)">El salón del restaurante</text>
+    <line x1="275" y1="108" x2="442" y2="108" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="275" y="123" font-size="9.5" fill="rgba(255,255,255,0.85)">• Ver estado de todas las mesas</text>
+    <text x="275" y="138" font-size="9.5" fill="rgba(255,255,255,0.85)">• Abrir / cerrar cuenta de mesa</text>
+    <text x="275" y="153" font-size="9.5" fill="rgba(255,255,255,0.85)">• Capacidad y disponibilidad</text>
+
+    <!-- 3. RESERVAS (top-center-right) -->
+    <g filter="url(#shadow)">
+      <rect x="482" y="28" width="205" height="140" rx="12" fill="url(#gPurple)"/>
+    </g>
+    <text x="502" y="56" font-size="22" fill="rgba(255,255,255,0.25)">🗓️</text>
+    <text x="502" y="80" font-size="13" font-weight="700" fill="white">RESERVAS</text>
+    <text x="502" y="98" font-size="10" fill="rgba(255,255,255,0.75)">Antes de llegar al restaurante</text>
+    <line x1="502" y1="108" x2="669" y2="108" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="502" y="123" font-size="9.5" fill="rgba(255,255,255,0.85)">• Crear / actualizar / cancelar</text>
+    <text x="502" y="138" font-size="9.5" fill="rgba(255,255,255,0.85)">• Ver reservas por usuario</text>
+    <text x="502" y="153" font-size="9.5" fill="rgba(255,255,255,0.85)">• Walk-in sin reserva previa</text>
+
+    <!-- 4. PARQUEADERO (top-right) -->
+    <g filter="url(#shadow)">
+      <rect x="709" y="28" width="221" height="140" rx="12" fill="url(#gSlate)"/>
+    </g>
+    <text x="729" y="56" font-size="22" fill="rgba(255,255,255,0.25)">🅿️</text>
+    <text x="729" y="80" font-size="13" font-weight="700" fill="white">PARQUEADERO</text>
+    <text x="729" y="98" font-size="10" fill="rgba(255,255,255,0.75)">Acceso y cupos de vehículos</text>
+    <line x1="729" y1="108" x2="912" y2="108" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="729" y="123" font-size="9.5" fill="rgba(255,255,255,0.85)">• Registrar entrada / salida</text>
+    <text x="729" y="138" font-size="9.5" fill="rgba(255,255,255,0.85)">• Cupos disponibles</text>
+    <text x="729" y="153" font-size="9.5" fill="rgba(255,255,255,0.85)">• Vehículos activos</text>
+
+    <!-- 5. PEDIDOS & COCINA (bottom-left + center) — wider -->
+    <g filter="url(#shadow)">
+      <rect x="28" y="192" width="432" height="168" rx="12" fill="url(#gTierra)"/>
+    </g>
+    <text x="48" y="222" font-size="22" fill="rgba(255,255,255,0.22)">🍳</text>
+    <text x="48" y="246" font-size="13" font-weight="700" fill="white">PEDIDOS &amp; COCINA</text>
+    <text x="48" y="264" font-size="10" fill="rgba(255,255,255,0.75)">El flujo central del restaurante</text>
+    <line x1="48" y1="274" x2="442" y2="274" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+
+    <!-- Estado flow -->
+    <rect x="48" y="284" width="68" height="22" rx="5" fill="rgba(255,255,255,0.15)"/>
+    <text x="82" y="300" text-anchor="middle" font-size="8.5" font-weight="700" fill="white">RECIBIDO</text>
+    <text x="124" y="300" font-size="11" fill="rgba(255,255,255,0.5)">→</text>
+    <rect x="138" y="284" width="82" height="22" rx="5" fill="rgba(255,255,255,0.15)"/>
+    <text x="179" y="300" text-anchor="middle" font-size="8.5" font-weight="700" fill="white">EN_PREP...</text>
+    <text x="228" y="300" font-size="11" fill="rgba(255,255,255,0.5)">→</text>
+    <rect x="242" y="284" width="52" height="22" rx="5" fill="rgba(255,255,255,0.15)"/>
+    <text x="268" y="300" text-anchor="middle" font-size="8.5" font-weight="700" fill="white">LISTO</text>
+    <text x="302" y="300" font-size="11" fill="rgba(255,255,255,0.5)">→</text>
+    <rect x="316" y="284" width="78" height="22" rx="5" fill="rgba(255,255,255,0.15)"/>
+    <text x="355" y="300" text-anchor="middle" font-size="8.5" font-weight="700" fill="white">ENTREGADO</text>
+
+    <text x="48" y="326" font-size="9.5" fill="rgba(255,255,255,0.85)">• Confirmar pedido con lista de platos y mesa</text>
+    <text x="48" y="341" font-size="9.5" fill="rgba(255,255,255,0.85)">• Panel de cocina: ver y cambiar estado</text>
+    <text x="48" y="356" font-size="9.5" fill="rgba(255,255,255,0.85)">• Cancelar pedido si está en RECIBIDO</text>
+    <text x="48" y="371" font-size="9.5" fill="rgba(255,255,255,0.85)">• Ver pedidos activos por mesa</text>
+
+    <!-- 6. CUENTA & PAGO (bottom-center-right) -->
+    <g filter="url(#shadow)">
+      <rect x="482" y="192" width="205" height="148" rx="12" fill="url(#gOrange)"/>
+    </g>
+    <text x="502" y="222" font-size="22" fill="rgba(255,255,255,0.22)">💳</text>
+    <text x="502" y="246" font-size="13" font-weight="700" fill="white">CUENTA &amp; PAGO</text>
+    <text x="502" y="264" font-size="10" fill="rgba(255,255,255,0.75)">El cierre del ciclo</text>
+    <line x1="502" y1="274" x2="669" y2="274" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="502" y="293" font-size="9.5" fill="rgba(255,255,255,0.85)">• Ver cuenta abierta de una mesa</text>
+    <text x="502" y="308" font-size="9.5" fill="rgba(255,255,255,0.85)">• Precio congelado al pedir</text>
+    <text x="502" y="323" font-size="9.5" fill="rgba(255,255,255,0.85)">• Registrar pago y cerrar cuenta</text>
+    <text x="502" y="338" font-size="9.5" fill="rgba(255,255,255,0.85)">• Una cuenta por mesa a la vez</text>
+
+    <!-- 7. REPORTES (bottom-right) -->
+    <g filter="url(#shadow)">
+      <rect x="709" y="192" width="221" height="148" rx="12" fill="#1e2a24"/>
+    </g>
+    <text x="729" y="222" font-size="22" fill="rgba(255,255,255,0.18)">📊</text>
+    <text x="729" y="246" font-size="13" font-weight="700" fill="white">REPORTES</text>
+    <text x="729" y="264" font-size="10" fill="rgba(255,255,255,0.55)">Inteligencia del negocio</text>
+    <line x1="729" y1="274" x2="912" y2="274" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <text x="729" y="293" font-size="9.5" fill="rgba(168,213,181,0.9)">• Plato más pedido del día</text>
+    <text x="729" y="308" font-size="9.5" fill="rgba(168,213,181,0.9)">• Ingresos por categoría</text>
+    <text x="729" y="323" font-size="9.5" fill="rgba(168,213,181,0.9)">• Mesas con cuenta abierta</text>
+    <text x="729" y="338" font-size="9.5" fill="rgba(168,213,181,0.9)">• Historial por fecha</text>
+
+    <rect x="28" y="384" width="902" height="158" rx="12" fill="white" stroke="#a8d5b5" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="48" y="410" font-size="11" font-weight="700" fill="#3d8b5e" letter-spacing="0.5">OBJETOS CENTRALES DEL DOMINIO — Los que conectan todo</text>
+    <line x1="28" y1="420" x2="930" y2="420" stroke="#a8d5b5" stroke-width="1"/>
+
+    <!-- Plato -->
+    <rect x="40" y="430" width="112" height="100" rx="10" fill="#e8f7ef" stroke="#6abf8a" stroke-width="1.5"/>
+    <text x="96" y="452" text-anchor="middle" font-size="16">🍽️</text>
+    <text x="96" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#1e2a24">Plato</text>
+    <text x="96" y="487" text-anchor="middle" font-size="8.5" fill="#4a5e54">id · nombre · precio</text>
+    <text x="96" y="500" text-anchor="middle" font-size="8.5" fill="#4a5e54">categoría · disponible</text>
+    <text x="96" y="522" text-anchor="middle" font-size="8.5" fill="#3d8b5e">+ esValido()</text>
+
+    <!-- Mesa -->
+    <rect x="164" y="430" width="112" height="100" rx="10" fill="#eaf5fb" stroke="#3a9bd5" stroke-width="1.5"/>
+    <text x="220" y="452" text-anchor="middle" font-size="16">🪑</text>
+    <text x="220" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#1e2a24">Mesa</text>
+    <text x="220" y="487" text-anchor="middle" font-size="8.5" fill="#4a5e54">id · numero · capacidad</text>
+    <text x="220" y="500" text-anchor="middle" font-size="8.5" fill="#4a5e54">estado · cuentaAbierta</text>
+    <text x="220" y="522" text-anchor="middle" font-size="8.5" fill="#3a9bd5">+ estaDisponible()</text>
+
+    <!-- Pedido -->
+    <rect x="288" y="430" width="112" height="100" rx="10" fill="#fff3e8" stroke="#8b5e3d" stroke-width="1.5"/>
+    <text x="344" y="452" text-anchor="middle" font-size="16">📋</text>
+    <text x="344" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#1e2a24">Pedido</text>
+    <text x="344" y="487" text-anchor="middle" font-size="8.5" fill="#4a5e54">id · mesa · items</text>
+    <text x="344" y="500" text-anchor="middle" font-size="8.5" fill="#4a5e54">estado · timestamp</text>
+    <text x="344" y="522" text-anchor="middle" font-size="8.5" fill="#8b5e3d">+ puedeModificarse()</text>
+
+    <!-- ItemPedido -->
+    <rect x="412" y="430" width="112" height="100" rx="10" fill="#fff3e8" stroke="#d4855a" stroke-width="1.5"/>
+    <text x="468" y="452" text-anchor="middle" font-size="16">🧾</text>
+    <text x="468" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#1e2a24">ItemPedido</text>
+    <text x="468" y="487" text-anchor="middle" font-size="8.5" fill="#4a5e54">idPlato · nombre</text>
+    <text x="468" y="500" text-anchor="middle" font-size="8.5" fill="#4a5e54">precioCongelado · qty</text>
+    <text x="468" y="522" text-anchor="middle" font-size="8.5" fill="#d4855a">+ subtotal()</text>
+
+    <!-- Cuenta -->
+    <rect x="536" y="430" width="112" height="100" rx="10" fill="#fff8ec" stroke="#f4a435" stroke-width="1.5"/>
+    <text x="592" y="452" text-anchor="middle" font-size="16">💳</text>
+    <text x="592" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#1e2a24">Cuenta</text>
+    <text x="592" y="487" text-anchor="middle" font-size="8.5" fill="#4a5e54">idMesa · total</text>
+    <text x="592" y="500" text-anchor="middle" font-size="8.5" fill="#4a5e54">estado · fechaApertura</text>
+    <text x="592" y="522" text-anchor="middle" font-size="8.5" fill="#f4a435">+ calcularTotal()</text>
+
+    <!-- Reserva -->
+    <rect x="660" y="430" width="112" height="100" rx="10" fill="#f3eeff" stroke="#7c4dff" stroke-width="1.5"/>
+    <text x="716" y="452" text-anchor="middle" font-size="16">🗓️</text>
+    <text x="716" y="472" text-anchor="middle" font-size="11" font-weight="700" fill="#1e2a24">Reserva</text>
+    <text x="716" y="487" text-anchor="middle" font-size="8.5" fill="#4a5e54">id · mesa · cliente</text>
+    <text x="716" y="500" text-anchor="middle" font-size="8.5" fill="#4a5e54">fechaHora · comensales</text>
+    <text x="716" y="522" text-anchor="middle" font-size="8.5" fill="#7c4dff">+ estaVigente()</text>
+
+    <!-- RegistroVehiculo -->
+    <rect x="784" y="430" width="134" height="100" rx="10" fill="#eceff1" stroke="#546e7a" stroke-width="1.5"/>
+    <text x="851" y="452" text-anchor="middle" font-size="16">🚗</text>
+    <text x="851" y="472" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e2a24">RegistroVehiculo</text>
+    <text x="851" y="487" text-anchor="middle" font-size="8.5" fill="#4a5e54">placa · entrada</text>
+    <text x="851" y="500" text-anchor="middle" font-size="8.5" fill="#4a5e54">salida · cobro</text>
+    <text x="851" y="522" text-anchor="middle" font-size="8.5" fill="#546e7a">+ calcularCobro()</text>
+
+    <!-- Arrows -->
+    <line x1="130" y1="168" x2="96" y2="430" stroke="#3d8b5e" stroke-width="1" stroke-dasharray="4,3" opacity="0.35"/>
+    <line x1="357" y1="168" x2="220" y2="430" stroke="#3a9bd5" stroke-width="1" stroke-dasharray="4,3" opacity="0.35"/>
+    <line x1="130" y1="360" x2="344" y2="430" stroke="#8b5e3d" stroke-width="1" stroke-dasharray="4,3" opacity="0.35"/>
+    <line x1="584" y1="360" x2="592" y2="430" stroke="#f4a435" stroke-width="1" stroke-dasharray="4,3" opacity="0.35"/>
+    <line x1="584" y1="168" x2="716" y2="430" stroke="#7c4dff" stroke-width="1" stroke-dasharray="4,3" opacity="0.35"/>
+    <line x1="820" y1="168" x2="851" y2="430" stroke="#546e7a" stroke-width="1" stroke-dasharray="4,3" opacity="0.35"/>
+
+  </svg>
+
+  <!-- Priority legend below SVG -->
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;justify-content:center">
+    <div style="display:flex;align-items:center;gap:7px;background:white;padding:7px 18px;border-radius:20px;border:1.5px solid #6abf8a;font-size:13px;font-weight:600;color:#3d8b5e">
+      <span>🔴</span> Núcleo — sin esto no hay restaurante
+    </div>
+    <div style="display:flex;align-items:center;gap:7px;background:white;padding:7px 18px;border-radius:20px;border:1.5px solid #a8d5b5;font-size:13px;color:#4a5e54">
+      <span>🟡</span> Soporte operativo
+    </div>
+    <div style="display:flex;align-items:center;gap:7px;background:white;padding:7px 18px;border-radius:20px;border:1.5px solid #c8d8cf;font-size:13px;color:#4a5e54">
+      <span>🟢</span> Diferenciador del concepto
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- PRIORITY BREAKDOWN — readable cards below the map -->
+<div style="background:#1e2a24;padding:40px 48px">
+<div style="max-width:1140px;margin:0 auto">
+  <p style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#6abf8a;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px">Prioridad de implementación</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+
+    <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:18px 20px;border-left:4px solid #e53935">
+      <div style="font-size:12px;font-weight:700;color:#ef9a9a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">🔴 Núcleo — sin esto no hay restaurante</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.8">
+        Carta &amp; Platos (base de todo)<br>
+        Mesas (sin mesa no hay pedido)<br>
+        Pedidos + estado (el flujo central)<br>
+        Cuenta y cierre (completa el ciclo)
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:18px 20px;border-left:4px solid #f4a435">
+      <div style="font-size:12px;font-weight:700;color:#ffcc80;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">🟡 Soporte — hace que funcione bien</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.8">
+        Reservas (distingue al restaurante)<br>
+        Reportes con streams<br>
+        Ingredientes y disponibilidad automática
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:18px 20px;border-left:4px solid #6abf8a">
+      <div style="font-size:12px;font-weight:700;color:#a8d5b5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">🟢 Diferenciador — lo que hace único tu restaurante</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.8">
+        Parqueadero<br>
+        Reseñas de platos<br>
+        Reglas del concepto (toppings, términos, rolls…)
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<nav class="nav-toc">
+  <ul>
+    <li><a href="#contexto">Contexto</a></li>
+    <li><a href="#estandares">REST</a></li>
+    <li><a href="#versionamiento">Versión</a></li>
+    <li><a href="#swagger">Swagger</a></li>
+    <li><a href="#logs">Logs</a></li>
+    <li><a href="#validaciones">Validaciones</a></li>
+    <li><a href="#errores">Errores</a></li>
+    <li><a href="#streams">Streams</a></li>
+    <li><a href="#pruebas">Pruebas</a></li>
+    <li><a href="#secuencia">Secuencia</a></li>
+    <li><a href="#diagramas-aclaracion">Diagramas</a></li>
+    <li><a href="#ejercicio">Ejercicio</a></li>
+  </ul>
+</nav>
+
+<div class="content">
+
+  <!-- ===== CONTEXTO ===== -->
+  <section class="section" id="contexto">
+    <div class="section-header">
+      <div class="section-icon">🗺️</div>
+      <div>
+        <span class="section-num">CONTEXTO</span>
+        <div class="section-title">¿Dónde estamos?</div>
+      </div>
+    </div>
+
+    <div class="rest-box">
+      <h3>🍴 El estado del restaurante</h3>
+      <div class="rest-grid">
+        <span class="rest-label">SEMANA 7</span><span class="rest-val">Scaffolding, Maven, dependencias, estructura de paquetes, capas vacías con interfaces + DI</span>
+        <span class="rest-label">HOY S8</span><span class="rest-val">Validaciones · Errores · Swagger · Logs · Streams · Pruebas con Mocks · Diagrama de Secuencia</span>
+        <span class="rest-label">PRÓXIMA</span><span class="rest-val">Persistencia con JPA + PostgreSQL + MongoDB — hoy todo en memoria</span>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">📌</span>
+      <div><strong>Recuerda:</strong> Cada restaurante tiene su propio concepto. Las reglas de negocio propias de cada uno entran al código vía validaciones de negocio en el Service.</div>
+    </div>
+
+    <h3 style="margin:28px 0 14px;font-size:1.05rem;">Diagrama de clases — las relaciones del dominio</h3>
+    <p style="margin-bottom:16px;font-size:.9rem;color:var(--gris-med)">Antes de escribir código, mira cómo se relacionan los objetos. Este diagrama es tu mapa de navegación para implementar los Services correctamente.</p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama de Clases — Dominio del Restaurante</div>
+      <svg viewBox="0 0 1080 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-family:'Space Grotesk',sans-serif">
+        <defs>
+          <marker id="arrCls" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#4a5e54"/>
+          </marker>
+          <marker id="arrDash" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#a0aec0"/>
+          </marker>
+        </defs>
+
+        <!-- ── ROW 1: Plato · Mesa · Pedido · ItemPedido · Cuenta ── -->
+
+        <!-- Plato -->
+        <rect x="20" y="20" width="155" height="148" rx="8" fill="#e8f7ef" stroke="#6abf8a" stroke-width="1.5"/>
+        <rect x="20" y="20" width="155" height="30" rx="8" fill="#3d8b5e"/>
+        <rect x="20" y="40" width="155" height="10" fill="#3d8b5e"/>
+        <text x="97" y="40" text-anchor="middle" font-size="12" font-weight="700" fill="white">Plato</text>
+        <line x1="20" y1="58" x2="175" y2="58" stroke="#6abf8a" stroke-width="1"/>
+        <text x="32" y="74" font-size="10" fill="#1e2a24">id : Long</text>
+        <text x="32" y="90" font-size="10" fill="#1e2a24">nombre : String</text>
+        <text x="32" y="106" font-size="10" fill="#1e2a24">precio : Double</text>
+        <text x="32" y="122" font-size="10" fill="#1e2a24">categoria : String</text>
+        <text x="32" y="138" font-size="10" fill="#1e2a24">disponible : Boolean</text>
+        <line x1="20" y1="148" x2="175" y2="148" stroke="#6abf8a" stroke-width="1"/>
+        <text x="32" y="162" font-size="9.5" fill="#3d8b5e">esValido() : Boolean</text>
+
+        <!-- Mesa -->
+        <rect x="205" y="20" width="175" height="162" rx="8" fill="#eaf5fb" stroke="#3a9bd5" stroke-width="1.5"/>
+        <rect x="205" y="20" width="175" height="30" rx="8" fill="#3a9bd5"/>
+        <rect x="205" y="40" width="175" height="10" fill="#3a9bd5"/>
+        <text x="292" y="40" text-anchor="middle" font-size="12" font-weight="700" fill="white">Mesa</text>
+        <line x1="205" y1="58" x2="380" y2="58" stroke="#3a9bd5" stroke-width="1"/>
+        <text x="217" y="74" font-size="10" fill="#1e2a24">id : Long</text>
+        <text x="217" y="90" font-size="10" fill="#1e2a24">numero : Integer</text>
+        <text x="217" y="106" font-size="10" fill="#1e2a24">capacidad : Integer</text>
+        <text x="217" y="122" font-size="10" fill="#1e2a24">estado : EstadoMesa</text>
+        <text x="217" y="138" font-size="10" fill="#1e2a24">cuentaAbierta : Boolean</text>
+        <line x1="205" y1="148" x2="380" y2="148" stroke="#3a9bd5" stroke-width="1"/>
+        <text x="217" y="164" font-size="9.5" fill="#3a9bd5">estaDisponible() : Boolean</text>
+
+        <!-- Pedido -->
+        <rect x="415" y="20" width="185" height="175" rx="8" fill="#fff3e8" stroke="#8b5e3d" stroke-width="1.5"/>
+        <rect x="415" y="20" width="185" height="30" rx="8" fill="#8b5e3d"/>
+        <rect x="415" y="40" width="185" height="10" fill="#8b5e3d"/>
+        <text x="507" y="40" text-anchor="middle" font-size="12" font-weight="700" fill="white">Pedido</text>
+        <line x1="415" y1="58" x2="600" y2="58" stroke="#8b5e3d" stroke-width="1"/>
+        <text x="427" y="74" font-size="10" fill="#1e2a24">id : Long</text>
+        <text x="427" y="90" font-size="10" fill="#1e2a24">idMesa : Long</text>
+        <text x="427" y="106" font-size="10" fill="#1e2a24">items : List&lt;ItemPedido&gt;</text>
+        <text x="427" y="122" font-size="10" fill="#1e2a24">estado : EstadoPedido</text>
+        <text x="427" y="138" font-size="10" fill="#1e2a24">timestamp : LocalDateTime</text>
+        <line x1="415" y1="148" x2="600" y2="148" stroke="#8b5e3d" stroke-width="1"/>
+        <text x="427" y="164" font-size="9.5" fill="#8b5e3d">puedeModificarse() : Boolean</text>
+
+        <!-- ItemPedido -->
+        <rect x="635" y="20" width="185" height="162" rx="8" fill="#fff3e8" stroke="#d4855a" stroke-width="1.5"/>
+        <rect x="635" y="20" width="185" height="30" rx="8" fill="#d4855a"/>
+        <rect x="635" y="40" width="185" height="10" fill="#d4855a"/>
+        <text x="727" y="40" text-anchor="middle" font-size="12" font-weight="700" fill="white">ItemPedido</text>
+        <line x1="635" y1="58" x2="820" y2="58" stroke="#d4855a" stroke-width="1"/>
+        <text x="647" y="74" font-size="10" fill="#1e2a24">idPlato : Long</text>
+        <text x="647" y="90" font-size="10" fill="#1e2a24">nombrePlato : String</text>
+        <text x="647" y="106" font-size="10" fill="#1e2a24">precioCongelado : Double</text>
+        <text x="647" y="122" font-size="10" fill="#1e2a24">cantidad : Integer</text>
+        <line x1="635" y1="132" x2="820" y2="132" stroke="#d4855a" stroke-width="1"/>
+        <text x="647" y="148" font-size="9.5" fill="#d4855a">subtotal() : Double</text>
+
+        <!-- Cuenta -->
+        <rect x="855" y="20" width="205" height="175" rx="8" fill="#fff8ec" stroke="#f4a435" stroke-width="1.5"/>
+        <rect x="855" y="20" width="205" height="30" rx="8" fill="#f4a435"/>
+        <rect x="855" y="40" width="205" height="10" fill="#f4a435"/>
+        <text x="957" y="40" text-anchor="middle" font-size="12" font-weight="700" fill="white">Cuenta</text>
+        <line x1="855" y1="58" x2="1060" y2="58" stroke="#f4a435" stroke-width="1"/>
+        <text x="867" y="74" font-size="10" fill="#1e2a24">id : Long</text>
+        <text x="867" y="90" font-size="10" fill="#1e2a24">idMesa : Long</text>
+        <text x="867" y="106" font-size="10" fill="#1e2a24">total : Double</text>
+        <text x="867" y="122" font-size="10" fill="#1e2a24">estado : EstadoCuenta</text>
+        <text x="867" y="138" font-size="10" fill="#1e2a24">fechaApertura : LocalDateTime</text>
+        <line x1="855" y1="148" x2="1060" y2="148" stroke="#f4a435" stroke-width="1"/>
+        <text x="867" y="164" font-size="9.5" fill="#d48520">calcularTotal() : Double</text>
+
+        <!-- ── ROW 2: Reserva · RegistroVehiculo · EstadoPedido · EstadoMesa ── -->
+
+        <!-- Reserva -->
+        <rect x="20" y="290" width="185" height="175" rx="8" fill="#f3eeff" stroke="#7c4dff" stroke-width="1.5"/>
+        <rect x="20" y="290" width="185" height="30" rx="8" fill="#7c4dff"/>
+        <rect x="20" y="310" width="185" height="10" fill="#7c4dff"/>
+        <text x="112" y="310" text-anchor="middle" font-size="12" font-weight="700" fill="white">Reserva</text>
+        <line x1="20" y1="328" x2="205" y2="328" stroke="#7c4dff" stroke-width="1"/>
+        <text x="32" y="344" font-size="10" fill="#1e2a24">id : Long</text>
+        <text x="32" y="360" font-size="10" fill="#1e2a24">idMesa : Long</text>
+        <text x="32" y="376" font-size="10" fill="#1e2a24">cliente : String</text>
+        <text x="32" y="392" font-size="10" fill="#1e2a24">fechaHora : LocalDateTime</text>
+        <text x="32" y="408" font-size="10" fill="#1e2a24">comensales : Integer</text>
+        <line x1="20" y1="418" x2="205" y2="418" stroke="#7c4dff" stroke-width="1"/>
+        <text x="32" y="434" font-size="9.5" fill="#7c4dff">estaVigente() : Boolean</text>
+
+        <!-- RegistroVehiculo -->
+        <rect x="235" y="290" width="200" height="175" rx="8" fill="#eceff1" stroke="#546e7a" stroke-width="1.5"/>
+        <rect x="235" y="290" width="200" height="30" rx="8" fill="#546e7a"/>
+        <rect x="235" y="310" width="200" height="10" fill="#546e7a"/>
+        <text x="335" y="310" text-anchor="middle" font-size="11" font-weight="700" fill="white">RegistroVehiculo</text>
+        <line x1="235" y1="328" x2="435" y2="328" stroke="#546e7a" stroke-width="1"/>
+        <text x="247" y="344" font-size="10" fill="#1e2a24">id : Long</text>
+        <text x="247" y="360" font-size="10" fill="#1e2a24">placa : String</text>
+        <text x="247" y="376" font-size="10" fill="#1e2a24">entrada : LocalDateTime</text>
+        <text x="247" y="392" font-size="10" fill="#1e2a24">salida : LocalDateTime</text>
+        <text x="247" y="408" font-size="10" fill="#1e2a24">cobro : Double</text>
+        <line x1="235" y1="418" x2="435" y2="418" stroke="#546e7a" stroke-width="1"/>
+        <text x="247" y="434" font-size="9.5" fill="#546e7a">calcularCobro() : Double</text>
+
+        <!-- EstadoPedido enum -->
+        <rect x="475" y="290" width="165" height="148" rx="8" fill="#fdfaf5" stroke="#8b5e3d" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="557" y="313" text-anchor="middle" font-size="9" fill="#8b5e3d" font-style="italic">«enumeration»</text>
+        <text x="557" y="330" text-anchor="middle" font-size="11" font-weight="700" fill="#8b5e3d">EstadoPedido</text>
+        <line x1="475" y1="338" x2="640" y2="338" stroke="#8b5e3d" stroke-width="1"/>
+        <text x="487" y="356" font-size="10" fill="#4a5e54">RECIBIDO</text>
+        <text x="487" y="374" font-size="10" fill="#4a5e54">EN_PREPARACION</text>
+        <text x="487" y="392" font-size="10" fill="#4a5e54">LISTO</text>
+        <text x="487" y="410" font-size="10" fill="#4a5e54">ENTREGADO</text>
+        <text x="487" y="428" font-size="10" fill="#4a5e54">CANCELADO</text>
+
+        <!-- EstadoMesa enum -->
+        <rect x="670" y="290" width="165" height="122" rx="8" fill="#fdfaf5" stroke="#3a9bd5" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="752" y="313" text-anchor="middle" font-size="9" fill="#3a9bd5" font-style="italic">«enumeration»</text>
+        <text x="752" y="330" text-anchor="middle" font-size="11" font-weight="700" fill="#3a9bd5">EstadoMesa</text>
+        <line x1="670" y1="338" x2="835" y2="338" stroke="#3a9bd5" stroke-width="1"/>
+        <text x="682" y="356" font-size="10" fill="#4a5e54">DISPONIBLE</text>
+        <text x="682" y="374" font-size="10" fill="#4a5e54">OCUPADA</text>
+        <text x="682" y="392" font-size="10" fill="#4a5e54">RESERVADA</text>
+
+        <!-- ── RELACIONES ── -->
+
+        <!-- Pedido -->--[1..*]--> ItemPedido (composición) -->
+        <line x1="600" y1="70" x2="635" y2="70" stroke="#4a5e54" stroke-width="1.5" marker-end="url(#arrCls)"/>
+        <text x="605" y="64" font-size="9" fill="#4a5e54" font-weight="600">1</text>
+        <text x="605" y="82" font-size="9" fill="#4a5e54">1..*</text>
+
+        <!-- ItemPedido -->-- referencia -->> Plato (dashed) -->
+        <path d="M 635 95 Q 400 200 175 95" stroke="#a0aec0" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#arrDash)"/>
+        <text x="390" y="170" font-size="9" fill="#a0aec0">referencia precio</text>
+
+        <!-- Mesa -->-- 0..1 -->> Cuenta -->
+        <line x1="380" y1="95" x2="855" y2="95" stroke="#4a5e54" stroke-width="1.5" marker-end="url(#arrCls)"/>
+        <text x="590" y="88" font-size="9" fill="#4a5e54" font-weight="600">tiene abierta 0..1</text>
+
+        <!-- Pedido --uses--> Mesa (dashed) -->
+        <path d="M 507 195 L 507 250 L 292 250 L 292 182" stroke="#a0aec0" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#arrDash)"/>
+        <text x="375" y="245" font-size="9" fill="#a0aec0">pertenece a</text>
+
+        <!-- Reserva --> Mesa (dashed) -->
+        <path d="M 112 290 L 112 260 L 292 260 L 292 182" stroke="#a0aec0" stroke-width="1.2" stroke-dasharray="5,3" fill="none" marker-end="url(#arrDash)"/>
+        <text x="140" y="255" font-size="9" fill="#a0aec0">reserva</text>
+
+        <!-- Pedido --uses--> EstadoPedido -->
+        <line x1="507" y1="195" x2="557" y2="290" stroke="#8b5e3d" stroke-width="1" stroke-dasharray="4,2"/>
+        <text x="515" y="252" font-size="9" fill="#8b5e3d">estado</text>
+
+        <!-- Mesa --uses--> EstadoMesa -->
+        <line x1="292" y1="182" x2="752" y2="290" stroke="#3a9bd5" stroke-width="1" stroke-dasharray="4,2"/>
+        <text x="480" y="230" font-size="9" fill="#3a9bd5">estado</text>
+      </svg>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🌿</span>
+      <div>
+        <strong>Tres relaciones que debes tener claras:</strong><br>
+        <strong>Pedido → ItemPedido:</strong> Un pedido tiene muchos items, pero cada item congela el precio del plato en el momento del pedido — no sigue el precio actual.<br>
+        <strong>Mesa → Cuenta:</strong> Una mesa puede tener a lo sumo una cuenta abierta a la vez. No puedes crear un nuevo pedido en una mesa sin cuenta.<br>
+        <strong>RegistroVehiculo:</strong> Es independiente del resto del dominio — no se relaciona con mesas ni pedidos.
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== ESTÁNDARES ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 01</div>
+      <div class="sc-title">Estándares <span>REST</span> &<br>Códigos HTTP</div>
+      <div class="sc-desc">Un API sin estándares es como un restaurante donde cada mesero hace las cosas a su manera. Hoy definimos las reglas que todos deben seguir.</div>
+    </div>
+    <div class="sc-right">📏</div>
+  </div>
+
+  <section class="section" id="estandares">
+    <div class="section-header">
+      <div class="section-icon">📏</div>
+      <div>
+        <span class="section-num">SECCIÓN 01</span>
+        <div class="section-title">Estándares de un API REST</div>
+      </div>
+    </div>
+
+    <p style="margin-bottom:18px;">Un API sin estándares es como un restaurante donde cada mesero hace las cosas a su manera — el cliente nunca sabe qué esperar. Los estándares garantizan <strong>coherencia sin importar quién desarrolla ni dónde</strong>.</p>
+
+    <div class="grid-2">
+      <div class="concepto">
+        <h3>URLs claras y consistentes</h3>
+        <p>Sustantivos en plural, jerarquías lógicas. <code>/platos</code> no <code>/getPlatos</code>. <code>/platos/5/ingredientes</code> no <code>/getIngredientesDePlato5</code>.</p>
+      </div>
+      <div class="concepto">
+        <h3>Verbos HTTP correctos</h3>
+        <p>GET para leer, POST para crear, PUT para reemplazar, PATCH para actualizar parcialmente, DELETE para eliminar. No uses GET para crear.</p>
+      </div>
+      <div class="concepto">
+        <h3>Respuesta consistente</h3>
+        <p>Siempre el mismo formato de respuesta — éxito y error. El cliente no debería adivinar si viene un array o un objeto dependiendo del endpoint.</p>
+      </div>
+      <div class="concepto">
+        <h3>Códigos HTTP correctos</h3>
+        <p>Cada verbo tiene sus códigos esperados. No todos los éxitos son <span class="s2">200</span> — POST exitoso es <span class="s2">201</span>, DELETE exitoso es <span class="s2">204</span>. Verlo abajo en detalle.</p>
+      </div>
+      <div class="concepto">
+        <h3>Mensajes de error descriptivos</h3>
+        <p>Un <span class="s5">500</span> sin mensaje es como un mesero que se desmaya. El error debe decirle al cliente qué hizo mal, con un mensaje humano y un código interno.</p>
+      </div>
+      <div class="concepto">
+        <h3>Documentación siempre actualizada</h3>
+        <p>Swagger/OpenAPI genera la documentación automáticamente desde el código. Si el código cambia, la doc cambia — sin esfuerzo manual.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 16px;font-size:1.1rem;">Códigos HTTP por verbo — la referencia completa</h3>
+
+    <p style="margin-bottom:18px;font-size:.93rem;color:var(--gris-med)">Cada verbo tiene sus propios códigos de éxito y sus propios errores esperados. Aprenderlos te evita devolver un <span class="s2">200</span> cuando creaste algo, o un <span class="s5">500</span> cuando simplemente no encontraste el recurso.</p>
+
+    <!-- GET -->
+    <div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:12px;background:#1e2a24;border-radius:10px 10px 0 0;padding:14px 20px">
+        <span style="background:#3a9bd5;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:4px 12px;border-radius:6px">GET</span>
+        <span style="color:#a8d5b5;font-size:13px;font-weight:500">Solo lee — nunca modifica estado. Seguro e idempotente.</span>
+        <span style="margin-left:auto;font-size:11px;color:#6abf8a;font-family:'JetBrains Mono',monospace">SAFE · IDEMPOTENTE</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0">
+          <thead><tr><th>Situación</th><th>Código</th><th>Cuándo usarlo</th><th>Ejemplo en el restaurante</th></tr></thead>
+          <tbody>
+            <tr><td>Éxito con datos</td><td><span class="s2">200 OK</span></td><td>Siempre que devuelva datos</td><td>GET /platos → lista de platos</td></tr>
+            <tr><td>Recurso no encontrado</td><td><span class="s4">404 Not Found</span></td><td>El id no existe</td><td>GET /platos/999 → plato no existe</td></tr>
+            <tr><td>Parámetro inválido</td><td><span class="s4">400 Bad Request</span></td><td>Query param con formato incorrecto</td><td>GET /platos?precio=abc → precio no es número</td></tr>
+            <tr><td>Sin permisos</td><td><span class="s4">403 Forbidden</span></td><td>El rol no tiene acceso a ese recurso</td><td>GET /reportes (cliente sin rol admin)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- POST -->
+    <div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:12px;background:#1e2a24;border-radius:10px 10px 0 0;padding:14px 20px">
+        <span style="background:#3d8b5e;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:4px 12px;border-radius:6px">POST</span>
+        <span style="color:#a8d5b5;font-size:13px;font-weight:500">Crea un nuevo recurso. No idempotente — llamarlo N veces crea N recursos.</span>
+        <span style="margin-left:auto;font-size:11px;color:#f4a435;font-family:'JetBrains Mono',monospace">NO IDEMPOTENTE</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0">
+          <thead><tr><th>Situación</th><th>Código</th><th>Cuándo usarlo</th><th>Ejemplo en el restaurante</th></tr></thead>
+          <tbody>
+            <tr><td>✅ Recurso creado</td><td><span class="s2">201 Created</span></td><td>Siempre que crees algo nuevo exitosamente</td><td>POST /platos → plato creado con id asignado</td></tr>
+            <tr><td>❌ Datos de entrada inválidos</td><td><span class="s4">400 Bad Request</span></td><td>@Valid falló — campos vacíos, formato incorrecto</td><td>POST /platos con nombre vacío o precio negativo</td></tr>
+            <tr><td>❌ Ya existe</td><td><span class="s4">409 Conflict</span></td><td>Violación de unicidad de negocio</td><td>POST /platos con nombre "Tacos" que ya existe</td></tr>
+            <tr><td>❌ Regla de negocio violada</td><td><span class="s4">422 Unprocessable</span></td><td>Formato OK pero la regla de dominio falló</td><td>POST /pedidos con plato agotado o mesa sin cuenta abierta</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PUT -->
+    <div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:12px;background:#1e2a24;border-radius:10px 10px 0 0;padding:14px 20px">
+        <span style="background:#7c4dff;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:4px 12px;border-radius:6px">PUT</span>
+        <span style="color:#a8d5b5;font-size:13px;font-weight:500">Reemplaza el recurso completo. Idempotente — el mismo resultado N veces.</span>
+        <span style="margin-left:auto;font-size:11px;color:#6abf8a;font-family:'JetBrains Mono',monospace">IDEMPOTENTE</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0">
+          <thead><tr><th>Situación</th><th>Código</th><th>Cuándo usarlo</th><th>Ejemplo en el restaurante</th></tr></thead>
+          <tbody>
+            <tr><td>✅ Reemplazado correctamente</td><td><span class="s2">200 OK</span></td><td>Recurso actualizado, devuelves el objeto actualizado</td><td>PUT /platos/5 → plato actualizado completo</td></tr>
+            <tr><td>✅ Creado porque no existía</td><td><span class="s2">201 Created</span></td><td>PUT puede crear si no existe (upsert) — no siempre se implementa así</td><td>PUT /platos/99 — no existe, se crea</td></tr>
+            <tr><td>❌ Recurso no encontrado</td><td><span class="s4">404 Not Found</span></td><td>El id del path no existe</td><td>PUT /platos/999 → plato no existe</td></tr>
+            <tr><td>❌ Body incompleto</td><td><span class="s4">400 Bad Request</span></td><td>PUT exige todos los campos — falta alguno</td><td>PUT /platos/5 sin precio en el body</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PATCH -->
+    <div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:12px;background:#1e2a24;border-radius:10px 10px 0 0;padding:14px 20px">
+        <span style="background:#f4a435;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:4px 12px;border-radius:6px">PATCH</span>
+        <span style="color:#a8d5b5;font-size:13px;font-weight:500">Actualiza parcialmente. Solo los campos que envías cambian.</span>
+        <span style="margin-left:auto;font-size:11px;color:#f4a435;font-family:'JetBrains Mono',monospace">DEPENDE IMPLEMENTACIÓN</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0">
+          <thead><tr><th>Situación</th><th>Código</th><th>Cuándo usarlo</th><th>Ejemplo en el restaurante</th></tr></thead>
+          <tbody>
+            <tr><td>✅ Actualizado parcialmente</td><td><span class="s2">200 OK</span></td><td>Devuelves el objeto completo ya actualizado</td><td>PATCH /platos/5/disponible → solo cambia disponible=false</td></tr>
+            <tr><td>❌ Recurso no encontrado</td><td><span class="s4">404 Not Found</span></td><td>El id del path no existe</td><td>PATCH /pedidos/99/estado → pedido no existe</td></tr>
+            <tr><td>❌ Transición de estado inválida</td><td><span class="s4">422 Unprocessable</span></td><td>El cambio viola una regla de negocio de estado</td><td>PATCH /pedidos/5/estado con CANCELADO cuando ya está LISTO</td></tr>
+            <tr><td>❌ Valor inválido en el body</td><td><span class="s4">400 Bad Request</span></td><td>El valor enviado no es un estado válido del enum</td><td>PATCH /pedidos/5/estado con "COCINADO" (no existe ese estado)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DELETE -->
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;background:#1e2a24;border-radius:10px 10px 0 0;padding:14px 20px">
+        <span style="background:#e53935;color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:4px 12px;border-radius:6px">DELETE</span>
+        <span style="color:#a8d5b5;font-size:13px;font-weight:500">Elimina el recurso. Idempotente — borrarlo N veces tiene el mismo resultado.</span>
+        <span style="margin-left:auto;font-size:11px;color:#6abf8a;font-family:'JetBrains Mono',monospace">IDEMPOTENTE</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0">
+          <thead><tr><th>Situación</th><th>Código</th><th>Cuándo usarlo</th><th>Ejemplo en el restaurante</th></tr></thead>
+          <tbody>
+            <tr><td>✅ Eliminado correctamente</td><td><span class="s2">204 No Content</span></td><td>Siempre que borres algo — <strong>sin body de respuesta</strong></td><td>DELETE /platos/5 → eliminado, response body vacío</td></tr>
+            <tr><td>❌ Recurso no encontrado</td><td><span class="s4">404 Not Found</span></td><td>El id no existe</td><td>DELETE /platos/999 → plato no existe</td></tr>
+            <tr><td>❌ No se puede eliminar</td><td><span class="s4">409 Conflict</span></td><td>Regla de negocio impide el borrado</td><td>DELETE /platos/5 si ese plato tiene pedidos activos</td></tr>
+            <tr><td>❌ Estado no permite eliminar</td><td><span class="s4">422 Unprocessable</span></td><td>La entidad está en un estado que bloquea la eliminación</td><td>DELETE /pedidos/5 cuando está EN_PREPARACION (ya lo tomó cocina)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🌿</span>
+      <div>
+        <strong>Los 3 códigos que más se confunden:</strong><br>
+        <strong>200 vs 201</strong> — 200 es "todo bien, aquí están los datos". 201 es "creé algo nuevo". POST siempre debe devolver 201, nunca 200.<br>
+        <strong>404 vs 422</strong> — 404 es "ese recurso no existe". 422 es "el recurso existe pero la operación viola una regla del dominio".<br>
+        <strong>400 vs 422</strong> — 400 es "el formato del request está mal" (@Valid falló). 422 es "el formato está bien, pero el negocio lo rechaza".
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 16px;font-size:1.05rem;">Endpoints del restaurante — agrupados por Controller</h3>
+    <p style="margin-bottom:20px;font-size:.9rem;color:var(--gris-med)">Cada grupo de endpoints aquí corresponde a un Controller en tu proyecto. Un Controller = un dominio. Así de limpia debe ser la estructura.</p>
+
+    <!-- PlatoController -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;background:var(--verde);border-radius:10px 10px 0 0;padding:13px 20px">
+        <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;color:#fff;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px">PlatoController</span>
+        <span style="color:rgba(255,255,255,.8);font-size:12.5px">/api/v1/platos — La carta del restaurante</span>
+        <span style="margin-left:auto;font-size:11px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.6)">🍽️</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0"><thead><tr><th>Endpoint</th><th>Verbo</th><th>✅ Éxito</th><th>❌ Errores esperados</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/v1/platos</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">403</span> sin permisos</td></tr>
+          <tr><td><code>/api/v1/platos/{id}</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">404</span> no existe</td></tr>
+          <tr><td><code>/api/v1/platos</code></td><td><code>POST</code></td><td><span class="s2">201</span></td><td><span class="s4">400</span> inválido · <span class="s4">409</span> nombre duplicado</td></tr>
+          <tr><td><code>/api/v1/platos/{id}</code></td><td><code>PUT</code></td><td><span class="s2">200</span></td><td><span class="s4">400</span> body incompleto · <span class="s4">404</span> no existe</td></tr>
+          <tr><td><code>/api/v1/platos/{id}/disponible</code></td><td><code>PATCH</code></td><td><span class="s2">200</span></td><td><span class="s4">404</span> no existe</td></tr>
+          <tr><td><code>/api/v1/platos/{id}</code></td><td><code>DELETE</code></td><td><span class="s2">204</span> sin body</td><td><span class="s4">404</span> no existe · <span class="s4">409</span> tiene pedidos activos</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- PedidoController -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;background:#8b5e3d;border-radius:10px 10px 0 0;padding:13px 20px">
+        <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;color:#fff;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px">PedidoController</span>
+        <span style="color:rgba(255,255,255,.8);font-size:12.5px">/api/v1/pedidos — El flujo de cocina</span>
+        <span style="margin-left:auto;font-size:11px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.6)">🍳</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0"><thead><tr><th>Endpoint</th><th>Verbo</th><th>✅ Éxito</th><th>❌ Errores esperados</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/v1/pedidos</code></td><td><code>POST</code></td><td><span class="s2">201</span></td><td><span class="s4">400</span> inválido · <span class="s4">422</span> plato agotado</td></tr>
+          <tr><td><code>/api/v1/pedidos</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">403</span> sin permisos</td></tr>
+          <tr><td><code>/api/v1/pedidos/{id}</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">404</span> no existe</td></tr>
+          <tr><td><code>/api/v1/pedidos/{id}/estado</code></td><td><code>PATCH</code></td><td><span class="s2">200</span></td><td><span class="s4">404</span> no existe · <span class="s4">422</span> transición inválida</td></tr>
+          <tr><td><code>/api/v1/pedidos/{id}</code></td><td><code>DELETE</code></td><td><span class="s2">204</span> sin body</td><td><span class="s4">404</span> no existe · <span class="s4">422</span> ya en cocina</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- ReservaController -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;background:#5e35d1;border-radius:10px 10px 0 0;padding:13px 20px">
+        <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;color:#fff;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px">ReservaController</span>
+        <span style="color:rgba(255,255,255,.8);font-size:12.5px">/api/v1/reservas — Gestión de reservas</span>
+        <span style="margin-left:auto;font-size:11px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.6)">🗓️</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0"><thead><tr><th>Endpoint</th><th>Verbo</th><th>✅ Éxito</th><th>❌ Errores esperados</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/v1/reservas</code></td><td><code>POST</code></td><td><span class="s2">201</span></td><td><span class="s4">400</span> inválido · <span class="s4">409</span> mesa ya reservada ese horario</td></tr>
+          <tr><td><code>/api/v1/reservas</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">403</span> sin permisos</td></tr>
+          <tr><td><code>/api/v1/reservas/{id}</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">404</span> no existe</td></tr>
+          <tr><td><code>/api/v1/reservas/{id}</code></td><td><code>PUT</code></td><td><span class="s2">200</span></td><td><span class="s4">404</span> no existe · <span class="s4">409</span> conflicto de horario</td></tr>
+          <tr><td><code>/api/v1/reservas/{id}</code></td><td><code>DELETE</code></td><td><span class="s2">204</span> sin body</td><td><span class="s4">404</span> no existe · <span class="s4">422</span> reserva ya completada</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- ParqueaderoController -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;background:#37474f;border-radius:10px 10px 0 0;padding:13px 20px">
+        <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;color:#fff;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px">ParqueaderoController</span>
+        <span style="color:rgba(255,255,255,.8);font-size:12.5px">/api/v1/parqueadero — Acceso de vehículos</span>
+        <span style="margin-left:auto;font-size:11px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.6)">🅿️</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0"><thead><tr><th>Endpoint</th><th>Verbo</th><th>✅ Éxito</th><th>❌ Errores esperados</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/v1/parqueadero/entrada</code></td><td><code>POST</code></td><td><span class="s2">201</span></td><td><span class="s4">409</span> placa ya registrada · <span class="s4">422</span> parqueadero lleno</td></tr>
+          <tr><td><code>/api/v1/parqueadero/salida/{placa}</code></td><td><code>POST</code></td><td><span class="s2">200</span></td><td><span class="s4">404</span> placa no activa</td></tr>
+          <tr><td><code>/api/v1/parqueadero/activos</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">403</span> sin permisos</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- ReporteController -->
+    <div style="margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;background:#1e2a24;border-radius:10px 10px 0 0;padding:13px 20px">
+        <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;color:#fff;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px">ReporteController</span>
+        <span style="color:rgba(255,255,255,.8);font-size:12.5px">/api/v1/reportes — Inteligencia del negocio</span>
+        <span style="margin-left:auto;font-size:11px;font-family:'JetBrains Mono',monospace;color:rgba(168,213,181,.8)">📊</span>
+      </div>
+      <div class="tabla-wrap" style="margin:0;border-radius:0 0 10px 10px">
+        <table style="border-radius:0"><thead><tr><th>Endpoint</th><th>Verbo</th><th>✅ Éxito</th><th>❌ Errores esperados</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/v1/reportes/resumen</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">403</span> sin permisos</td></tr>
+          <tr><td><code>/api/v1/reportes/platos-populares</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">403</span> sin permisos</td></tr>
+          <tr><td><code>/api/v1/reportes/ingresos</code></td><td><code>GET</code></td><td><span class="s2">200</span></td><td><span class="s4">403</span> sin permisos · <span class="s4">400</span> rango de fechas inválido</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🌿</span>
+      <div>
+        <strong>Los 3 códigos que más se confunden:</strong><br>
+        <strong>200 vs 201</strong> — 200 es "todo bien, aquí están los datos". 201 es "creé algo nuevo". POST siempre devuelve 201, nunca 200.<br>
+        <strong>404 vs 422</strong> — 404 es "ese recurso no existe". 422 es "existe pero la operación viola una regla del dominio".<br>
+        <strong>400 vs 422</strong> — 400 es "el formato del request está mal" (@Valid falló). 422 es "el formato está bien, pero el negocio lo rechaza".
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- VERSIONAMIENTO — sección propia -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 01-B</div>
+      <div class="sc-title">Versionamiento —<br><span>Cambiar sin romper</span></div>
+      <div class="sc-desc">El cliente que consume tu API no puede actualizarse el mismo día que tú despliegas. El versionamiento te da tiempo para migrar sin apagar nada.</div>
+    </div>
+    <div class="sc-right">🔢</div>
+  </div>
+
+  <section class="section" id="versionamiento">
+    <div class="section-header">
+      <div class="section-icon">🔢</div>
+      <div>
+        <span class="section-num">SECCIÓN 01-B</span>
+        <div class="section-title">Versionamiento de API</div>
+      </div>
+    </div>
+
+    <p style="margin-bottom:18px;">Imagina que el frontend ya está en producción usando <code>/api/v1/platos</code>. Ahora necesitas cambiar la estructura de la respuesta — agregar un campo, renombrar otro, eliminar uno que usaba el cliente. Si cambias el endpoint directamente, el frontend se rompe. La solución: versionar el API.</p>
+
+    <div class="grid-2">
+      <div class="concepto">
+        <h3>¿Cuándo versionar?</h3>
+        <p>Cuando un cambio <strong>rompe la compatibilidad</strong> con los clientes existentes: eliminar un campo de la respuesta, cambiar el tipo de un campo, renombrar un campo obligatorio, cambiar la semántica de un endpoint. Agregar campos opcionales normalmente <em>no</em> requiere nueva versión.</p>
+      </div>
+      <div class="concepto">
+        <h3>¿Cuándo NO versionar?</h3>
+        <p>Cuando el cambio es aditivo y no rompe nada: agregar un campo opcional nuevo a la respuesta, agregar un endpoint nuevo, mejorar el rendimiento sin cambiar el contrato. Los clientes que no usan el campo nuevo simplemente lo ignoran.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:24px 0 14px;font-size:1.05rem;">Las tres estrategias — y cuál usar</h3>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px">
+      <div style="background:#e8f7ef;border-radius:10px;padding:18px;border-top:4px solid var(--verde)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--verde);margin-bottom:8px">✅ URL VERSIONING</div>
+        <code style="font-size:12px;display:block;margin-bottom:10px">/api/v1/platos<br>/api/v2/platos</code>
+        <p style="font-size:.83rem;color:var(--gris-med)">La más común y visible. La versión vive en la URL. Fácil de probar, fácil de enrutar, fácil de documentar en Swagger. <strong>La que vas a usar tú.</strong></p>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:18px;border-top:4px solid var(--gris-cl)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--gris-med);margin-bottom:8px">⚠️ HEADER VERSIONING</div>
+        <code style="font-size:12px;display:block;margin-bottom:10px">Accept: application/<br>vnd.app.v2+json</code>
+        <p style="font-size:.83rem;color:var(--gris-med)">Más "pura" en REST — la URL no cambia. Pero es más difícil de probar, no aparece bien en Swagger y confunde a equipos pequeños.</p>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:18px;border-top:4px solid var(--gris-cl)">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--gris-med);margin-bottom:8px">⚠️ QUERY PARAM</div>
+        <code style="font-size:12px;display:block;margin-bottom:10px">/platos?version=2</code>
+        <p style="font-size:.83rem;color:var(--gris-med)">Fácil de implementar pero ensucia las URLs, complica el cacheo y mezcla versionamiento con filtros de negocio. No recomendado.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:24px 0 14px;font-size:1.05rem;">URL Versioning en Spring Boot — paso a paso</h3>
+
+    <pre><code>// Paso 1 — Desde el inicio, pon /api/v1 en el @RequestMapping
+@RestController
+@RequestMapping("/api/v1/platos")
+@Tag(name = "Platos v1", description = "Gestión de la carta")
+public class PlatoController {
+    // tus endpoints normales...
+}
+
+// Paso 2 — Cuando necesites una versión 2 que rompe compatibilidad,
+//           crea un controller nuevo. El v1 sigue vivo para clientes viejos.
+@RestController
+@RequestMapping("/api/v2/platos")
+@Tag(name = "Platos v2", description = "Carta con soporte de alérgenos")
+public class PlatoV2Controller {
+    // nueva estructura de respuesta con PlatoV2ResponseDTO
+}</code></pre>
+
+    <pre><code>// Paso 3 — Si muchos endpoints cambian, usa un prefijo global en application.yml
+server:
+  servlet:
+    context-path: /api   ← todos los endpoints quedan bajo /api
+
+// O en cada controller:
+@RequestMapping("/api/v1/platos")   ← manualmente, más explícito
+@RequestMapping("/api/v2/platos")   ← la nueva versión</code></pre>
+
+    <div class="tut-check-box" style="margin:20px 0;border-radius:8px">
+      <strong>✅ Verificación — ¿tienes v1 en todos tus endpoints?</strong>
+      <ul>
+        <li>Busca en tu proyecto todos los <code>@RequestMapping</code> y <code>@GetMapping</code>, <code>@PostMapping</code>, etc.</li>
+        <li>¿Todos empiezan con <code>/api/v1/</code>? Si no → corrígelos ahora antes de que el frontend empiece a consumirlos</li>
+        <li>En Swagger UI verifica que todas las rutas muestren <code>/api/v1/</code> como prefijo</li>
+        <li>Si tienes <code>/platos</code> sin prefijo → ese endpoint va a ser difícil de versionar después</li>
+      </ul>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div><strong>Regla de oro:</strong> Usa <code>/api/v1/</code> desde el primer endpoint que escribas, aunque hoy solo tengas una versión. Cambiarlo después con el frontend ya conectado es mucho más costoso que ponerlo desde el principio. Una URL con versión es un compromiso con el cliente: "este contrato no cambia sin previo aviso".</div>
+    </div>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Pausa rápida</span>
+        <span class="qi-title">Versionamiento — ¿cuándo lo necesitas?</span>
+      </div>
+      <div class="qi-q">¿Agregar un campo nuevo a la respuesta requiere una nueva versión de la API?</div>
+      <div class="qi-a">No, si el campo es opcional y aditivo. Los clientes que no lo conocen lo ignoran. Solo necesitas nueva versión cuando eliminas o cambias algo que el cliente ya usa.</div>
+      <div class="qi-q">¿Por qué es mejor el URL versioning que el header versioning para este proyecto?</div>
+      <div class="qi-a">Porque es visible en Swagger, fácil de probar en Postman, fácil de enrutar y entendible para cualquier miembro del equipo sin conocer los headers HTTP.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== SWAGGER ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 02</div>
+      <div class="sc-title">Swagger <span>UI</span> —<br>La doc que se escribe sola</div>
+      <div class="sc-desc">OpenAPI genera la documentación directamente desde el código. Si el código cambia, la doc cambia. Nunca más Postman desactualizado.</div>
+    </div>
+    <div class="sc-right">📖</div>
+  </div>
+  <section class="section" id="swagger">
+    <div class="section-header">
+      <div class="section-icon">📖</div>
+      <div>
+        <span class="section-num">SECCIÓN 02</span>
+        <div class="section-title">Swagger UI / OpenAPI</div>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-col a">
+        <h4>Sin Swagger</h4>
+        <ul>
+          <li>Postman con colecciones desactualizadas</li>
+          <li>Frontend pregunta "¿qué campos acepta?"</li>
+          <li>Documentación en Word que nadie actualiza</li>
+          <li>QA no puede probar sin el backend corriendo</li>
+        </ul>
+      </div>
+      <div class="compare-col b">
+        <h4>Con Swagger</h4>
+        <ul>
+          <li>Documentación viva que se actualiza sola</li>
+          <li>Se puede probar desde el navegador</li>
+          <li>Frontend ve exactamente qué entra y qué sale</li>
+          <li>Contrato estandarizado (OpenAPI spec)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin:24px 0 14px;font-size:1.05rem;">Paso a paso — implementación en tu restaurante</h3>
+
+    <ul class="steps">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Agregar dependencia en pom.xml</div>
+          <div class="step-desc">springdoc-openapi genera Swagger automáticamente desde las anotaciones de Spring.</div>
+        </div>
+      </li>
+    </ul>
+
+    <pre><code>&lt;!-- pom.xml --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springdoc&lt;/groupId&gt;
+    &lt;artifactId&gt;springdoc-openapi-starter-webmvc-ui&lt;/artifactId&gt;
+    &lt;version&gt;2.3.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+    <ul class="steps" style="counter-reset:step 1">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Acceder a Swagger UI — ya está disponible sin más config</div>
+          <div class="step-desc">Abre el navegador en: <code>http://localhost:8080/swagger-ui/index.html</code> — la doc se genera sola.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Personalizar la información general con @OpenAPIDefinition</div>
+          <div class="step-desc">Clase de configuración para definir el título, versión y descripción del restaurante.</div>
+        </div>
+      </li>
+    </ul>
+
+    <pre><code>// config/OpenApiConfig.java — personaliza lo que ve el usuario en Swagger UI
+@Configuration
+public class OpenApiConfig {
+
+    @Bean
+    public OpenAPI restauranteOpenAPI() {
+        return new OpenAPI()
+            .info(new Info()
+                .title("🍽️ API del Restaurante Turtwig")      // ← título en Swagger
+                .description("API REST para gestionar la carta, pedidos y cocina")
+                .version("v1.0")
+                .contact(new Contact()
+                    .name("Equipo DOSW")
+                    .email("dosw@eci.edu.co")));
+    }
+}</code></pre>
+
+    <ul class="steps" style="counter-reset:step 3">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Documentar los endpoints con anotaciones @Operation y @ApiResponse</div>
+          <div class="step-desc">Le dice a Swagger qué hace cada endpoint y qué respuestas puede dar.</div>
+        </div>
+      </li>
+    </ul>
+
+    <pre><code>// En el Controller — documenta cada endpoint para que Swagger lo muestre bien
+@RestController
+@RequestMapping("/api/v1/platos")
+@Tag(name = "Platos", description = "Gestión de la carta del restaurante")
+public class PlatoController {
+
+    @Operation(
+        summary = "Obtener todos los platos",
+        description = "Devuelve la carta completa con estado de disponibilidad"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Carta obtenida correctamente"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping
+    public ResponseEntity&lt;List&lt;PlatoResponseDTO&gt;&gt; obtenerTodos() {
+        return ResponseEntity.ok(platoService.obtenerTodos());
+    }
+
+    @Operation(summary = "Crear un plato", description = "Agrega un nuevo plato a la carta")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Plato creado correctamente"),
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+        @ApiResponse(responseCode = "409", description = "Ya existe un plato con ese nombre")
+    })
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PlatoResponseDTO crear(@RequestBody @Valid PlatoRequestDTO dto) {
+        return platoService.crear(dto);
+    }
+}</code></pre>
+
+    <div class="callout tip">
+      <span class="callout-icon">🔑</span>
+      <div><strong>OpenAPI vs Swagger:</strong> OpenAPI es el estándar (el "contrato" en YAML/JSON que describe tu API). Swagger UI es la herramienta que lee ese contrato y lo muestra de forma interactiva en el navegador. springdoc-openapi genera el contrato automáticamente desde tu código Spring y levanta la UI.</div>
+    </div>
+
+    <div class="tut-check-box" style="margin:20px 0;border-radius:8px">
+      <strong>✅ ¿Nos funcionó a todos? — Abre el navegador</strong>
+      <ul>
+        <li>Levanta el proyecto con <code>mvn spring-boot:run</code></li>
+        <li>Abre: <code>http://localhost:8080/swagger-ui/index.html</code></li>
+        <li>¿Ves los endpoints de tu restaurante listados? → ✅ Funcionó</li>
+        <li>¿La página no carga? → Verifica que agregaste la dependencia en el <code>pom.xml</code></li>
+        <li>¿Los endpoints no aparecen? → Verifica que el <code>@RestController</code> esté en el paquete correcto</li>
+      </ul>
+    </div>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Pausa rápida</span>
+        <span class="qi-title">Swagger — ¿qué entendiste?</span>
+      </div>
+      <div class="qi-q">¿Cuál es la URL donde puedes ver Swagger en tu proyecto?</div>
+      <div class="qi-a">http://localhost:8080/swagger-ui/index.html</div>
+      <div class="qi-q">¿Qué hace @Tag en el Controller?</div>
+      <div class="qi-a">Agrupa los endpoints bajo un nombre en la interfaz de Swagger UI, facilitando la navegación cuando hay muchos controllers.</div>
+      <div class="qi-q">¿Por qué usamos springdoc-openapi en vez de springfox?</div>
+      <div class="qi-a">springfox no tiene soporte activo para Spring Boot 3. springdoc-openapi es el reemplazo moderno y compatible.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== LOGS ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 03</div>
+      <div class="sc-title">Logs — El <span>registro</span><br>de vida del restaurante</div>
+      <div class="sc-desc">Sin logs no sabes qué pasó, cuándo pasó ni quién lo causó. Con @Slf4j de Lombok, tener logs cuesta una anotación.</div>
+    </div>
+    <div class="sc-right">🪵</div>
+  </div>
+  <section class="section" id="logs">
+    <div class="section-header">
+      <div class="section-icon">🪵</div>
+      <div>
+        <span class="section-num">SECCIÓN 03</span>
+        <div class="section-title">Logging — El registro de vida de tu restaurante</div>
+      </div>
+    </div>
+
+    <p style="margin-bottom:18px;">Un restaurante sin registros no sabe qué salió mal, quién pidió qué, ni en qué momento colapsó la cocina. El logging es lo mismo en software: el registro estructurado de todo lo que le pasa a la aplicación.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Nivel</th><th>Cuándo usarlo</th><th>Ejemplo en el restaurante</th></tr></thead>
+        <tbody>
+          <tr><td><code>TRACE</code></td><td>Detalle extremo — solo en desarrollo activo</td><td>"Entrando al mapper, campo nombre = 'Tacos'"</td></tr>
+          <tr><td><code>DEBUG</code></td><td>Depuración — info útil al desarrollar</td><td>"Buscando plato con id=5 en la lista"</td></tr>
+          <tr><td><code>INFO</code></td><td>Eventos normales — flujo exitoso</td><td>"Pedido #42 creado para mesa 3"</td></tr>
+          <tr><td><code>WARN</code></td><td>Algo extraño pero no roto</td><td>"Plato 'Salmón' marcado como agotado — horario de cierre"</td></tr>
+          <tr><td><code>ERROR</code></td><td>Fallo que necesita atención</td><td>"No se pudo procesar el pedido #42 — plato no encontrado"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pre><code>// En cualquier clase del proyecto — con Lombok es un @Slf4j
+@Service
+@Slf4j                          // ← Lombok genera: private static final Logger log = LoggerFactory.getLogger(...)
+@RequiredArgsConstructor
+public class PlatoServiceImpl implements IPlatoService {
+
+    private final Map&lt;Long, Plato&gt; platos = new HashMap&lt;&gt;();
+    private final PlatoMapperIn    mapperIn;
+    private final PlatoMapperOut   mapperOut;
+
+    @Override
+    public PlatoResponseDTO crear(PlatoRequestDTO dto) {
+        log.info("Creando plato con nombre '{}'", dto.nombre());           // INFO — evento normal
+
+        boolean nombreDuplicado = platos.values().stream()
+            .anyMatch(p -> p.getNombre().equalsIgnoreCase(dto.nombre()));
+
+        if (nombreDuplicado) {
+            log.warn("Intento de crear plato duplicado: '{}'", dto.nombre()); // WARN — no es error pero es sospechoso
+            throw new PlatoYaExisteException("Ya existe un plato con ese nombre: " + dto.nombre());
+        }
+
+        Plato plato = mapperIn.toDomain(dto);
+        plato.setId(generarId());
+        platos.put(plato.getId(), plato);
+
+        log.info("Plato '{}' creado con id={}", plato.getNombre(), plato.getId()); // INFO — éxito
+        return mapperOut.toDTO(plato);
+    }
+
+    @Override
+    public PlatoResponseDTO buscarPorId(Long id) {
+        log.debug("Buscando plato con id={}", id);                         // DEBUG — detalle de búsqueda
+        Plato plato = platos.get(id);
+        if (plato == null) {
+            log.error("Plato con id={} no encontrado", id);               // ERROR — fallo que hay que manejar
+            throw new PlatoNoEncontradoException("Plato no encontrado con id: " + id);
+        }
+        return mapperOut.toDTO(plato);
+    }
+}
+
+// application.yml — configurar nivel de log por paquete
+logging:
+  level:
+    root: INFO                          # nivel base para todo
+    edu.dosw.restaurante: DEBUG         # tu paquete con más detalle
+    org.springframework.web: WARN       # menos ruido de Spring</code></pre>
+
+    <div class="callout key">
+      <span class="callout-icon">🌿</span>
+      <div><strong>@Slf4j de Lombok</strong> genera automáticamente la variable <code>log</code> en la clase. Sin Lombok tendrías que escribir <code>private static final Logger log = LoggerFactory.getLogger(PlatoServiceImpl.class);</code> en cada clase. Con Lombok solo pones <code>@Slf4j</code> arriba de la clase.</div>
+    </div>
+
+    <div class="tut-check-box" style="margin:20px 0;border-radius:8px">
+      <strong>✅ ¿Nos funcionó a todos? — Verificación de logs</strong>
+      <ul>
+        <li>Haz una petición GET a <code>/api/v1/platos</code> desde Postman o Swagger</li>
+        <li>¿Ves en la consola el mensaje <code>INFO ... Buscando todos los platos</code>? → ✅ Funcionó</li>
+        <li>¿No aparece nada? → Revisa que el nivel en <code>application.yml</code> sea <code>DEBUG</code> o <code>INFO</code> para tu paquete</li>
+        <li>¿Aparece la clase correcta en el log? → El logger debe mostrar <code>PlatoServiceImpl</code> no <code>MainApplication</code></li>
+      </ul>
+    </div>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Pausa rápida</span>
+        <span class="qi-title">Logs — comprueba tu código</span>
+      </div>
+      <div class="qi-q">¿Corrió el proyecto con @Slf4j? ¿Aparece algo en la consola al hacer una petición?</div>
+      <div class="qi-a">Si el log.info aparece en la consola → funciona. Si no aparece, revisa el nivel configurado en application.yml.</div>
+      <div class="qi-q">¿Qué nivel usas para el flujo exitoso de negocio?</div>
+      <div class="qi-a">INFO — es el nivel para eventos normales del sistema. DEBUG para detalles de desarrollo, WARN para situaciones extrañas, ERROR para fallos que requieren atención.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== VALIDACIONES ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 04</div>
+      <div class="sc-title">Validaciones —<br><span>Input vs Negocio</span></div>
+      <div class="sc-desc">Hay dos tipos de validación y cada una vive en un lugar diferente. Mezclarlas es uno de los errores más comunes en el primer proyecto.</div>
+    </div>
+    <div class="sc-right">✅</div>
+  </div>
+  <section class="section" id="validaciones">
+    <div class="section-header">
+      <div class="section-icon">✅</div>
+      <div>
+        <span class="section-num">SECCIÓN 04</span>
+        <div class="section-title">Validaciones — Input vs Negocio</div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">⚖️</span>
+      <div>
+        <strong>La regla de oro:</strong> Las validaciones de input van en el <strong>DTO</strong> (con anotaciones Bean Validation). Las validaciones de negocio van en el <strong>Service</strong> (con excepciones propias). Nunca al revés, nunca mezcladas.
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-col a" style="background:#eaf5fb;border:none">
+        <h4 style="color:var(--info)">📥 Validación de INPUT — en el DTO</h4>
+        <ul style="list-style:none">
+          <li style="color:var(--gris-osc)">→ ¿El formato es correcto?</li>
+          <li style="color:var(--gris-osc)">→ ¿El campo está presente?</li>
+          <li style="color:var(--gris-osc)">→ ¿El número está en rango?</li>
+          <li style="color:var(--gris-osc)">→ @NotNull, @NotBlank, @Min, @Max</li>
+          <li style="color:var(--gris-osc)">→ Spring la dispara automáticamente con @Valid</li>
+          <li style="color:var(--gris-osc)">→ Da <span class="s4">400</span> Bad Request</li>
+        </ul>
+      </div>
+      <div class="compare-col b">
+        <h4>⚙️ Validación de NEGOCIO — en el Service</h4>
+        <ul>
+          <li>¿Cumple la regla del dominio?</li>
+          <li>¿El plato ya existe con ese nombre?</li>
+          <li>¿El pedido está en estado modificable?</li>
+          <li>Excepciones propias tipadas</li>
+          <li>Tú la dispararas manualmente con throw</li>
+          <li>Da <span class="s4">409</span> Conflict o <span class="s4">422</span> Unprocessable</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 14px;font-size:1.05rem;">Bean Validation en el DTO del restaurante</h3>
+
+    <pre><code>// dto/PlatoRequestDTO.java — validaciones de INPUT con Bean Validation
+public record PlatoRequestDTO(
+
+    @NotBlank(message = "El nombre del plato es obligatorio")
+    @Size(min = 2, max = 80, message = "El nombre debe tener entre 2 y 80 caracteres")
+    String nombre,
+
+    @NotNull(message = "El precio es obligatorio")
+    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a cero")
+    Double precio,
+
+    @NotBlank(message = "La categoría es obligatoria")
+    @Pattern(
+        regexp = "ENTRADA|PLATO_FUERTE|POSTRE|BEBIDA",
+        message = "Categoría inválida. Opciones: ENTRADA, PLATO_FUERTE, POSTRE, BEBIDA"
+    )
+    String categoria,
+
+    @Size(max = 500, message = "La descripción no puede superar 500 caracteres")
+    String descripcion  // ← no es @NotBlank, puede ser null/vacío
+
+) {}
+
+// dto/PedidoRequestDTO.java
+public record PedidoRequestDTO(
+
+    @NotNull(message = "El número de mesa es obligatorio")
+    @Min(value = 1, message = "El número de mesa debe ser mayor a 0")
+    Integer mesa,
+
+    @NotEmpty(message = "El pedido debe tener al menos un plato")
+    List&lt;@NotNull Long&gt; idPlatos,    // ← @NotNull dentro de la lista también
+
+    @NotBlank(message = "Las notas del pedido no pueden ser solo espacios")
+    @Size(max = 200)
+    String notas
+
+) {}</code></pre>
+
+    <h3 style="margin:28px 0 14px;font-size:1.05rem;">Activar la validación en el Controller con @Valid</h3>
+
+    <pre><code>// controller/PlatoController.java
+@PostMapping
+@ResponseStatus(HttpStatus.CREATED)
+public PlatoResponseDTO crear(
+        @RequestBody @Valid PlatoRequestDTO dto) {   // ← @Valid activa Bean Validation
+    return platoService.crear(dto);
+    // Si el DTO tiene campos inválidos, Spring lanza MethodArgumentNotValidException
+    // ANTES de que llegue al service — el GlobalExceptionHandler lo captura
+}</code></pre>
+
+    <h3 style="margin:28px 0 14px;font-size:1.05rem;">Validaciones de negocio propias de tu restaurante</h3>
+
+    <pre><code>// service/PlatoServiceImpl.java — reglas de NEGOCIO con excepciones propias
+@Override
+public PlatoResponseDTO crear(PlatoRequestDTO dto) {
+
+    // ── Regla de negocio #1: nombres únicos en la carta ──────────────────
+    boolean nombreDuplicado = platos.values().stream()
+        .anyMatch(p -> p.getNombre().equalsIgnoreCase(dto.nombre()));
+    if (nombreDuplicado) {
+        throw new PlatoYaExisteException("Ya existe un plato: " + dto.nombre());
+    }
+
+    // ── Regla de negocio #2 (ejemplo parrilla): corte requiere término ──
+    // if (dto.categoria().equals("PARRILLA") && dto.terminoCoccion() == null) {
+    //     throw new TerminoCoccionRequeridoException("Los cortes de parrilla requieren término de cocción");
+    // }
+
+    // ── Regla de negocio #3 (ejemplo japonés): máx 6 rolls por tanda ───
+    // long rollsActivos = platos.values().stream()
+    //     .filter(p -> p.getCategoria().equals("ROLL") && p.isDisponible()).count();
+    // if (rollsActivos >= 6) {
+    //     throw new CapacidadExcedidaException("Solo pueden prepararse 6 rolls por tanda");
+    // }
+
+    Plato plato = mapperIn.toDomain(dto);
+    plato.setId(generarId());
+    platos.put(plato.getId(), plato);
+    return mapperOut.toDTO(plato);
+}
+
+@Override
+public PedidoResponseDTO cambiarEstado(Long id, EstadoPedido nuevoEstado) {
+
+    // ── Regla de negocio: solo se puede modificar en estado RECIBIDO ────
+    Pedido pedido = pedidos.stream()
+        .filter(p -> p.getId().equals(id))
+        .findFirst()
+        .orElseThrow(() -> new PedidoNoEncontradoException("Pedido no encontrado: " + id));
+
+    if (pedido.getEstado() != EstadoPedido.RECIBIDO && nuevoEstado == EstadoPedido.CANCELADO) {
+        throw new EstadoInvalidoException(
+            "Un pedido en estado " + pedido.getEstado() + " no puede cancelarse"
+        );
+    }
+
+    pedido.setEstado(nuevoEstado);
+    return mapperOut.toDTO(pedido);
+}</code></pre>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Flujo de validación: desde el request hasta la respuesta</div>
+      <div class="mermaid">
+flowchart TD
+    REQ["📥 Request POST /platos\n{nombre:'', precio:-5}"] --> CTRL
+
+    subgraph SPRING["🍃 Spring Boot"]
+        CTRL["🎯 PlatoController\n@PostMapping\n@Valid en el parámetro"]
+        VLD{{"¿@Valid pasa?"}}
+        MNVE["🚨 MethodArgument\nNotValidException\n(Spring la lanza automáticamente)"]
+        SVC["⚙️ PlatoService\n.crear(dto)"]
+        NEG{{"¿Regla de negocio OK?"}}
+        NEGEX["🚨 PlatoYaExisteException\n(tú la lanzas con throw)"]
+        OK["✅ Plato creado\nreturn ResponseDTO"]
+    end
+
+    GEH["🛡️ GlobalExceptionHandler\n@RestControllerAdvice\nCaptura ambas excepciones"]
+
+    CTRL --> VLD
+    VLD -- "❌ campos inválidos" --> MNVE --> GEH
+    VLD -- "✅ DTO válido" --> SVC
+    SVC --> NEG
+    NEG -- "❌ nombre duplicado" --> NEGEX --> GEH
+    NEG -- "✅ reglas OK" --> OK
+
+    GEH --> RES400["📤 400 Bad Request\n{timestamp,status,message,errors:[...]}"]
+    GEH --> RES409["📤 409 Conflict\n{timestamp,status,message}"]
+    OK --> RES201["📤 201 Created\n{id, nombre, precio, ...}"]
+
+    style SPRING fill:#e8f7ef
+    style GEH fill:#1e2a24,color:#a8d5b5
+    style RES400 fill:#fff3cd
+    style RES409 fill:#fde8e8
+    style RES201 fill:#d1f5e0
+      </div>
+    </div>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Pausa rápida</span>
+        <span class="qi-title">Validaciones — ¿dónde pusiste cada cosa?</span>
+      </div>
+      <div class="qi-q">¿Tienes @Valid en el parámetro del Controller? Prueba mandando un body sin el campo nombre — ¿qué responde?</div>
+      <div class="qi-a">Si devuelve 400 con un mensaje de error → Bean Validation está funcionando. Si devuelve 500 → falta el @Valid o el GlobalExceptionHandler.</div>
+      <div class="qi-q">¿Dónde pusiste la validación de "nombre duplicado"? ¿En el DTO o en el Service?</div>
+      <div class="qi-a">En el Service — es una regla de negocio que requiere consultar el estado actual del sistema. El DTO solo valida el formato del input entrante.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== MANEJO DE ERRORES ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 05</div>
+      <div class="sc-title">Exception Handler —<br><span>El gerente del restaurante</span></div>
+      <div class="sc-desc">Un 500 sin mensaje es un mesero que se desmaya. El GlobalExceptionHandler intercepta todo error y responde con dignidad.</div>
+    </div>
+    <div class="sc-right">⚠️</div>
+  </div>
+  <section class="section" id="errores">
+    <div class="section-header">
+      <div class="section-icon">⚠️</div>
+      <div>
+        <span class="section-num">SECCIÓN 05</span>
+        <div class="section-title">GlobalExceptionHandler — El gerente que intercepta los problemas</div>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">🧑‍💼</span>
+      <div><strong>La analogía:</strong> El GlobalExceptionHandler es el gerente del restaurante. Cuando el mesero tiene un problema (error en el código), en vez de salir corriendo o desmayarse frente al cliente (500 sin contexto), el gerente intercepta el problema y le explica al cliente qué pasó de forma profesional.</div>
+    </div>
+
+    <h3 style="margin:20px 0 14px;font-size:1.05rem;">Paso 1 — Las excepciones personalizadas del restaurante</h3>
+
+    <pre><code>// exception/ — tus excepciones de negocio
+public class PlatoNoEncontradoException extends RuntimeException {
+    public PlatoNoEncontradoException(String mensaje) { super(mensaje); }
+}
+
+public class PlatoYaExisteException extends RuntimeException {
+    public PlatoYaExisteException(String mensaje) { super(mensaje); }
+}
+
+public class EstadoInvalidoException extends RuntimeException {
+    public EstadoInvalidoException(String mensaje) { super(mensaje); }
+}
+
+public class PedidoNoModificableException extends RuntimeException {
+    public PedidoNoModificableException(String mensaje) { super(mensaje); }
+}
+
+// ← Cada concepto de restaurante puede tener las suyas:
+// TerminoCoccionRequeridoException (parrilla)
+// RollCapacidadExcedidaException (japonés)
+// PescaNoDisponibleException (comida de mar)</code></pre>
+
+    <h3 style="margin:28px 0 14px;font-size:1.05rem;">Paso 2 — El ErrorResponse DTO (respuesta uniforme de error)</h3>
+
+    <pre><code>// dto/ErrorResponseDTO.java — formato estándar para todos los errores
+public record ErrorResponseDTO(
+    LocalDateTime timestamp,
+    int            status,
+    String         error,
+    String         message,
+    String         path
+) {
+    // Factory method para crear respuestas rápidamente
+    public static ErrorResponseDTO of(int status, String error, String message, String path) {
+        return new ErrorResponseDTO(LocalDateTime.now(), status, error, message, path);
+    }
+}</code></pre>
+
+    <h3 style="margin:28px 0 14px;font-size:1.05rem;">Paso 3 — El GlobalExceptionHandler</h3>
+
+    <pre><code>// exception/GlobalExceptionHandler.java
+@RestControllerAdvice          // ← intercepta excepciones de TODOS los controllers
+@Slf4j
+public class GlobalExceptionHandler {
+
+    // ── Excepciones de input (Bean Validation) → 400 ─────────────────────
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDTO handleValidacion(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request) {
+
+        // Extrae TODOS los errores de validación en una sola lista
+        String errores = ex.getBindingResult().getFieldErrors().stream()
+            .map(e -> e.getField() + ": " + e.getDefaultMessage())
+            .collect(Collectors.joining(" | "));
+
+        log.warn("Validación de input fallida: {}", errores);
+
+        return ErrorResponseDTO.of(400, "Datos de entrada inválidos", errores, request.getRequestURI());
+    }
+
+    // ── Recurso no encontrado → 404 ───────────────────────────────────────
+    @ExceptionHandler(PlatoNoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseDTO handleNoEncontrado(
+            PlatoNoEncontradoException ex, HttpServletRequest request) {
+
+        log.warn("Recurso no encontrado: {}", ex.getMessage());
+        return ErrorResponseDTO.of(404, "No encontrado", ex.getMessage(), request.getRequestURI());
+    }
+
+    // ── Conflicto de negocio → 409 ────────────────────────────────────────
+    @ExceptionHandler(PlatoYaExisteException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponseDTO handleConflicto(
+            PlatoYaExisteException ex, HttpServletRequest request) {
+
+        log.warn("Conflicto de negocio: {}", ex.getMessage());
+        return ErrorResponseDTO.of(409, "Conflicto", ex.getMessage(), request.getRequestURI());
+    }
+
+    // ── Estado inválido de negocio → 422 ─────────────────────────────────
+    @ExceptionHandler(EstadoInvalidoException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErrorResponseDTO handleEstadoInvalido(
+            EstadoInvalidoException ex, HttpServletRequest request) {
+
+        log.warn("Estado de negocio inválido: {}", ex.getMessage());
+        return ErrorResponseDTO.of(422, "Estado inválido", ex.getMessage(), request.getRequestURI());
+    }
+
+    // ── Cualquier otro error no controlado → 500 ─────────────────────────
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponseDTO handleGeneral(Exception ex, HttpServletRequest request) {
+        log.error("Error no controlado: {}", ex.getMessage(), ex);   // ← full stack trace en ERROR
+        return ErrorResponseDTO.of(500, "Error interno", "Algo salió mal, intenta de nuevo", request.getRequestURI());
+        // NUNCA expongas ex.getMessage() aquí — puede filtrar info sensible
+    }
+}</code></pre>
+
+    <div class="callout tip">
+      <span class="callout-icon">🔑</span>
+      <div>
+        <strong>¿Por qué no usar try-catch en el Controller?</strong> Si cada Controller maneja sus propios errores con try-catch, el formato de respuesta varía de endpoint a endpoint y duplicas código. Con un solo <code>@RestControllerAdvice</code> capturas todas las excepciones en un solo lugar y garantizas respuestas uniformes en toda la API.
+      </div>
+    </div>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Excepción</th><th>Causa</th><th>Status code</th><th>Mensaje de ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td><code>MethodArgumentNotValidException</code></td><td>@Valid falló en el DTO</td><td><span class="s4">400</span></td><td>"nombre: no puede estar vacío"</td></tr>
+          <tr><td><code>PlatoNoEncontradoException</code></td><td>GET/PUT con id inexistente</td><td><span class="s4">404</span></td><td>"Plato no encontrado con id: 99"</td></tr>
+          <tr><td><code>PlatoYaExisteException</code></td><td>POST con nombre duplicado</td><td><span class="s4">409</span></td><td>"Ya existe un plato: Tacos"</td></tr>
+          <tr><td><code>EstadoInvalidoException</code></td><td>Cambio de estado inválido</td><td><span class="s4">422</span></td><td>"Un pedido EN_PREPARACION no puede cancelarse"</td></tr>
+          <tr><td><code>Exception</code></td><td>Cualquier error no previsto</td><td><span class="s5">500</span></td><td>"Algo salió mal, intenta de nuevo"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Pausa rápida</span>
+        <span class="qi-title">Exception Handler — prueba en vivo</span>
+      </div>
+      <div class="qi-q">Haz un POST con body vacío al endpoint de tu restaurante. ¿Qué recibes?</div>
+      <div class="qi-a">Deberías recibir un 400 con el formato ErrorResponseDTO — timestamp, status, error, message, path. Si recibes un HTML o un stack trace crudo → el GlobalExceptionHandler no está configurado.</div>
+      <div class="qi-q">¿Por qué el @ExceptionHandler de Exception.class va al final?</div>
+      <div class="qi-a">Spring evalúa los handlers de más específico a más general. Si el genérico fuera primero, capturaría todo antes de que los específicos puedan actuar.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== STREAMS ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 06</div>
+      <div class="sc-title">Streams —<br><span>Listas sin BD</span></div>
+      <div class="sc-desc">Sin base de datos todavía, todo vive en listas y mapas en memoria. Los Streams son la forma elegante de consultarlos — y seguirán siendo útiles cuando llegue la BD.</div>
+    </div>
+    <div class="sc-right">🌊</div>
+  </div>
+  <section class="section" id="streams">
+    <div class="section-header">
+      <div class="section-icon">🌊</div>
+      <div>
+        <span class="section-num">SECCIÓN 06</span>
+        <div class="section-title">Streams — Manejo de listas sin BD (por ahora)</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">📌</span>
+      <div><strong>Contexto:</strong> Sin base de datos aún, los servicios usan <code>Map&lt;Long, Plato&gt;</code> y <code>List&lt;Pedido&gt;</code> en memoria. Los Streams son la forma de consultar, filtrar y transformar esas colecciones de forma elegante — y también los usaremos cuando tengamos BD.</div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Pipeline de un Stream en el Service</div>
+      <div class="mermaid">
+flowchart LR
+    SRC["📦 Colección\nplatos.values()\no pedidos"] --> FIL
+    FIL["🔍 filter()\n¿cumple la condición?"] --> MAP
+    MAP["🔄 map()\nTransforma\nPlato → DTO"] --> COL
+    COL["📋 collect() / findFirst()\n/ anyMatch() / count()"] --> RES["✅ Resultado"]
+
+    style SRC fill:#eaf5fb
+    style FIL fill:#fff8ec
+    style MAP fill:#e8f7ef
+    style COL fill:#f3eeff
+    style RES fill:#d1f5e0
+      </div>
+    </div>
+
+    <pre><code>// service/PlatoServiceImpl.java — operaciones del Service usando Streams
+
+// ── Obtener toda la carta (Map → List de DTOs) ─────────────────────────
+@Override
+public List&lt;PlatoResponseDTO&gt; obtenerTodos() {
+    return platos.values().stream()          // Stream de todos los Plato
+        .map(mapperOut::toDTO)               // transforma cada Plato a DTO
+        .collect(Collectors.toList());        // colecta a lista
+}
+
+// ── Filtrar solo los disponibles ───────────────────────────────────────
+@Override
+public List&lt;PlatoResponseDTO&gt; obtenerDisponibles() {
+    return platos.values().stream()
+        .filter(Plato::isDisponible)         // solo los disponibles
+        .map(mapperOut::toDTO)
+        .toList();                            // Java 16+: .toList() en vez de collect(toList())
+}
+
+// ── Buscar por categoría ───────────────────────────────────────────────
+@Override
+public List&lt;PlatoResponseDTO&gt; obtenerPorCategoria(String categoria) {
+    return platos.values().stream()
+        .filter(p -> p.getCategoria().equalsIgnoreCase(categoria))
+        .map(mapperOut::toDTO)
+        .toList();
+}
+
+// ── Verificar si nombre ya existe (devuelve boolean) ───────────────────
+private boolean nombreExiste(String nombre) {
+    return platos.values().stream()
+        .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre));
+}
+
+// ── Buscar por id o lanzar excepción ──────────────────────────────────
+private Plato buscarOLanzar(Long id) {
+    return Optional.ofNullable(platos.get(id))
+        .orElseThrow(() -> new PlatoNoEncontradoException("Plato no encontrado: " + id));
+}
+
+// ── En PedidoService: resumen del día con streams ─────────────────────
+public ResumenDiaDTO resumenDelDia() {
+
+    long totalPedidos = pedidos.stream().count();
+
+    double ingresoTotal = pedidos.stream()
+        .flatMap(p -> p.getItems().stream())        // aplana la lista de items de todos los pedidos
+        .mapToDouble(item -> item.getPrecio() * item.getCantidad())
+        .sum();
+
+    Map&lt;String, Long&gt; platosMasPedidos = pedidos.stream()
+        .flatMap(p -> p.getItems().stream())
+        .collect(Collectors.groupingBy(
+            item -> item.getNombrePlato(),
+            Collectors.counting()
+        ));
+
+    return new ResumenDiaDTO(totalPedidos, ingresoTotal, platosMasPedidos);
+}</code></pre>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Pausa rápida</span>
+        <span class="qi-title">Streams — prueba en tu código</span>
+      </div>
+      <div class="qi-q">¿Cuál es la diferencia entre <code>map()</code> y <code>flatMap()</code>?</div>
+      <div class="qi-a">map() transforma cada elemento 1-a-1. flatMap() aplana listas dentro de listas — si cada pedido tiene una lista de items, flatMap convierte esa lista de listas en una sola secuencia de items.</div>
+      <div class="qi-q">¿Por qué usar <code>anyMatch()</code> en vez de <code>filter().count() > 0</code>?</div>
+      <div class="qi-a">anyMatch() para en cuanto encuentra el primer elemento que cumple la condición. filter().count() procesa toda la colección aunque ya encontró una coincidencia — es innecesariamente lento.</div>
+      <div class="qi-q">¿Qué hace <code>groupingBy()</code>?</div>
+      <div class="qi-a">Agrupa los elementos por una clave y los colecta en un Map — el equivalente de un GROUP BY en SQL. Muy útil para los reportes del restaurante.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== PRUEBAS ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 07</div>
+      <div class="sc-title">Pruebas con <span>Mocks</span> —<br>Confía pero verifica</div>
+      <div class="sc-desc">Al probar el Service no quieres que las pruebas dependan de la BD ni del Controller. Un mock es un doble que tú controlas.</div>
+    </div>
+    <div class="sc-right">🧪</div>
+  </div>
+  <section class="section" id="pruebas">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <div>
+        <span class="section-num">SECCIÓN 07</span>
+        <div class="section-title">Pruebas con Mocks, Stubs y el diagrama de componentes de pruebas</div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🎭</span>
+      <div>
+        <strong>¿Por qué mocks?</strong> Al probar el <em>Service</em>, no quieres que las pruebas dependan del Controller ni de la BD. Un <strong>Mock</strong> es un doble de una dependencia que tú controlas — puedes decirle "cuando te llamen con este input, devuelve este output" sin que exista la implementación real.
+      </div>
+    </div>
+
+    <h3 style="margin:20px 0 14px;font-size:1.05rem;">Vocabulario de dobles de prueba</h3>
+
+    <div class="grid-3">
+      <div class="concepto">
+        <h3>Stub</h3>
+        <p>Devuelve datos predefinidos. No verifica si fue llamado. Solo "responde" lo que le programas. Útil para simular el Repository con datos fijos.</p>
+      </div>
+      <div class="concepto">
+        <h3>Mock</h3>
+        <p>Devuelve datos predefinidos Y verifica si fue llamado (cuántas veces, con qué argumentos). Con Mockito: <code>verify(mock, times(1)).metodo()</code>.</p>
+      </div>
+      <div class="concepto">
+        <h3>Spy</h3>
+        <p>Envuelve un objeto real — llama el método real pero también verifica las interacciones. Útil cuando quieres comportamiento real pero monitoreado.</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama de componentes de prueba — qué se mockea y qué se prueba real</div>
+      <div class="mermaid">
+flowchart TB
+    subgraph TEST["🧪 Clase de Prueba — PlatoServiceTest"]
+        direction TB
+        SUT["🎯 SUT (Subject Under Test)\nPlatoServiceImpl\n— REAL, instanciado en el test"]
+        
+        subgraph MOCKS["🎭 Dependencias Mockeadas (no reales)"]
+            MI["PlatoMapperIn\n@Mock"]
+            MO["PlatoMapperOut\n@Mock"]
+        end
+
+        ASSERT["✅ Assertions\nassertEquals, assertThrows\nassertNotNull, verify(mock)"]
+    end
+
+    MI -- "when(mapperIn.toDomain(dto)).thenReturn(plato)" --> SUT
+    MO -- "when(mapperOut.toDTO(plato)).thenReturn(dto)" --> SUT
+    SUT --> ASSERT
+
+    style SUT fill:#3d8b5e,color:#fff
+    style TEST fill:#e8f7ef
+    style MOCKS fill:#fff8ec
+    style ASSERT fill:#d1f5e0
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">📌</span>
+      <div>
+        <strong>Nota sobre los diagramas de componentes:</strong> El diagrama anterior es una simplificación para entender el concepto. Los diagramas de componentes que entreguen en el proyecto deben seguir el esquema UML formal con los símbolos de Componente, Puerto e Interfaz. Este diagrama es solo para visualizar qué se mockea.
+      </div>
+    </div>
+
+    <h3 style="margin:28px 0 14px;font-size:1.05rem;">Implementación — PlatoServiceTest con JUnit 5 + Mockito</h3>
+
+    <pre><code>// test/service/PlatoServiceTest.java
+@ExtendWith(MockitoExtension.class)   // ← activa Mockito en JUnit 5
+class PlatoServiceTest {
+
+    // ── Mocks de las dependencias ─────────────────────────────────────────
+    @Mock
+    private PlatoMapperIn  mapperIn;   // ← Mockito crea un doble vacío
+
+    @Mock
+    private PlatoMapperOut mapperOut;
+
+    // ── El servicio real, construido con los mocks inyectados ─────────────
+    @InjectMocks
+    private PlatoServiceImpl platoService;   // ← Mockito inyecta los @Mock en el constructor
+
+    // ── Fixtures — datos de prueba reutilizables ─────────────────────────
+    private PlatoRequestDTO  requestDto;
+    private PlatoResponseDTO responseDto;
+    private Plato            platoEntidad;
+
+    @BeforeEach   // se ejecuta antes de CADA test
+    void setUp() {
+        requestDto   = new PlatoRequestDTO("Tacos", 15000.0, "PLATO_FUERTE", "Deliciosos tacos");
+        platoEntidad = new Plato(null, "Tacos", 15000.0, "PLATO_FUERTE", "Deliciosos tacos", true);
+        responseDto  = new PlatoResponseDTO(1L, "Tacos", 15000.0, "PLATO_FUERTE", true);
+    }
+
+    // ── ESCENARIO EXITOSO: crear un plato nuevo ───────────────────────────
+    @Test
+    @DisplayName("✅ Crear plato válido — debe retornar ResponseDTO con id asignado")
+    void crear_platoValido_debeRetornarResponseDTO() {
+
+        // GIVEN — comportamiento de los mocks
+        when(mapperIn.toDomain(requestDto)).thenReturn(platoEntidad);
+        when(mapperOut.toDTO(any(Plato.class))).thenReturn(responseDto);
+
+        // WHEN — ejecutar el método bajo prueba
+        PlatoResponseDTO resultado = platoService.crear(requestDto);
+
+        // THEN — verificar el resultado
+        assertNotNull(resultado);
+        assertEquals("Tacos", resultado.nombre());
+        assertEquals(15000.0, resultado.precio());
+        verify(mapperIn, times(1)).toDomain(requestDto);   // ← verifica que el mapper fue llamado
+        verify(mapperOut, times(1)).toDTO(any(Plato.class));
+    }
+
+    // ── ESCENARIO DE ERROR: nombre duplicado → debe lanzar excepción ──────
+    @Test
+    @DisplayName("❌ Crear plato con nombre duplicado — debe lanzar PlatoYaExisteException")
+    void crear_nombreDuplicado_debeLanzarExcepcion() {
+
+        // GIVEN — primero creamos el plato (sin mocks para este paso simple)
+        when(mapperIn.toDomain(requestDto)).thenReturn(platoEntidad);
+        when(mapperOut.toDTO(any(Plato.class))).thenReturn(responseDto);
+        platoService.crear(requestDto);   // primer creado — queda en el map
+
+        // WHEN & THEN — el segundo intento debe lanzar la excepción
+        PlatoYaExisteException ex = assertThrows(
+            PlatoYaExisteException.class,
+            () -> platoService.crear(requestDto)   // ← mismo nombre → debe fallar
+        );
+
+        assertTrue(ex.getMessage().contains("Tacos"));
+    }
+
+    // ── ESCENARIO DE ERROR: plato no encontrado → 404 ────────────────────
+    @Test
+    @DisplayName("❌ Buscar plato inexistente — debe lanzar PlatoNoEncontradoException")
+    void buscarPorId_idInexistente_debeLanzarExcepcion() {
+
+        // WHEN & THEN
+        assertThrows(
+            PlatoNoEncontradoException.class,
+            () -> platoService.buscarPorId(999L)   // ← id que no existe
+        );
+
+        // Verificar que el mapper de salida NUNCA fue llamado (no llegó a mapear)
+        verifyNoInteractions(mapperOut);
+    }
+
+    // ── ESCENARIO: obtener platos disponibles filtra correctamente ─────────
+    @Test
+    @DisplayName("✅ Obtener disponibles — solo devuelve platos con disponible=true")
+    void obtenerDisponibles_debeRetornarSoloDisponibles() {
+
+        // GIVEN — creamos dos platos: uno disponible y uno no
+        when(mapperIn.toDomain(requestDto)).thenReturn(platoEntidad);
+        when(mapperOut.toDTO(any(Plato.class))).thenReturn(responseDto);
+        platoService.crear(requestDto);
+
+        PlatoRequestDTO agotadoDto = new PlatoRequestDTO("Salmón", 35000.0, "PLATO_FUERTE", "");
+        Plato platoAgotado = new Plato(null, "Salmón", 35000.0, "PLATO_FUERTE", "", false); // disponible=false
+        when(mapperIn.toDomain(agotadoDto)).thenReturn(platoAgotado);
+        platoService.crear(agotadoDto);
+
+        // WHEN
+        List&lt;PlatoResponseDTO&gt; disponibles = platoService.obtenerDisponibles();
+
+        // THEN
+        assertEquals(1, disponibles.size());   // solo Tacos (disponible=true)
+    }
+
+    // ── ESCENARIO: cambiar estado de pedido en estado incorrecto ──────────
+    @Test
+    @DisplayName("❌ Cambiar estado de pedido EN_PREPARACION a CANCELADO — debe lanzar EstadoInvalidoException")
+    void cambiarEstado_pedidoEnPreparacion_noPuedeCancelarse() {
+
+        // GIVEN — crear un pedido y avanzar su estado
+        // (esto dependería de la implementación de PedidoService — aquí el patrón es igual)
+        assertThrows(
+            EstadoInvalidoException.class,
+            () -> platoService.cambiarEstado(1L, EstadoPedido.CANCELADO)
+        );
+    }
+}</code></pre>
+
+    <h3 style="margin:28px 0 14px;font-size:1.05rem;">Cobertura y análisis estático</h3>
+
+    <pre><code"># Ejecutar pruebas con cobertura (JaCoCo)
+mvn test jacoco:report
+
+# Ver el reporte: target/site/jacoco/index.html
+# Busca que el Service tenga > 80% de cobertura de branches
+
+# Análisis estático con Checkstyle (verifica estilo de código)
+mvn checkstyle:check
+
+# SpotBugs (encuentra bugs potenciales)
+mvn spotbugs:check</code></pre>
+
+    <div class="callout key">
+      <span class="callout-icon">📊</span>
+      <div>
+        <strong>Escenarios que SIEMPRE debes cubrir en el Service:</strong><br>
+        ✅ Caso exitoso (happy path) — el flujo normal funciona<br>
+        ✅ Recurso no encontrado — lanza la excepción correcta<br>
+        ✅ Duplicado / conflicto — lanza la excepción correcta<br>
+        ✅ Estado inválido — lanza la excepción correcta<br>
+        ✅ Lista vacía — devuelve lista vacía, no null ni excepción
+      </div>
+    </div>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Verificación en clase</span>
+        <span class="qi-title">Pruebas — ¿corren todas en verde?</span>
+      </div>
+      <div class="qi-q">Ejecuten <code>mvn test</code>. ¿Cuántas pruebas pasaron? ¿Hay alguna en rojo?</div>
+      <div class="qi-a">Si todas están en verde → continúen. Si alguna falla, léan el mensaje de error — Mockito les dice exactamente qué esperaba vs qué recibió.</div>
+      <div class="qi-q">¿Cuál es la diferencia entre @Mock y @InjectMocks?</div>
+      <div class="qi-a">@Mock crea un doble vacío de una dependencia. @InjectMocks crea la clase real bajo prueba e inyecta los @Mock en su constructor. El SUT siempre es @InjectMocks.</div>
+      <div class="qi-q">¿Qué verifica <code>verify(mock, times(1)).metodo()</code>?</div>
+      <div class="qi-a">Que el método fue llamado exactamente una vez durante la ejecución de la prueba. Si no fue llamado o fue llamado más veces, la prueba falla.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== DIAGRAMAS DE SECUENCIA ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Sección 08</div>
+      <div class="sc-title">Diagramas de<br><span>Secuencia</span></div>
+      <div class="sc-desc">¿Quién le habla a quién y en qué orden? El diagrama de secuencia muestra el flujo de mensajes en el tiempo para un caso de uso concreto.</div>
+    </div>
+    <div class="sc-right">📐</div>
+  </div>
+  <section class="section" id="secuencia">
+    <div class="section-header">
+      <div class="section-icon">📐</div>
+      <div>
+        <span class="section-num">SECCIÓN 08</span>
+        <div class="section-title">Diagramas de Secuencia</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">📋</span>
+      <div>
+        <strong>¿Qué muestra un diagrama de secuencia?</strong> La interacción entre los componentes <em>a lo largo del tiempo</em>. No la estructura (eso es el diagrama de componentes), sino el <em>flujo concreto de mensajes</em> para un caso de uso específico. Cada línea vertical es un componente (lifeline), cada flecha es un mensaje.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="concepto">
+        <h3>Lifeline (Línea de vida)</h3>
+        <p>Línea vertical discontinua con el nombre del componente arriba. Representa un participante activo en la interacción (Controller, Service, Repository, etc.).</p>
+      </div>
+      <div class="concepto">
+        <h3>Mensajes síncronos / asíncronos</h3>
+        <p>Flecha sólida = síncrono (espera respuesta). Flecha discontinua = respuesta de retorno. Flecha abierta = asíncrono (no espera).</p>
+      </div>
+      <div class="concepto">
+        <h3>Activation bar</h3>
+        <p>Rectángulo delgado sobre la lifeline — indica que ese componente está activo procesando una petición.</p>
+      </div>
+      <div class="concepto">
+        <h3>Fragmentos (alt, opt, loop)</h3>
+        <p><code>alt</code> para condiciones (como if/else). <code>opt</code> para acciones opcionales. <code>loop</code> para repeticiones. Se etiquetan en la esquina superior izquierda de la caja.</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama de Secuencia — Crear un plato en el restaurante (happy path + error)</div>
+      <div class="mermaid">
+sequenceDiagram
+    actor C as 🧑 Cliente/Postman
+    participant CTL as 🎯 PlatoController
+    participant VLD as ✅ @Valid (Spring)
+    participant SVC as ⚙️ PlatoService
+    participant MAP as 🔄 Mappers
+    participant GEH as 🛡️ GlobalExceptionHandler
+
+    C->>CTL: POST /api/v1/platos\n{nombre:"Tacos", precio:15000}
+    CTL->>VLD: validar PlatoRequestDTO
+
+    alt ❌ Validación de input falla
+        VLD-->>GEH: MethodArgumentNotValidException
+        GEH-->>C: 400 Bad Request\n{error: "nombre: no puede estar vacío"}
+    else ✅ Input válido
+        VLD-->>CTL: DTO válido
+        CTL->>SVC: crear(dto)
+        SVC->>SVC: verificar nombre duplicado (stream)
+
+        alt ❌ Nombre ya existe
+            SVC-->>GEH: PlatoYaExisteException
+            GEH-->>C: 409 Conflict\n{error: "Ya existe: Tacos"}
+        else ✅ Nombre disponible
+            SVC->>MAP: mapperIn.toDomain(dto)
+            MAP-->>SVC: Plato (entidad de negocio)
+            SVC->>SVC: asignar id, guardar en Map
+            SVC->>MAP: mapperOut.toDTO(plato)
+            MAP-->>SVC: PlatoResponseDTO
+            SVC-->>CTL: PlatoResponseDTO
+            CTL-->>C: 201 Created\n{id:1, nombre:"Tacos", ...}
+        end
+    end
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama de Secuencia — Confirmar pedido y enviar a cocina</div>
+      <div class="mermaid">
+sequenceDiagram
+    actor M as 🧑 Mesero/App
+    participant PC as 🎯 PedidoController
+    participant PS as ⚙️ PedidoService
+    participant PLS as ⚙️ PlatoService
+    participant MAP as 🔄 Mappers
+    participant GEH as 🛡️ GlobalExceptionHandler
+
+    M->>PC: POST /api/v1/pedidos\n{mesa:3, idPlatos:[1,2], notas:"sin picante"}
+    PC->>PS: confirmar(pedidoRequestDTO)
+
+    loop Para cada id de plato en la lista
+        PS->>PLS: buscarPorId(idPlato)
+        alt ❌ Plato no encontrado
+            PLS-->>GEH: PlatoNoEncontradoException
+            GEH-->>M: 404 Not Found\n{error: "Plato no encontrado: 2"}
+        else ✅ Plato existe
+            PLS-->>PS: PlatoResponseDTO
+        end
+        PS->>PS: verificar disponibilidad del plato
+        opt ❌ Plato no disponible
+            PS-->>GEH: PlatoNoDisponibleException
+            GEH-->>M: 422 Unprocessable\n{error: "Plato agotado"}
+        end
+    end
+
+    PS->>MAP: mapperIn.toPedidoDomain(dto, platos)
+    MAP-->>PS: Pedido (estado: RECIBIDO, timestamp: ahora)
+    PS->>PS: guardar en lista de pedidos
+    PS->>MAP: mapperOut.toDTO(pedido)
+    MAP-->>PS: PedidoResponseDTO
+    PS-->>PC: PedidoResponseDTO
+    PC-->>M: 201 Created\n{id:42, mesa:3, estado:"RECIBIDO", ...}
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-icon">📌</span>
+      <div>
+        <strong>Para el proyecto:</strong> Los diagramas de secuencia que entreguen en el README deben hacerse en Lucidchart o draw.io con los elementos formales UML (lifelines, activation bars, fragmentos alt/opt/loop). Los diagramas de esta guía son para entender el flujo, no el formato de entrega final.
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== DIAGRAMAS: ACLARACIÓN ===== -->
+  <div class="section-cover">
+    <div class="sc-left">
+      <div class="sc-badge">Referencia</div>
+      <div class="sc-title">¿Qué va en <span>cada diagrama</span>?</div>
+      <div class="sc-desc">La confusión más común. Cada diagrama tiene un propósito distinto y elementos distintos — mezclarlos es uno de los errores más frecuentes en la entrega.</div>
+    </div>
+    <div class="sc-right">🗂️</div>
+  </div>
+
+  <section class="section" id="diagramas-aclaracion">
+    <div class="section-header">
+      <div class="section-icon">🗂️</div>
+      <div>
+        <span class="section-num">REFERENCIA</span>
+        <div class="section-title">Los tres diagramas del proyecto — qué contiene cada uno</div>
+      </div>
+    </div>
+
+    <div class="callout danger">
+      <span class="callout-icon">🚨</span>
+      <div><strong>Error frecuente:</strong> Poner DTOs, anotaciones Spring o entidades JPA en el diagrama de clases. O meter el dominio de negocio en el diagrama de componentes. Cada diagrama habla de una capa distinta del sistema.</div>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:28px">
+      <div style="background:#e8f7ef;border-radius:12px;padding:22px;border-top:4px solid var(--verde)">
+        <div style="font-size:.75rem;font-weight:700;color:var(--verde);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Diagrama de Clases</div>
+        <p style="font-size:.88rem;color:var(--gris-osc);line-height:1.7;margin-bottom:12px">Muestra las <strong>entidades puras del dominio</strong> con sus atributos, métodos y relaciones. Si una clase tiene <code>@Service</code>, <code>@Entity</code> o <code>@RestController</code>, <strong>no va aquí</strong>.</p>
+        <div style="font-size:.8rem;color:var(--verde);font-weight:600;margin-bottom:4px">✅ Va en este diagrama:</div>
+        <div style="font-size:.8rem;color:var(--gris-med);line-height:1.6">Plato · Mesa · Pedido · ItemPedido · Cuenta · Reserva · RegistroVehiculo · EstadoPedido (enum) · EstadoMesa (enum)</div>
+        <div style="font-size:.8rem;color:var(--danger);font-weight:600;margin-top:8px;margin-bottom:4px">❌ No va aquí:</div>
+        <div style="font-size:.8rem;color:var(--gris-med);line-height:1.6">PlatoController · PlatoService · PlatoRequestDTO · PlatoResponseDTO · PlatoMapper</div>
+      </div>
+
+      <div style="background:#eaf5fb;border-radius:12px;padding:22px;border-top:4px solid var(--info)">
+        <div style="font-size:.75rem;font-weight:700;color:var(--info);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Diagrama de Componentes Específico</div>
+        <p style="font-size:.88rem;color:var(--gris-osc);line-height:1.7;margin-bottom:12px">Muestra la <strong>arquitectura interna del sistema</strong> en detalle: componentes, sus interfaces y cómo se conectan entre capas. Símbolos UML formales: componente (rectángulo con pestañitas), lollipop (○—), socket (⌒).</p>
+        <div style="font-size:.8rem;color:var(--info);font-weight:600;margin-bottom:4px">✅ Va en este diagrama:</div>
+        <div style="font-size:.8rem;color:var(--gris-med);line-height:1.6">PlatoController · IPlatoService · PlatoServiceImpl · IPlatoMapper · PlatoMapperImpl · IPlatoRepository (semana 9)</div>
+        <div style="font-size:.8rem;color:var(--danger);font-weight:600;margin-top:8px;margin-bottom:4px">❌ No va aquí:</div>
+        <div style="font-size:.8rem;color:var(--gris-med);line-height:1.6">Atributos de los objetos · Código de los métodos · DTOs internos</div>
+      </div>
+
+      <div style="background:#f3eeff;border-radius:12px;padding:22px;border-top:4px solid var(--tip)">
+        <div style="font-size:.75rem;font-weight:700;color:var(--tip);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Diagrama de Componentes General</div>
+        <p style="font-size:.88rem;color:var(--gris-osc);line-height:1.7;margin-bottom:12px">Vista <strong>macro del sistema completo</strong>: el Core Backend, el Frontend Web, los sistemas externos (Maps, IA, pagos) y cómo se conectan entre sí. No entra al detalle de las capas internas.</p>
+        <div style="font-size:.8rem;color:var(--tip);font-weight:600;margin-bottom:4px">✅ Va en este diagrama:</div>
+        <div style="font-size:.8rem;color:var(--gris-med);line-height:1.6">Sistema Core (Spring Boot) · Sistema Web (React) · Base de Datos · APIs externas (Maps, pagos, IA) · Actores principales</div>
+        <div style="font-size:.8rem;color:var(--danger);font-weight:600;margin-top:8px;margin-bottom:4px">❌ No va aquí:</div>
+        <div style="font-size:.8rem;color:var(--gris-med);line-height:1.6">Controllers individuales · Services · Capas internas del backend</div>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Resumen visual — qué elemento va en qué diagrama</div>
+      <div class="mermaid">
+flowchart LR
+    subgraph DC["🏗️ Diagrama de CLASES"]
+        E1["Plato\n—atributos\n—métodos"]
+        E2["Pedido\n—atributos\n—métodos"]
+        E3["EstadoPedido\n«enum»"]
+        E1 --- E2
+        E2 --- E3
+    end
+    subgraph DE["⚙️ Componentes ESPECÍFICO"]
+        C1["PlatoController\n«component»"]
+        C2["IPlatoService\n«interface»"]
+        C3["PlatoServiceImpl\n«component»"]
+        C4["IPlatoMapper\n«interface»"]
+        C1 --> C2
+        C2 --> C3
+        C3 --> C4
+    end
+    subgraph DG["🌐 Componentes GENERAL"]
+        S1["Core Backend\n Spring Boot"]
+        S2["Frontend\nReact"]
+        S3["Base de Datos\nPostgreSQL"]
+        S4["API Externa\nMaps / IA"]
+        S2 <--> S1
+        S1 <--> S3
+        S1 <--> S4
+    end
+    style DC fill:#e8f7ef
+    style DE fill:#eaf5fb
+    style DG fill:#f3eeff
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🌿</span>
+      <div><strong>La regla de los tres NO:</strong> El diagrama de clases no tiene anotaciones Spring. El diagrama de componentes específico no tiene atributos de negocio. El diagrama general no tiene detalles de capas internas. Si alguno los tiene, está mezclando capas.</div>
+    </div>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Pausa rápida</span>
+        <span class="qi-title">Diagramas — ¿dónde va cada cosa?</span>
+      </div>
+      <div class="qi-q">¿Dónde va <code>PlatoServiceImpl</code> — en el diagrama de clases o en el de componentes?</div>
+      <div class="qi-a">En el diagrama de Componentes Específico. Tiene @Service de Spring — no es una entidad del dominio puro.</div>
+      <div class="qi-q">¿El diagrama de componentes general muestra PlatoController?</div>
+      <div class="qi-a">No. Muestra el sistema Core (Spring Boot) como un bloque. El detalle de qué hay adentro va en el diagrama de componentes específico.</div>
+      <div class="qi-q">¿Los DTOs van en el diagrama de clases?</div>
+      <div class="qi-a">No. Los DTOs son objetos de transferencia — no representan conceptos del dominio ni tienen comportamiento de negocio. No van en ninguno de los tres diagramas.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== EJERCICIO STEP BY STEP ===== -->
+  <section class="section" id="ejercicio">
+    <div class="section-header">
+      <div class="section-icon">🚀</div>
+      <div>
+        <span class="section-num">EJERCICIO HOY</span>
+        <div class="section-title">Construye tu restaurante — Step by Step</div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🍴</span>
+      <div>
+        <strong>Punto de partida:</strong> La semana pasada construiste el scaffolding — estructura de paquetes, Maven, dependencias y las capas vacías. <strong>Hoy implementamos funcionalidades reales.</strong> Cada equipo tiene su concepto propio, pero todos implementan las mismas agrupaciones funcionales.
+      </div>
+    </div>
+
+    <!-- PASO 0: FUNCIONALIDADES -->
+    <h3 style="margin:28px 0 16px;font-size:1.15rem;color:var(--gris-osc);">🧠 Paso 0 — Antes de escribir código: mapea tus funcionalidades</h3>
+
+    <p style="margin-bottom:16px;font-size:.95rem;">Un error común es empezar a crear clases sin saber qué van a hacer. El primer paso es listar <strong>todas las funcionalidades</strong> del sistema y agruparlas por dominio — eso te dice cuántos controllers, servicios y cuáles pueden compartirse.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Funcionalidad</th><th>Descripción</th><th>¿Qué necesita?</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>🗓️ Gestión de Reservas</strong></td>
+            <td>Crear una reserva para una mesa, actualizar datos, cancelar, consultar por usuario. También contempla entrar sin reserva (walk-in).</td>
+            <td>ReservaController · IReservaService · Reserva (dominio)</td>
+          </tr>
+          <tr>
+            <td><strong>🍽️ Gestión del Menú</strong></td>
+            <td>Ver la carta completa, filtrar por categoría, marcar platos como disponibles o agotados, ver descripción y precio.</td>
+            <td>MenuController · IPlatoService (reutilizado) · Plato (dominio)</td>
+          </tr>
+          <tr>
+            <td><strong>🍳 Gestión de Platos</strong></td>
+            <td>Crear un plato, editar nombre/precio/descripción, eliminar de la carta. Solo el administrador.</td>
+            <td>PlatoController · IPlatoService · Plato (dominio)</td>
+          </tr>
+          <tr>
+            <td><strong>📋 Gestión de Órdenes/Pedidos</strong></td>
+            <td>Confirmar un pedido con lista de platos y mesa, cambiar estado (cocina), ver pedidos activos, cancelar si está en RECIBIDO.</td>
+            <td>PedidoController · IPedidoService · IPlatoService (reutilizado)</td>
+          </tr>
+          <tr>
+            <td><strong>🅿️ Gestión de Parqueadero</strong></td>
+            <td>Registrar entrada de vehículo, registrar salida, consultar disponibilidad de cupos, listar vehículos activos.</td>
+            <td>ParqueaderoController · IParqueaderoService · RegistroVehiculo (dominio)</td>
+          </tr>
+          <tr>
+            <td><strong>📊 Reportes del Día</strong></td>
+            <td>Plato más pedido, ingresos por categoría, total de pedidos, mesas con cuenta abierta. Solo con streams (sin BD).</td>
+            <td>ReporteController · IReporteService · reutiliza IPedidoService + IPlatoService</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div>
+        <strong>¿Cuántos controllers necesito?</strong> Un controller por agrupación funcional — no uno por entidad. <code>MenuController</code> y <code>PlatoController</code> pueden compartir el mismo <code>IPlatoService</code>. La diferencia es semántica: el menú es lo que ve el cliente, los platos son lo que administra el gerente. Mismo servicio, distintos endpoints, distintas rutas, distintas validaciones.
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">¿Cuándo reutilizar un servicio entre controllers?</div>
+      <div class="mermaid">
+flowchart TB
+    subgraph CTRL["🎯 Controllers — uno por agrupación funcional"]
+        MC["MenuController\n/api/v1/menu\n(solo GET — vista del cliente)"]
+        PC["PlatoController\n/api/v1/platos\n(CRUD — administración)"]
+        PEC["PedidoController\n/api/v1/pedidos"]
+        RC["ReservaController\n/api/v1/reservas"]
+        PKC["ParqueaderoController\n/api/v1/parqueadero"]
+        REP["ReporteController\n/api/v1/reportes"]
+    end
+
+    subgraph SVC["⚙️ Services — reutilizables entre controllers"]
+        PS["IPlatoService\n✦ obtenerTodos()\n✦ obtenerDisponibles()\n✦ buscarPorId()\n✦ crear() · actualizar() · eliminar()"]
+        PES["IPedidoService\n✦ confirmar()\n✦ cambiarEstado()\n✦ listarActivos()"]
+        RS["IReservaService\n✦ crear()\n✦ actualizar()\n✦ cancelar()\n✦ buscarPorUsuario()"]
+        PKS["IParqueaderoService\n✦ registrarEntrada()\n✦ registrarSalida()\n✦ disponibilidad()"]
+        REPS["IReporteService\n✦ resumenDia()"]
+    end
+
+    MC -- "solo lee" --> PS
+    PC -- "crea/edita/elimina" --> PS
+    PEC --> PES
+    PEC -- "verifica disponibilidad" --> PS
+    REP --> REPS
+    REPS -- "consulta datos" --> PES
+    REPS -- "consulta platos" --> PS
+    RC --> RS
+    PKC --> PKS
+
+    style CTRL fill:#eaf5fb
+    style SVC fill:#e8f7ef
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">🔁</span>
+      <div>
+        <strong>La clave de la reutilización:</strong> <code>PedidoService</code> necesita saber si un plato existe y está disponible antes de confirmarlo. En vez de duplicar esa lógica, <strong>inyecta <code>IPlatoService</code> dentro de <code>PedidoServiceImpl</code></strong>. Un servicio puede depender de otro servicio — siempre via interfaz, nunca via implementación concreta.
+      </div>
+    </div>
+
+    <!-- PASO 1 -->
+    <h3 style="margin:36px 0 16px;font-size:1.15rem;">📁 Paso 1 — Estructura de paquetes completa</h3>
+
+    <pre><code>src/main/java/edu/dosw/restaurante/
+├── controller/
+│   ├── MenuController.java          ← GET /menu   (vista del cliente)
+│   ├── PlatoController.java         ← CRUD /platos (administración)
+│   ├── PedidoController.java        ← POST/PATCH /pedidos
+│   ├── ReservaController.java       ← CRUD /reservas
+│   ├── ParqueaderoController.java   ← POST /parqueadero
+│   └── ReporteController.java       ← GET /reportes/resumen
+│
+├── service/
+│   ├── IPlatoService.java           ← interfaz del contrato
+│   ├── IPedidoService.java
+│   ├── IReservaService.java
+│   ├── IParqueaderoService.java
+│   ├── IReporteService.java
+│   └── impl/
+│       ├── PlatoServiceImpl.java    ← implementación real
+│       ├── PedidoServiceImpl.java   ← inyecta IPlatoService
+│       ├── ReservaServiceImpl.java
+│       ├── ParqueaderoServiceImpl.java
+│       └── ReporteServiceImpl.java  ← inyecta IPedido + IPlato
+│
+├── domain/                          ← ENTIDADES DE NEGOCIO (las del diagrama de clases)
+│   ├── Plato.java                   ← sin @Entity, sin anotaciones Spring
+│   ├── Pedido.java
+│   ├── ItemPedido.java
+│   ├── Reserva.java
+│   ├── RegistroVehiculo.java
+│   └── enums/
+│       ├── EstadoPedido.java
+│       ├── EstadoReserva.java
+│       └── CategoriaPlato.java
+│
+├── dto/
+│   ├── request/
+│   │   ├── PlatoRequestDTO.java     ← @Valid aquí
+│   │   ├── PedidoRequestDTO.java
+│   │   ├── ReservaRequestDTO.java
+│   │   └── EntradaVehiculoRequestDTO.java
+│   └── response/
+│       ├── PlatoResponseDTO.java
+│       ├── PedidoResponseDTO.java
+│       ├── ReservaResponseDTO.java
+│       └── ErrorResponseDTO.java
+│
+├── mapper/
+│   ├── in/   ← RequestDTO → Entidad de Negocio
+│   │   ├── PlatoMapperIn.java
+│   │   ├── PedidoMapperIn.java
+│   │   └── ReservaMapperIn.java
+│   └── out/  ← Entidad de Negocio → ResponseDTO
+│       ├── PlatoMapperOut.java
+│       ├── PedidoMapperOut.java
+│       └── ReservaMapperOut.java
+│
+├── exception/
+│   ├── GlobalExceptionHandler.java
+│   ├── PlatoNoEncontradoException.java
+│   ├── PlatoYaExisteException.java
+│   ├── PedidoNoModificableException.java
+│   ├── ReservaConflictoException.java
+│   └── ParqueaderoLlenoException.java
+│
+└── config/
+    └── OpenApiConfig.java
+
+src/test/java/edu/dosw/restaurante/
+└── service/
+    ├── PlatoServiceTest.java
+    ├── PedidoServiceTest.java
+    └── ReservaServiceTest.java</code></pre>
+
+    <!-- PASO 2 -->
+    <h3 style="margin:36px 0 16px;font-size:1.15rem;">🏷️ Paso 2 — Lista todas las funcionalidades y agrúpalas</h3>
+
+    <p style="margin-bottom:16px;font-size:.95rem;">Antes de crear un solo endpoint, <strong>escribe en papel o en el README</strong> la lista completa de lo que hace tu restaurante y a qué controller va cada cosa.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Controller</th><th>Ruta base</th><th>Funcionalidades</th><th>Verbo · Endpoint</th></tr></thead>
+        <tbody>
+          <tr>
+            <td rowspan="2"><strong>MenuController</strong><br><small style="color:var(--gris-med)">Vista del cliente</small></td>
+            <td rowspan="2"><code>/api/v1/menu</code></td>
+            <td>Ver toda la carta disponible</td>
+            <td><code>GET /</code></td>
+          </tr>
+          <tr>
+            <td>Filtrar carta por categoría</td>
+            <td><code>GET /?categoria=POSTRE</code></td>
+          </tr>
+          <tr>
+            <td rowspan="5"><strong>PlatoController</strong><br><small style="color:var(--gris-med)">Administración</small></td>
+            <td rowspan="5"><code>/api/v1/platos</code></td>
+            <td>Agregar un plato a la carta</td>
+            <td><code>POST /</code></td>
+          </tr>
+          <tr><td>Obtener todos los platos (admin)</td><td><code>GET /</code></td></tr>
+          <tr><td>Obtener un plato por id</td><td><code>GET /{id}</code></td></tr>
+          <tr><td>Actualizar datos de un plato</td><td><code>PUT /{id}</code></td></tr>
+          <tr><td>Cambiar disponibilidad</td><td><code>PATCH /{id}/disponible</code></td></tr>
+          <tr>
+            <td rowspan="4"><strong>PedidoController</strong></td>
+            <td rowspan="4"><code>/api/v1/pedidos</code></td>
+            <td>Confirmar y enviar pedido a cocina</td>
+            <td><code>POST /</code></td>
+          </tr>
+          <tr><td>Ver todos los pedidos activos</td><td><code>GET /activos</code></td></tr>
+          <tr><td>Cambiar estado del pedido</td><td><code>PATCH /{id}/estado</code></td></tr>
+          <tr><td>Cancelar pedido (si está en RECIBIDO)</td><td><code>DELETE /{id}</code></td></tr>
+          <tr>
+            <td rowspan="5"><strong>ReservaController</strong></td>
+            <td rowspan="5"><code>/api/v1/reservas</code></td>
+            <td>Crear una reserva para una mesa</td>
+            <td><code>POST /</code></td>
+          </tr>
+          <tr><td>Actualizar datos de la reserva</td><td><code>PUT /{id}</code></td></tr>
+          <tr><td>Cancelar una reserva</td><td><code>DELETE /{id}</code></td></tr>
+          <tr><td>Consultar reservas de un usuario</td><td><code>GET /?usuario=email</code></td></tr>
+          <tr><td>Registrar entrada sin reserva (walk-in)</td><td><code>POST /walkin</code></td></tr>
+          <tr>
+            <td rowspan="3"><strong>ParqueaderoController</strong></td>
+            <td rowspan="3"><code>/api/v1/parqueadero</code></td>
+            <td>Registrar entrada de vehículo</td>
+            <td><code>POST /entrada</code></td>
+          </tr>
+          <tr><td>Registrar salida y calcular cobro</td><td><code>POST /salida/{placa}</code></td></tr>
+          <tr><td>Ver cupos disponibles y vehículos activos</td><td><code>GET /estado</code></td></tr>
+          <tr>
+            <td><strong>ReporteController</strong></td>
+            <td><code>/api/v1/reportes</code></td>
+            <td>Resumen del día (plato más pedido, ingresos, mesas)</td>
+            <td><code>GET /resumen</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PASO 3 -->
+    <h3 style="margin:36px 0 16px;font-size:1.15rem;">🔌 Paso 3 — Identifica qué servicios se reutilizan</h3>
+
+    <p style="margin-bottom:16px;font-size:.95rem;">Antes de implementar, hazte estas preguntas por cada funcionalidad:</p>
+
+    <div class="grid-2">
+      <div class="concepto">
+        <h3>¿Necesito datos de otro dominio?</h3>
+        <p>Si <code>PedidoService</code> necesita saber si un plato existe → inyecta <code>IPlatoService</code>. Si <code>ReservaService</code> necesita saber si una mesa tiene pedido activo → inyecta <code>IPedidoService</code>. <strong>Siempre via interfaz.</strong></p>
+      </div>
+      <div class="concepto">
+        <h3>¿Existe ya un método que hace esto?</h3>
+        <p>Si <code>MenuController</code> y <code>PlatoController</code> ambos listan platos → <strong>el mismo método</strong> <code>IPlatoService.obtenerDisponibles()</code> sirve a los dos. No duplicar lógica — ampliar la interfaz.</p>
+      </div>
+    </div>
+
+    <pre><code>// Ejemplo: PedidoServiceImpl reutiliza IPlatoService
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class PedidoServiceImpl implements IPedidoService {
+
+    private final IPlatoService      platoService;   // ← reutiliza otro Service via interfaz
+    private final PedidoMapperIn     mapperIn;
+    private final PedidoMapperOut    mapperOut;
+
+    private final List&lt;Pedido&gt; pedidos = new ArrayList&lt;&gt;(); // en memoria por ahora
+
+    @Override
+    public PedidoResponseDTO confirmar(PedidoRequestDTO dto) {
+        log.info("Confirmando pedido para mesa {}", dto.mesa());
+
+        // Valida cada plato reutilizando IPlatoService — no repite esa lógica aquí
+        List&lt;Plato&gt; platosDelPedido = dto.idPlatos().stream()
+            .map(id -> {
+                PlatoResponseDTO plato = platoService.buscarPorId(id); // ← reutiliza!
+                if (!plato.disponible()) {
+                    throw new PlatoNoDisponibleException("Plato agotado: " + plato.nombre());
+                }
+                return mapperIn.toPlatoDomain(plato);
+            })
+            .toList();
+
+        Pedido pedido = mapperIn.toDomain(dto, platosDelPedido);
+        pedido.setId(generarId());
+        pedido.setEstado(EstadoPedido.RECIBIDO);
+        pedido.setFechaCreacion(LocalDateTime.now());
+        pedidos.add(pedido);
+
+        log.info("Pedido #{} creado para mesa {}", pedido.getId(), dto.mesa());
+        return mapperOut.toDTO(pedido);
+    }
+}
+
+// Ejemplo: ReporteServiceImpl reutiliza dos servicios
+@Service
+@RequiredArgsConstructor
+public class ReporteServiceImpl implements IReporteService {
+
+    private final IPedidoService pedidoService; // ← reutiliza pedidos
+    private final IPlatoService  platoService;  // ← reutiliza platos
+
+    @Override
+    public ResumenDiaDTO resumenDelDia() {
+        List&lt;PedidoResponseDTO&gt; pedidos = pedidoService.listarTodos();
+        List&lt;PlatoResponseDTO&gt;  platos  = platoService.obtenerTodos();
+
+        long totalPedidos = pedidos.stream().count();
+
+        String platoMasPedido = pedidos.stream()
+            .flatMap(p -> p.items().stream())
+            .collect(Collectors.groupingBy(ItemDTO::nombrePlato, Collectors.counting()))
+            .entrySet().stream()
+            .max(Map.Entry.comparingByValue())
+            .map(Map.Entry::getKey)
+            .orElse("Sin pedidos");
+
+        long platosDisponibles = platos.stream().filter(PlatoResponseDTO::disponible).count();
+
+        return new ResumenDiaDTO(totalPedidos, platoMasPedido, platosDisponibles);
+    }
+}</code></pre>
+
+    <!-- PASO 4 -->
+    <h3 style="margin:36px 0 16px;font-size:1.15rem;">⚙️ Paso 4 — Implementa funcionalidad por funcionalidad</h3>
+
+    <p style="margin-bottom:14px;font-size:.95rem;">El orden recomendado para cada funcionalidad es siempre el mismo — de adentro hacia afuera:</p>
+
+    <ul class="steps">
+      <li>
+        <div class="step-body">
+          <div class="step-title">Entidad de negocio en <code>domain/</code></div>
+          <div class="step-desc">La clase pura: atributos, constructor, métodos de negocio. Sin anotaciones Spring ni JPA. Esta es la que va en el diagrama de clases.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">DTOs en <code>dto/request/</code> y <code>dto/response/</code> con @Valid</div>
+          <div class="step-desc">Record para el request con anotaciones Bean Validation. Record para el response sin lógica. Son los objetos de transferencia — nunca llegan al diagrama de clases.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Interfaz del Service en <code>service/</code></div>
+          <div class="step-desc">Define el contrato: qué métodos expone el Service, con qué tipos. Los controllers solo conocen esta interfaz.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Mappers en <code>mapper/in/</code> y <code>mapper/out/</code></div>
+          <div class="step-desc">MapperIn: RequestDTO → Entidad de Negocio. MapperOut: Entidad de Negocio → ResponseDTO. Con @Mapping si los campos tienen nombre distinto.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Implementación del Service con @Slf4j, streams y excepciones</div>
+          <div class="step-desc">Lógica de negocio, validaciones, logs en cada punto. Usa las colecciones en memoria (Map o List) para persistir por ahora.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Controller con @Valid, @Operation y respuestas HTTP correctas</div>
+          <div class="step-desc">Solo recibe, delega al service y devuelve. No tiene lógica. Documenta con Swagger todos los posibles status codes.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Excepciones propias + GlobalExceptionHandler</div>
+          <div class="step-desc">Crea la excepción de negocio, agrégala al handler. Todos los errores deben devolver el mismo ErrorResponseDTO.</div>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <div class="step-title">Pruebas del Service con JUnit + Mockito</div>
+          <div class="step-desc">Happy path, recurso no encontrado, duplicado, estado inválido, lista vacía. Ejecuta jacoco:report y verifica cobertura > 70%.</div>
+        </div>
+      </li>
+    </ul>
+
+    <!-- PASO 5: REGLAS PROPIAS -->
+    <h3 style="margin:36px 0 16px;font-size:1.15rem;">🎯 Paso 5 — Reglas de negocio propias de tu concepto</h3>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead><tr><th>Concepto</th><th>Regla de negocio propia</th><th>Dónde va en código</th></tr></thead>
+        <tbody>
+          <tr><td>🥩 Parrilla</td><td>Todo corte debe registrar término de cocción al crear el pedido — sin él no pasa a cocina</td><td><code>PedidoServiceImpl.confirmar()</code> → valida <code>item.getTerminoCoccion() != null</code></td></tr>
+          <tr><td>🍣 Japonés</td><td>Los rolls de la barra se preparan en tandas de máximo 6 por vez — no puede haber más de 6 rolls activos</td><td><code>PlatoServiceImpl.crear()</code> → <code>count(rolls activos) &lt; 6</code></td></tr>
+          <tr><td>🌊 Comida de mar</td><td>Los platos de pesca del día se desactivan automáticamente al cerrar (20:00)</td><td><code>PlatoServiceImpl.marcarCierre()</code> → filtra por categoría PESCA y disponible=false</td></tr>
+          <tr><td>🥗 Vegano</td><td>Todo plato debe declarar sus alérgenos — sin declaración no puede publicarse en la carta</td><td><code>PlatoServiceImpl.crear()</code> → <code>dto.alergenos() != null &amp;&amp; !empty</code> → excepción</td></tr>
+          <tr><td>🍕 Italiano</td><td>Una pizza no puede llevar más de 5 toppings</td><td><code>PlatoServiceImpl.crear()</code> → <code>dto.toppings().size() &lt;= 5</code></td></tr>
+          <tr><td>🤝 Mediterráneo</td><td>Un plato para compartir requiere mínimo 2 comensales en la reserva</td><td><code>PedidoServiceImpl.confirmar()</code> → valida mesa de la reserva</td></tr>
+          <tr><td>🅿️ Parqueadero</td><td>El número de cupos es fijo (ej. 20) — no puede registrarse entrada si no hay cupos</td><td><code>ParqueaderoServiceImpl.registrarEntrada()</code> → <code>count(activos) &lt; CAPACIDAD_MAX</code></td></tr>
+          <tr><td>🗓️ Reservas</td><td>Una mesa solo puede tener una reserva activa a la vez en el mismo horario</td><td><code>ReservaServiceImpl.crear()</code> → stream <code>anyMatch</code> de conflicto de horario</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHECKLIST -->
+    <h3 style="margin:36px 0 14px;font-size:1.15rem;">✅ Checklist de salida de la clase</h3>
+
+    <ul class="checklist">
+      <li>La estructura de paquetes está completa (controller, service, service/impl, domain, dto, mapper, exception, config)</li>
+      <li>Al menos 2 controllers implementados con todos sus endpoints y @Operation/@ApiResponse</li>
+      <li>Todas las interfaces de Service definidas con sus métodos</li>
+      <li>Al menos 1 caso de reutilización de Service entre controllers (ej. MenuController y PlatoController compartiendo IPlatoService)</li>
+      <li>Bean Validation en los RequestDTOs de los 2 controllers implementados</li>
+      <li>GlobalExceptionHandler cubriendo input inválido, no encontrado, conflicto y error genérico</li>
+      <li>@Slf4j con logs INFO/WARN/ERROR en el Service</li>
+      <li>Al menos 1 regla de negocio propia del concepto implementada con su excepción tipada</li>
+      <li>Swagger accesible en /swagger-ui/index.html con todos los endpoints visibles</li>
+      <li>Al menos 5 pruebas JUnit+Mockito del Service (happy path + errores)</li>
+      <li>Diagrama de clases del dominio actualizado (solo entidades puras, sin DTOs ni anotaciones Spring)</li>
+      <li>Diagrama de secuencia del flujo principal dibujado en Lucidchart/draw.io</li>
+      <li>Commit: <code>semana-2: validacion | controllers + validations + exception-handler + swagger + tests</code></li>
+    </ul>
+
+    <div class="quiz-inline">
+      <div class="qi-header">
+        <span class="qi-badge">⏸ Repaso final</span>
+        <span class="qi-title">Todo lo de hoy — cinco preguntas de cierre</span>
+      </div>
+      <div class="qi-q">¿Por qué MenuController y PlatoController pueden compartir IPlatoService?</div>
+      <div class="qi-a">Porque la lógica de buscar platos disponibles es la misma sin importar quién la pide. Duplicar esa lógica genera deuda técnica y dos lugares donde corregir bugs.</div>
+      <div class="qi-q">¿Qué diferencia hay entre el diagrama de clases y el de componentes?</div>
+      <div class="qi-a">El de clases muestra las entidades del dominio puro con atributos y métodos. El de componentes muestra la arquitectura — Controller, Service, Mapper, Repository — y sus interfaces de conexión.</div>
+      <div class="qi-q">¿Por qué no ponemos los DTOs en el diagrama de clases?</div>
+      <div class="qi-a">Los DTOs no tienen comportamiento de dominio ni representan conceptos del negocio. El diagrama de clases es del dominio puro, no de la infraestructura de transporte.</div>
+      <div class="qi-q">¿Cuándo justificas crear un Controller nuevo vs agregar un endpoint al existente?</div>
+      <div class="qi-a">Cuando la agrupación funcional es distinta — un Controller por dominio. Si los endpoints sirven a actores distintos sobre el mismo recurso, pueden ir en Controllers separados que comparten el mismo Service.</div>
+      <div class="qi-q">¿Puede un Service depender de otro Service?</div>
+      <div class="qi-a">Sí, siempre via interfaz. PedidoServiceImpl puede inyectar IPlatoService para verificar disponibilidad. Cuidado con dependencias circulares: si A depende de B y B de A, Spring no puede resolver la inyección.</div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  🌿 <span>Guía Turtwig de Studio</span> — Semana 8 &nbsp;·&nbsp; Escuela Colombiana de Ingeniería &nbsp;·&nbsp; Diseñada para reforzar, no reemplazar la clase
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#3d8b5e', primaryTextColor: '#1e2a24',
+      primaryBorderColor: '#6abf8a', lineColor: '#4a5e54',
+      secondaryColor: '#e8f7ef', tertiaryColor: '#f0f7f3',
+      background: '#ffffff', mainBkg: '#e8f7ef',
+      nodeBorder: '#3d8b5e', clusterBkg: '#f0f7f3',
+      titleColor: '#1e2a24', edgeLabelBackground: '#f0f7f3',
+      fontFamily: 'Space Grotesk, sans-serif', fontSize: '14px'
+    },
+    flowchart: { curve: 'basis', padding: 20 },
+    sequence: { mirrorActors: false, messageAlign: 'center', width: 200 }
+  });
+</script>
+</body>
+</html>

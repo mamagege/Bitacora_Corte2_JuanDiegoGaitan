@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PedidoMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BITACORA-TERCIO2</a> &gt; <a href="index.source.html" class="el_package">com.dows.bitacora2.restaurante.mapper</a> &gt; <span class="el_source">PedidoMapperImpl.java</span></div><h1>PedidoMapperImpl.java</h1><pre class="source lang-java linenums">package com.dows.bitacora2.restaurante.mapper;
+
+import com.dows.bitacora2.restaurante.model.domain.ItemPedido;
+import com.dows.bitacora2.restaurante.model.domain.Pedido;
+import com.dows.bitacora2.restaurante.model.dto.request.ItemPedidoRequestDTO;
+import com.dows.bitacora2.restaurante.model.dto.request.PedidoRequestDTO;
+import com.dows.bitacora2.restaurante.model.dto.response.ItemPedidoResponseDTO;
+import com.dows.bitacora2.restaurante.model.dto.response.PedidoResponseDTO;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-09-29T00:08:49-0500&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)&quot;
+)
+@Component
+<span class="nc" id="L20">public class PedidoMapperImpl implements PedidoMapper {</span>
+
+    @Override
+    public Pedido toDomain(PedidoRequestDTO dto) {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L25">            return null;</span>
+        }
+
+<span class="nc" id="L28">        Pedido pedido = new Pedido();</span>
+
+<span class="nc" id="L30">        pedido.setIdMesa( dto.getIdMesa() );</span>
+<span class="nc" id="L31">        pedido.setItems( itemPedidoRequestDTOListToItemPedidoList( dto.getItems() ) );</span>
+
+<span class="nc" id="L33">        pedido.setEstado( com.dows.bitacora2.restaurante.model.domain.EstadoPedido.RECIBIDO );</span>
+<span class="nc" id="L34">        pedido.setTimestamp( java.time.LocalDateTime.now() );</span>
+
+<span class="nc" id="L36">        return pedido;</span>
+    }
+
+    @Override
+    public ItemPedido toDomain(ItemPedidoRequestDTO dto) {
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L42">            return null;</span>
+        }
+
+<span class="nc" id="L45">        ItemPedido itemPedido = new ItemPedido();</span>
+
+<span class="nc" id="L47">        itemPedido.setIdPlato( dto.getIdPlato() );</span>
+<span class="nc" id="L48">        itemPedido.setCantidad( dto.getCantidad() );</span>
+<span class="nc" id="L49">        itemPedido.setMasa( dto.getMasa() );</span>
+<span class="nc" id="L50">        itemPedido.setSalsa( dto.getSalsa() );</span>
+<span class="nc" id="L51">        List&lt;String&gt; list = dto.getToppings();</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if ( list != null ) {</span>
+<span class="nc" id="L53">            itemPedido.setToppings( new ArrayList&lt;String&gt;( list ) );</span>
+        }
+
+<span class="nc" id="L56">        return itemPedido;</span>
+    }
+
+    @Override
+    public PedidoResponseDTO toResponse(Pedido pedido) {
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        if ( pedido == null ) {</span>
+<span class="nc" id="L62">            return null;</span>
+        }
+
+<span class="nc" id="L65">        PedidoResponseDTO pedidoResponseDTO = new PedidoResponseDTO();</span>
+
+<span class="nc" id="L67">        pedidoResponseDTO.setId( pedido.getId() );</span>
+<span class="nc" id="L68">        pedidoResponseDTO.setIdMesa( pedido.getIdMesa() );</span>
+<span class="nc" id="L69">        pedidoResponseDTO.setItems( itemPedidoListToItemPedidoResponseDTOList( pedido.getItems() ) );</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if ( pedido.getEstado() != null ) {</span>
+<span class="nc" id="L71">            pedidoResponseDTO.setEstado( pedido.getEstado().name() );</span>
+        }
+<span class="nc" id="L73">        pedidoResponseDTO.setTimestamp( pedido.getTimestamp() );</span>
+
+<span class="nc" id="L75">        pedidoResponseDTO.setTotalPedido( calcularTotalPedido(pedido) );</span>
+
+<span class="nc" id="L77">        return pedidoResponseDTO;</span>
+    }
+
+    @Override
+    public List&lt;PedidoResponseDTO&gt; toResponseList(List&lt;Pedido&gt; pedidos) {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if ( pedidos == null ) {</span>
+<span class="nc" id="L83">            return null;</span>
+        }
+
+<span class="nc" id="L86">        List&lt;PedidoResponseDTO&gt; list = new ArrayList&lt;PedidoResponseDTO&gt;( pedidos.size() );</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        for ( Pedido pedido : pedidos ) {</span>
+<span class="nc" id="L88">            list.add( toResponse( pedido ) );</span>
+<span class="nc" id="L89">        }</span>
+
+<span class="nc" id="L91">        return list;</span>
+    }
+
+    @Override
+    public ItemPedidoResponseDTO toResponse(ItemPedido item) {
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if ( item == null ) {</span>
+<span class="nc" id="L97">            return null;</span>
+        }
+
+<span class="nc" id="L100">        ItemPedidoResponseDTO itemPedidoResponseDTO = new ItemPedidoResponseDTO();</span>
+
+<span class="nc" id="L102">        itemPedidoResponseDTO.setIdPlato( item.getIdPlato() );</span>
+<span class="nc" id="L103">        itemPedidoResponseDTO.setNombrePlato( item.getNombrePlato() );</span>
+<span class="nc" id="L104">        itemPedidoResponseDTO.setPrecioCongelado( item.getPrecioCongelado() );</span>
+<span class="nc" id="L105">        itemPedidoResponseDTO.setCantidad( item.getCantidad() );</span>
+<span class="nc" id="L106">        itemPedidoResponseDTO.setMasa( item.getMasa() );</span>
+<span class="nc" id="L107">        itemPedidoResponseDTO.setSalsa( item.getSalsa() );</span>
+<span class="nc" id="L108">        List&lt;String&gt; list = item.getToppings();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if ( list != null ) {</span>
+<span class="nc" id="L110">            itemPedidoResponseDTO.setToppings( new ArrayList&lt;String&gt;( list ) );</span>
+        }
+
+<span class="nc" id="L113">        itemPedidoResponseDTO.setSubtotal( item.subtotal() );</span>
+
+<span class="nc" id="L115">        return itemPedidoResponseDTO;</span>
+    }
+
+    protected List&lt;ItemPedido&gt; itemPedidoRequestDTOListToItemPedidoList(List&lt;ItemPedidoRequestDTO&gt; list) {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L120">            return null;</span>
+        }
+
+<span class="nc" id="L123">        List&lt;ItemPedido&gt; list1 = new ArrayList&lt;ItemPedido&gt;( list.size() );</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        for ( ItemPedidoRequestDTO itemPedidoRequestDTO : list ) {</span>
+<span class="nc" id="L125">            list1.add( toDomain( itemPedidoRequestDTO ) );</span>
+<span class="nc" id="L126">        }</span>
+
+<span class="nc" id="L128">        return list1;</span>
+    }
+
+    protected List&lt;ItemPedidoResponseDTO&gt; itemPedidoListToItemPedidoResponseDTOList(List&lt;ItemPedido&gt; list) {
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L133">            return null;</span>
+        }
+
+<span class="nc" id="L136">        List&lt;ItemPedidoResponseDTO&gt; list1 = new ArrayList&lt;ItemPedidoResponseDTO&gt;( list.size() );</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        for ( ItemPedido itemPedido : list ) {</span>
+<span class="nc" id="L138">            list1.add( toResponse( itemPedido ) );</span>
+<span class="nc" id="L139">        }</span>
+
+<span class="nc" id="L141">        return list1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

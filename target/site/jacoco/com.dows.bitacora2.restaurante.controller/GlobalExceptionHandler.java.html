@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BITACORA-TERCIO2</a> &gt; <a href="index.source.html" class="el_package">com.dows.bitacora2.restaurante.controller</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.dows.bitacora2.restaurante.controller;
+
+import com.dows.bitacora2.restaurante.exception.*;
+import com.dows.bitacora2.restaurante.model.dto.response.ErrorResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@RestControllerAdvice
+<span class="nc" id="L17">public class GlobalExceptionHandler {</span>
+<span class="nc" id="L18">    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);</span>
+
+    @ExceptionHandler(RecursoNoEncontradoException.class)
+    public ResponseEntity&lt;ErrorResponseDTO&gt; handleNotFound(RecursoNoEncontradoException ex, HttpServletRequest request) {
+<span class="nc" id="L22">        log.warn(&quot;RecursoNoEncontrado: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L23">        return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="nc" id="L24">                .body(buildError(404, &quot;Not Found&quot;, ex.getMessage(), request.getRequestURI()));</span>
+    }
+
+    @ExceptionHandler(ConflictoException.class)
+    public ResponseEntity&lt;ErrorResponseDTO&gt; handleConflicto(ConflictoException ex, HttpServletRequest request) {
+<span class="nc" id="L29">        return ResponseEntity.status(HttpStatus.CONFLICT)</span>
+<span class="nc" id="L30">                .body(buildError(409, &quot;Conflict&quot;, ex.getMessage(), request.getRequestURI()));</span>
+    }
+
+    @ExceptionHandler({EstadoInvalidoException.class, ReglaDeNegocioException.class})
+    public ResponseEntity&lt;ErrorResponseDTO&gt; handleNegocio(RuntimeException ex, HttpServletRequest request) {
+<span class="nc" id="L35">        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)</span>
+<span class="nc" id="L36">                .body(buildError(422, &quot;Unprocessable Entity&quot;, ex.getMessage(), request.getRequestURI()));</span>
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;ErrorResponseDTO&gt; handleValidacion(MethodArgumentNotValidException ex, HttpServletRequest request) {
+<span class="nc" id="L41">        String mensaje = ex.getBindingResult().getFieldErrors().stream()</span>
+<span class="nc" id="L42">                .map(e -&gt; e.getField() + &quot;: &quot; + e.getDefaultMessage())</span>
+<span class="nc" id="L43">                .collect(Collectors.joining(&quot;, &quot;));</span>
+<span class="nc" id="L44">        return ResponseEntity.status(HttpStatus.BAD_REQUEST)</span>
+<span class="nc" id="L45">                .body(buildError(400, &quot;Bad Request&quot;, mensaje, request.getRequestURI()));</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ErrorResponseDTO&gt; handleGenerico(Exception ex, HttpServletRequest request) {
+<span class="nc" id="L50">        log.error(&quot;Error inesperado: {}&quot;, ex.getMessage(), ex);</span>
+<span class="nc" id="L51">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</span>
+<span class="nc" id="L52">                .body(buildError(500, &quot;Internal Server Error&quot;, &quot;Error inesperado del servidor&quot;, request.getRequestURI()));</span>
+    }
+
+    private ErrorResponseDTO buildError(int status, String error, String message, String path) {
+<span class="nc" id="L56">        return new ErrorResponseDTO(LocalDateTime.now(), status, error, message, path);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

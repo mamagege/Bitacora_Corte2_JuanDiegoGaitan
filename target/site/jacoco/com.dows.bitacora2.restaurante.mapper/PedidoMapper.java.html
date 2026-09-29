@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PedidoMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BITACORA-TERCIO2</a> &gt; <a href="index.source.html" class="el_package">com.dows.bitacora2.restaurante.mapper</a> &gt; <span class="el_source">PedidoMapper.java</span></div><h1>PedidoMapper.java</h1><pre class="source lang-java linenums">package com.dows.bitacora2.restaurante.mapper;
+
+import com.dows.bitacora2.restaurante.model.domain.ItemPedido;
+import com.dows.bitacora2.restaurante.model.domain.Pedido;
+import com.dows.bitacora2.restaurante.model.dto.request.ItemPedidoRequestDTO;
+import com.dows.bitacora2.restaurante.model.dto.request.PedidoRequestDTO;
+import com.dows.bitacora2.restaurante.model.dto.response.ItemPedidoResponseDTO;
+import com.dows.bitacora2.restaurante.model.dto.response.PedidoResponseDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.List;
+
+@Mapper(componentModel = &quot;spring&quot;)
+public interface PedidoMapper {
+
+    @Mapping(target = &quot;id&quot;, ignore = true)
+    @Mapping(target = &quot;estado&quot;, expression = &quot;java(com.dows.bitacora2.restaurante.model.domain.EstadoPedido.RECIBIDO)&quot;)
+    @Mapping(target = &quot;timestamp&quot;, expression = &quot;java(java.time.LocalDateTime.now())&quot;)
+    Pedido toDomain(PedidoRequestDTO dto);
+
+    @Mapping(target = &quot;nombrePlato&quot;, ignore = true)
+    @Mapping(target = &quot;precioCongelado&quot;, ignore = true)
+    ItemPedido toDomain(ItemPedidoRequestDTO dto);
+
+    @Mapping(target = &quot;totalPedido&quot;, expression = &quot;java(calcularTotalPedido(pedido))&quot;)
+    PedidoResponseDTO toResponse(Pedido pedido);
+
+    List&lt;PedidoResponseDTO&gt; toResponseList(List&lt;Pedido&gt; pedidos);
+
+    @Mapping(target = &quot;subtotal&quot;, expression = &quot;java(item.subtotal())&quot;)
+    ItemPedidoResponseDTO toResponse(ItemPedido item);
+
+    default Double calcularTotalPedido(Pedido pedido) {
+<span class="nc bnc" id="L35" title="All 4 branches missed.">        if (pedido == null || pedido.getItems() == null) return 0.0;</span>
+<span class="nc" id="L36">        return pedido.getItems().stream()</span>
+<span class="nc" id="L37">                .mapToDouble(ItemPedido::subtotal)</span>
+<span class="nc" id="L38">                .sum();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

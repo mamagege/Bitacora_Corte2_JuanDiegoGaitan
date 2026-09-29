@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: restaurante
+
+  # Configuración ACID (PostgreSQL)
+  datasource:
+    url: jdbc:postgresql://localhost:5433/restaurante_db
+    username: postgres
+    password: password # TODO: Change to real password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Configuración BASE (MongoDB)
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/restaurante_historico
+
+server:
+  port: 8080

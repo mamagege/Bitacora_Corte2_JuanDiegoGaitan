@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Guía Turtwig de Studio — Semana 9</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+  :root {
+    --verde: #3d8b5e; --verde-claro: #6abf8a; --verde-hoja: #a8d5b5;
+    --verde-fondo: #f0f7f3; --tierra: #5c3d2e; --amarillo: #d4e157;
+    --gris-osc: #1e2a24; --gris-med: #4a5e54; --gris-cl: #c8d8cf;
+    --blanco: #fff; --code-bg: #1a2e24; --code-txt: #a8d5b5;
+    --warn: #f4a435; --info: #3a9bd5; --tip: #7c4dff; --danger: #e53935;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--verde-fondo);color:var(--gris-osc);line-height:1.7;font-size:16px}
+  .hero{background:var(--gris-osc);color:#fff;padding:60px 40px 50px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-40px;right:-60px;width:300px;height:300px;background:var(--verde);border-radius:50%;opacity:.15}
+  .hero::after{content:'';position:absolute;bottom:-60px;left:10%;width:200px;height:200px;background:var(--amarillo);border-radius:50%;opacity:.08}
+  .hero-inner{max-width:1140px;margin:0 auto;position:relative;z-index:1}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--verde);color:#fff;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;letter-spacing:.5px;margin-bottom:20px;text-transform:uppercase}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:700;line-height:1.15;margin-bottom:16px}
+  .hero h1 span{color:var(--verde-claro)}
+  .hero-sub{font-size:1rem;color:var(--gris-cl);max-width:620px;font-weight:300}
+  .hero-meta{margin-top:28px;display:flex;gap:20px;flex-wrap:wrap}
+  .meta-chip{font-size:13px;color:var(--verde-hoja);font-family:'JetBrains Mono',monospace}
+  .nav-toc{background:var(--blanco);border-bottom:2px solid var(--verde-hoja);padding:0 40px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(30,42,36,.08)}
+  .nav-toc ul{max-width:1140px;margin:0 auto;display:flex;gap:0;list-style:none;overflow-x:auto}
+  .nav-toc ul li a{display:block;padding:13px 15px;font-size:12px;font-weight:600;color:var(--gris-med);text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;text-transform:uppercase;letter-spacing:.3px}
+  .nav-toc ul li a:hover{color:var(--verde);border-bottom-color:var(--verde)}
+  .content{max-width:1140px;margin:0 auto;padding:50px 48px 80px}
+  .section{margin-bottom:72px;scroll-margin-top:60px}
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:14px;border-bottom:2px solid var(--verde-hoja)}
+  .section-icon{width:44px;height:44px;background:var(--verde);color:#fff;font-size:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .section-title{font-size:1.45rem;font-weight:700}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--verde);letter-spacing:1px;display:block}
+  .section-cover{background:var(--gris-osc);margin:0 -48px;padding:52px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:48px}
+  .sc-badge{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--verde-claro);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px}
+  .sc-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:10px}
+  .sc-title span{color:var(--verde-claro)}
+  .sc-desc{font-size:.95rem;color:var(--gris-cl);max-width:520px;line-height:1.7}
+  .sc-right{font-size:5rem;opacity:.25;flex-shrink:0}
+  .quiz-inline{background:var(--gris-osc);border-radius:12px;padding:24px 28px;margin:36px 0;border-left:5px solid var(--amarillo)}
+  .qi-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .qi-badge{background:var(--amarillo);color:var(--gris-osc);font-size:10px;font-weight:800;padding:4px 12px;border-radius:10px;text-transform:uppercase;letter-spacing:.6px}
+  .qi-title{font-size:.85rem;color:var(--verde-hoja);font-weight:600}
+  .qi-q{color:#fff;font-size:.92rem;font-weight:600;margin-bottom:4px}
+  .qi-a{color:var(--verde-claro);font-size:.84rem;font-style:italic;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(168,213,181,.15)}
+  .qi-a:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+  .callout{border-radius:10px;padding:16px 20px;margin:18px 0;display:flex;gap:12px;font-size:.9rem}
+  .callout-icon{font-size:19px;flex-shrink:0;line-height:1.5}
+  .callout.tip{background:#f3eeff;border-left:4px solid var(--tip)}
+  .callout.warn{background:#fff8ec;border-left:4px solid var(--warn)}
+  .callout.info{background:#eaf5fb;border-left:4px solid var(--info)}
+  .callout.key{background:#e8f7ef;border-left:4px solid var(--verde)}
+  .callout.danger{background:#fdecea;border-left:4px solid var(--danger)}
+  .callout strong{display:block;font-weight:600;margin-bottom:3px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:16px 0}
+  @media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}}
+  .diagram-wrap{background:var(--blanco);border-radius:12px;padding:26px;margin:22px 0;box-shadow:0 2px 12px rgba(30,42,36,.08);overflow-x:auto}
+  .diagram-label{font-size:12px;font-weight:600;color:var(--verde);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+  .diagram-label::before{content:'◆';font-size:8px}
+  pre{background:var(--code-bg);color:var(--code-txt);border-radius:10px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:13px;overflow-x:auto;line-height:1.65;margin:14px 0}
+  code{font-family:'JetBrains Mono',monospace;background:rgba(61,139,94,.12);color:var(--verde);padding:2px 7px;border-radius:4px;font-size:.86em}
+  pre code{background:none;color:inherit;padding:0}
+  .tabla-wrap{overflow-x:auto;margin:18px 0;border-radius:10px;box-shadow:0 2px 8px rgba(30,42,36,.07)}
+  table{width:100%;border-collapse:collapse;background:var(--blanco)}
+  th{background:var(--gris-osc);color:#fff;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;text-align:left}
+  td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid var(--verde-hoja);color:var(--gris-osc)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:var(--verde-fondo)}
+  .rule-box{background:var(--blanco);border-radius:12px;padding:24px 28px;box-shadow:0 2px 10px rgba(30,42,36,.07);margin:22px 0}
+  .rule-box h4{font-size:.88rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--verde);margin-bottom:14px}
+  .rule-item{display:flex;gap:12px;margin-bottom:10px;font-size:.9rem;align-items:flex-start;padding-bottom:10px;border-bottom:1px solid var(--verde-hoja)}
+  .rule-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .rule-ok{color:var(--verde);font-size:1.1rem;flex-shrink:0;margin-top:1px}
+  .tut-check{background:#fff8ec;border:1px solid var(--warn);border-radius:10px;padding:18px 22px;margin:22px 0}
+  .tut-check strong{color:#7d5800;display:block;margin-bottom:8px;font-size:.9rem}
+  .tut-check ul{padding-left:18px;font-size:.88rem;color:var(--gris-osc)}
+  .tut-check li{padding:3px 0}
+  .sep{height:1px;background:linear-gradient(90deg,var(--verde-hoja),transparent);margin:56px 0}
+  .compare{display:grid;grid-template-columns:1fr 1fr;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(30,42,36,.08);margin:18px 0}
+  .compare-col{padding:20px 22px}
+  .compare-col.a{background:#fdecea}
+  .compare-col.b{background:#e8f7ef}
+  .compare-col h4{font-size:.9rem;font-weight:700;margin-bottom:10px}
+  .compare-col.a h4{color:var(--danger)}
+  .compare-col.b h4{color:var(--verde)}
+  .compare-col ul{list-style:none;font-size:.88rem}
+  .compare-col ul li{padding:3px 0}
+  .compare-col.a ul li::before{content:'✗ ';color:var(--danger);font-weight:700}
+  .compare-col.b ul li::before{content:'✓ ';color:var(--verde);font-weight:700}
+  @media(max-width:600px){.compare{grid-template-columns:1fr}}
+  .span-kw{color:#89d3fe}
+  .span-ty{color:#f0b27a}
+  .span-fn{color:#a8d5b5}
+  .span-an{color:#c792ea}
+  .span-st{color:#c3e88d}
+  .span-nu{color:#f78c6c}
+  .span-cmt{color:#546e7a;font-style:italic}
+  footer{background:var(--gris-osc);color:var(--gris-cl);text-align:center;padding:28px;font-size:13px}
+  footer span{color:var(--verde-claro)}
+  .layer-pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-right:4px}
+  .lp-dom{background:#e8f7ef;color:#3d8b5e}
+  .lp-ent{background:#eaf5fb;color:#3a9bd5}
+  .lp-doc{background:#f3eeff;color:#7c4dff}
+  .lp-sec{background:#fdecea;color:#e53935}
+
+  /* ── UUID SELECTOR WIDGET ─────────────────────────────────── */
+  .uuid-widget{background:var(--gris-osc);border-radius:16px;padding:32px;margin:24px 0;overflow:hidden}
+  .uuid-widget h4{color:var(--verde-claro);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:20px}
+  .uuid-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+  .uuid-tab{padding:8px 18px;border-radius:8px;border:2px solid transparent;font-size:.82rem;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .2s;background:rgba(255,255,255,.06);color:var(--gris-cl)}
+  .uuid-tab:hover{border-color:var(--verde-hoja);color:#fff}
+  .uuid-tab.active{background:var(--verde);color:#fff;border-color:var(--verde)}
+  .uuid-panel{display:none;animation:fadeIn .2s ease}
+  .uuid-panel.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .uuid-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  @media(max-width:640px){.uuid-grid{grid-template-columns:1fr}}
+  .uuid-card{border-radius:10px;padding:16px 18px}
+  .uuid-card.ok{background:#1a3d2a;border:1px solid var(--verde)}
+  .uuid-card.warn{background:#3d2800;border:1px solid var(--warn)}
+  .uuid-card.bad{background:#3d1a1a;border:1px solid var(--danger)}
+  .uuid-card-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+  .uuid-card.ok .uuid-card-title{color:var(--verde-claro)}
+  .uuid-card.warn .uuid-card-title{color:var(--warn)}
+  .uuid-card.bad .uuid-card-title{color:#ef9a9a}
+  .uuid-card ul{list-style:none;font-size:.84rem;line-height:1.85}
+  .uuid-card.ok ul li::before{content:'+ ';color:var(--verde-claro)}
+  .uuid-card.warn ul li::before{content:'- ';color:var(--warn)}
+  .uuid-card.bad ul li::before{content:'x ';color:#ef9a9a}
+  .uuid-card ul li{color:var(--gris-cl)}
+  .uuid-code{background:rgba(0,0,0,.4);border-radius:8px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--code-txt);margin-top:12px;line-height:1.7}
+  .uuid-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;font-family:'JetBrains Mono',monospace;margin-bottom:10px}
+  .uuid-badge.long{background:#3d8b5e;color:#fff}
+  .uuid-badge.v4{background:#7c4dff;color:#fff}
+  .uuid-badge.v7{background:#3a9bd5;color:#fff}
+  .uuid-badge.mongo{background:#5c3d2e;color:#fff}
+  .uuid-tip{background:rgba(168,213,181,.08);border-left:3px solid var(--verde-claro);border-radius:0 8px 8px 0;padding:10px 14px;margin-top:14px;font-size:.83rem;color:var(--verde-hoja);line-height:1.65}
+
+  /* ── SCENARIO QUIZ ───────────────────────────────────────── */
+  .scenario-quiz{background:var(--gris-osc);border-radius:14px;padding:28px;margin:28px 0;border:2px solid rgba(168,213,181,.12)}
+  .sq-header{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--amarillo);margin-bottom:6px}
+  .sq-title{font-size:1rem;color:#fff;font-weight:600;margin-bottom:18px}
+  .sq-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+  .sq-btn{padding:10px 16px;border-radius:8px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--gris-cl);font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .2s;text-align:left}
+  .sq-btn:hover:not(:disabled){border-color:var(--verde-hoja);color:#fff}
+  .sq-btn.correct{background:#1a3d2a;border-color:var(--verde);color:var(--verde-claro)}
+  .sq-btn.wrong{background:#3d1a1a;border-color:var(--danger);color:#ef9a9a}
+  .sq-btn:disabled{cursor:default;opacity:.7}
+  .sq-feedback{border-radius:8px;padding:12px 16px;font-size:.85rem;line-height:1.6;display:none}
+  .sq-feedback.correct{background:#1a3d2a;color:var(--verde-claro);border:1px solid var(--verde)}
+  .sq-feedback.wrong{background:#3d1a1a;color:#ef9a9a;border:1px solid var(--danger)}
+  .sq-reset{margin-top:12px;padding:6px 16px;border-radius:6px;border:1px solid var(--verde-hoja);background:transparent;color:var(--verde-hoja);font-size:.8rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;display:none}
+  .sq-reset:hover{background:var(--verde);color:#fff;border-color:var(--verde)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🌿 Guía Turtwig de Studio — Semana 9</div>
+    <h1>Tu restaurante,<br><span>persistente y seguro</span></h1>
+    <p class="hero-sub">Persistencia relacional con JPA, no relacional con MongoDB, y seguridad con JWT. Todo construido encima de lo que ya tienes — los streams siguen funcionando, los mappers trabajan ahora entre tres capas, y la API queda protegida por roles.</p>
+    <div class="hero-meta">
+      <span class="meta-chip">🗄️ JPA + PostgreSQL</span>
+      <span class="meta-chip">🍃 MongoDB</span>
+      <span class="meta-chip">🔄 Mapper de 3 capas</span>
+      <span class="meta-chip">🔐 JWT</span>
+      <span class="meta-chip">🛡️ Roles y permisos</span>
+      <span class="meta-chip">🌐 CORS</span>
+    </div>
+  </div>
+</div>
+
+<nav class="nav-toc">
+  <ul>
+    <li><a href="#panorama">Panorama</a></li>
+    <li><a href="#jpa">1· JPA</a></li>
+    <li><a href="#ids">1B· IDs</a></li>
+    <li><a href="#mapper-jpa">2· Mapper JPA</a></li>
+    <li><a href="#mongo">3· MongoDB</a></li>
+    <li><a href="#mapper-mongo">4· Mapper Mongo</a></li>
+    <li><a href="#streams">5· Streams</a></li>
+    <li><a href="#jwt">6· JWT</a></li>
+    <li><a href="#autorizacion">7· Autorización</a></li>
+    <li><a href="#cors">8· CORS</a></li>
+    <li><a href="#ejercicio">Ejercicio</a></li>
+  </ul>
+</nav>
+
+<div class="content">
+
+<!-- PANORAMA -->
+<section class="section" id="panorama">
+  <div class="section-header">
+    <div class="section-icon">🗺️</div>
+    <div>
+      <span class="section-num">Antes de empezar</span>
+      <div class="section-title">Lo que cambia en S09 — y lo que no</div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:18px">En S08 guardaste los datos en un <code>ConcurrentHashMap</code> en memoria. Funcionó para aprender la arquitectura. En S09 ese mapa se reemplaza con una base de datos real. El resto de la arquitectura <strong>no cambia</strong>.</p>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">La arquitectura — qué cambió y qué se mantiene igual</div>
+    <div class="mermaid">
+flowchart LR
+    CL["Cliente HTTP"]
+    CT["Controller\n(sin cambios)"]
+    MP["Mapper\n(ahora 3 capas)"]
+    SV["ServiceImpl\n(streams igual)"]
+    VA["Validator\n(sin cambios)"]
+    RE["Repository\nJPA / Mongo"]
+    DB[("Base de datos\nPostgreSQL / MongoDB")]
+    SEC["Security Filter\n(nuevo — JWT)"]
+
+    CL --> SEC --> CT
+    CT -- "toDomain / toResponse" --> MP
+    CT -- "dominio" --> SV
+    SV --> VA
+    SV -- "toEntity / fromEntity" --> MP
+    SV --> RE --> DB
+
+    style SEC fill:#e53935,color:#fff
+    style RE fill:#3a9bd5,color:#fff
+    style DB fill:#1e2a24,color:#fff
+    style MP fill:#7c4dff,color:#fff
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-top:24px">
+    <div style="background:#e8f7ef;border-radius:10px;padding:18px">
+      <div style="font-size:.75rem;font-weight:700;color:var(--verde);text-transform:uppercase;margin-bottom:8px">✅ No cambia nada de esto</div>
+      <ul style="list-style:none;font-size:.88rem;line-height:1.8">
+        <li>🌿 Objetos de dominio</li>
+        <li>🌿 DTOs Request / Response</li>
+        <li>🌿 Controller + rutas</li>
+        <li>🌿 Validators de negocio</li>
+        <li>🌿 GlobalExceptionHandler</li>
+        <li>🌿 Swagger / OpenAPI</li>
+        <li>🌿 Streams en el Service</li>
+      </ul>
+    </div>
+    <div style="background:#eaf5fb;border-radius:10px;padding:18px">
+      <div style="font-size:.75rem;font-weight:700;color:var(--info);text-transform:uppercase;margin-bottom:8px">🔄 Cambia o se extiende</div>
+      <ul style="list-style:none;font-size:.88rem;line-height:1.8">
+        <li>🔵 ServiceImpl usa Repository</li>
+        <li>🔵 Mapper ahora tiene toEntity()</li>
+        <li>🔵 ConcurrentHashMap desaparece</li>
+        <li>🔵 AtomicLong desaparece (BD asigna ID)</li>
+      </ul>
+    </div>
+    <div style="background:#fdecea;border-radius:10px;padding:18px">
+      <div style="font-size:.75rem;font-weight:700;color:var(--danger);text-transform:uppercase;margin-bottom:8px">🆕 Nuevo en S09</div>
+      <ul style="list-style:none;font-size:.88rem;line-height:1.8">
+        <li>🔴 Entidades JPA (@Entity)</li>
+        <li>🔴 Documentos Mongo (@Document)</li>
+        <li>🔴 Repositorios Spring Data</li>
+        <li>🔴 JWT — autenticación</li>
+        <li>🔴 Roles — autorización</li>
+        <li>🔴 CORS — acceso cross-origin</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div><strong>El principio guía de S09:</strong> El dominio no sabe nada de la base de datos. La entidad JPA y el documento Mongo son clases de persistencia — son distintas del objeto de dominio. El Mapper traduce entre ellas. Esto protege la lógica de negocio de los detalles de almacenamiento.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- JPA -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 01</div>
+    <div class="sc-title">Persistencia<br><span>Relacional — JPA</span></div>
+    <div class="sc-desc">Los datos van a PostgreSQL. Spring Data JPA genera las queries. Tu dominio no toca la base de datos directamente — lo hace el Repository a través de la entidad.</div>
+  </div>
+  <div class="sc-right">🗄️</div>
+</div>
+
+<section class="section" id="jpa">
+  <div class="section-header">
+    <div class="section-icon">🗄️</div>
+    <div>
+      <span class="section-num">Paso 01 — persistence/entity/ + repository/</span>
+      <div class="section-title">Entidades JPA y repositorios Spring Data</div>
+    </div>
+  </div>
+
+  <h3 style="margin:0 0 14px;font-size:1rem">Dependencias en pom.xml</h3>
+  <pre><code><span class="span-cmt">&lt;!-- Spring Data JPA --&gt;</span>
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+<span class="span-cmt">&lt;!-- PostgreSQL driver --&gt;</span>
+&lt;dependency&gt;
+    &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+    &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Configuración — application.yml</h3>
+  <pre><code><span class="span-cmt"># application.yml</span>
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/restaurante
+    username: postgres
+    password: tu_password
+  jpa:
+    hibernate:
+      ddl-auto: update   <span class="span-cmt"># crea/actualiza tablas automáticamente</span>
+    show-sql: true       <span class="span-cmt"># muestra las queries en consola — útil en desarrollo</span>
+    properties:
+      hibernate:
+        format_sql: true</code></pre>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong><code>ddl-auto: update</code> es para desarrollo.</strong> Nunca uses <code>create</code> en producción — borra y recrea las tablas. En producción se usan migraciones (Liquibase / Flyway). Por ahora, <code>update</code> está bien.</div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">La entidad JPA — diferente al objeto de dominio</h3>
+
+  <p style="margin-bottom:14px;font-size:.9rem;color:var(--gris-med)">La entidad representa la tabla en la base de datos. Su trabajo es persistencia — no tiene lógica de negocio. Vive en <code>persistence/entity/</code> para dejar claro que es una clase de infraestructura.</p>
+
+  <div class="compare">
+    <div class="compare-col a">
+      <h4>❌ Anti-patrón — mezclar dominio y entidad</h4>
+      <ul>
+        <li>Una sola clase con @Entity y lógica de negocio</li>
+        <li>La BD dicta la estructura del dominio</li>
+        <li>Imposible cambiar el esquema sin romper lógica</li>
+        <li>Las anotaciones JPA contaminan el modelo de negocio</li>
+      </ul>
+    </div>
+    <div class="compare-col b">
+      <h4>✅ Correcto — separar dominio de entidad</h4>
+      <ul>
+        <li><code>model/domain/Plato.java</code> — tiene lógica</li>
+        <li><code>persistence/entity/PlatoEntity.java</code> — tiene anotaciones JPA</li>
+        <li>El Mapper traduce entre ambas</li>
+        <li>Cambiar el esquema no toca el dominio</li>
+      </ul>
+    </div>
+  </div>
+
+  <pre><code><span class="span-cmt">// persistence/entity/PlatoEntity.java
+// Esta clase representa la tabla "platos" en PostgreSQL
+// No tiene lógica de negocio — solo estructura y anotaciones JPA</span>
+<span class="span-an">@Entity</span>
+<span class="span-an">@Table</span>(name = <span class="span-st">"platos"</span>)
+<span class="span-an">@Data</span>
+<span class="span-an">@NoArgsConstructor</span>
+<span class="span-an">@AllArgsConstructor</span>
+<span class="span-an">@Builder</span>
+<span class="span-kw">public class</span> <span class="span-ty">PlatoEntity</span> {
+
+    <span class="span-an">@Id</span>
+    <span class="span-an">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)  <span class="span-cmt">// la BD asigna el ID</span>
+    <span class="span-kw">private</span> <span class="span-ty">Long</span> id;
+
+    <span class="span-an">@Column</span>(nullable = <span class="span-kw">false</span>, unique = <span class="span-kw">true</span>, length = 120)
+    <span class="span-kw">private</span> <span class="span-ty">String</span> nombre;
+
+    <span class="span-an">@Column</span>(nullable = <span class="span-kw">false</span>, precision = 10, scale = 2)
+    <span class="span-kw">private</span> <span class="span-ty">Double</span> precio;
+
+    <span class="span-an">@Column</span>(nullable = <span class="span-kw">false</span>, length = 60)
+    <span class="span-kw">private</span> <span class="span-ty">String</span> categoria;
+
+    <span class="span-kw">private</span> <span class="span-ty">String</span> descripcion;
+
+    <span class="span-an">@Column</span>(nullable = <span class="span-kw">false</span>)
+    <span class="span-kw">private</span> <span class="span-ty">Boolean</span> disponible;
+
+    <span class="span-an">@CreationTimestamp</span>  <span class="span-cmt">// Hibernate la llena automáticamente</span>
+    <span class="span-kw">private</span> <span class="span-ty">LocalDateTime</span> creadoEn;
+}</code></pre>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>Sobre el tipo del precio:</strong> <code>Double</code> funciona para el ejercicio académico. En producción, los valores monetarios usan <code>BigDecimal</code> — evita errores de punto flotante (0.1 + 0.2 ≠ 0.3 en Double). <code>@Column(precision=10, scale=2)</code> sí aplica a BigDecimal; con Double, Hibernate lo ignora en algunos dialectos.</div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">El Repository — Spring Data genera las queries</h3>
+  <pre><code><span class="span-cmt">// repository/PlatoRepository.java</span>
+<span class="span-an">@Repository</span>
+<span class="span-kw">public interface</span> <span class="span-ty">PlatoRepository</span> <span class="span-kw">extends</span> <span class="span-ty">JpaRepository</span>&lt;<span class="span-ty">PlatoEntity</span>, <span class="span-ty">Long</span>&gt; {
+
+    <span class="span-cmt">// Spring Data genera el SQL automáticamente por el nombre del método</span>
+    <span class="span-ty">List</span>&lt;<span class="span-ty">PlatoEntity</span>&gt; <span class="span-fn">findByDisponibleTrue</span>();
+    <span class="span-ty">List</span>&lt;<span class="span-ty">PlatoEntity</span>&gt; <span class="span-fn">findByCategoriaIgnoreCase</span>(<span class="span-ty">String</span> categoria);
+    <span class="span-ty">boolean</span>           <span class="span-fn">existsByNombreIgnoreCase</span>(<span class="span-ty">String</span> nombre);
+    <span class="span-ty">boolean</span>           <span class="span-fn">existsByNombreIgnoreCaseAndIdNot</span>(<span class="span-ty">String</span> nombre, <span class="span-ty">Long</span> id);
+}</code></pre>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>JpaRepository ya te da:</strong> <code>save()</code>, <code>findById()</code>, <code>findAll()</code>, <code>deleteById()</code>, <code>existsById()</code>, <code>count()</code> — sin escribir una línea de SQL. Los métodos que agregas siguen la convención de nombres de Spring Data y también se generan automáticamente.</div>
+  </div>
+
+  <div class="sep" style="margin:36px 0"></div>
+
+  <!-- UUID SECTION -->
+  <div class="section-header" id="ids" style="scroll-margin-top:60px">
+    <div class="section-icon">🪪</div>
+    <div>
+      <span class="section-num">Paso 01B — Tipos de ID</span>
+      <div class="section-title">Long, UUID v4, UUID v7 o String — ¿cuál usas?</div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:18px;font-size:.95rem">El tipo de ID de tu entidad no es un detalle — afecta el rendimiento de los índices, la seguridad de los endpoints, y si puedes generar IDs antes de guardar en la BD. Elige según el caso.</p>
+
+  <!-- INTERACTIVE WIDGET -->
+  <div class="uuid-widget">
+    <h4>Explora cada tipo — haz clic para ver cuándo usarlo</h4>
+
+    <div class="uuid-tabs">
+      <button class="uuid-tab active" onclick="showUuid(event,'long')">Long (numérico)</button>
+      <button class="uuid-tab" onclick="showUuid(event,'v4')">UUID v4</button>
+      <button class="uuid-tab" onclick="showUuid(event,'v7')">UUID v7 <span style="font-size:10px;background:#3a9bd5;color:#fff;padding:2px 6px;border-radius:4px;margin-left:4px">NUEVO</span></button>
+      <button class="uuid-tab" onclick="showUuid(event,'mongo')">ObjectId (Mongo)</button>
+    </div>
+
+    <!-- LONG -->
+    <div class="uuid-panel active" id="uuid-long">
+      <span class="uuid-badge long">Long — IDENTITY</span>
+      <div class="uuid-code">@Id @GeneratedValue(strategy = GenerationType.IDENTITY)<br>private Long id;<br><br><span style="color:#546e7a">// Ejemplo de valor en la BD: 42</span><br><span style="color:#546e7a">// URL generada: GET /api/v1/platos/42</span></div>
+      <div class="uuid-grid" style="margin-top:16px">
+        <div class="uuid-card ok">
+          <div class="uuid-card-title">Cuándo usarlo</div>
+          <ul>
+            <li>Tablas con muchas relaciones (FK)</li>
+            <li>Datos internos no expuestos en URL</li>
+            <li>Performance crítico en JOINs</li>
+            <li>Tablas de soporte: categoría, rol, estado</li>
+          </ul>
+        </div>
+        <div class="uuid-card bad">
+          <div class="uuid-card-title">Cuándo evitarlo</div>
+          <ul>
+            <li>IDs en URLs públicas (usuarios, pedidos)</li>
+            <li>Sistemas distribuidos multi-BD</li>
+            <li>Cuando el cliente necesita saber el ID antes del INSERT</li>
+            <li>APIs expuestas a terceros</li>
+          </ul>
+        </div>
+      </div>
+      <div class="uuid-tip">En el restaurante: úsalo para <strong>platos, categorías, roles de usuario, estados de pedido</strong> — entidades internas donde el ID no sale en URLs públicas y la performance de los JOINs importa.</div>
+    </div>
+
+    <!-- UUID v4 -->
+    <div class="uuid-panel" id="uuid-v4">
+      <span class="uuid-badge v4">UUID v4 — aleatorio</span>
+      <div class="uuid-code">@Id @GeneratedValue(strategy = GenerationType.UUID)<br>private UUID id;  // Java 17+, Hibernate 6.2+<br><br><span style="color:#546e7a">// Ejemplo: 550e8400-e29b-41d4-a716-446655440000</span><br><span style="color:#546e7a">// URL: GET /api/v1/reservas/550e8400-e29b-41d4-a716-446655440000</span></div>
+      <div class="uuid-grid" style="margin-top:16px">
+        <div class="uuid-card ok">
+          <div class="uuid-card-title">Cuándo usarlo</div>
+          <ul>
+            <li>IDs que van en URLs públicas</li>
+            <li>No revela cuántos registros hay</li>
+            <li>Imposible adivinar IDs ajenos</li>
+            <li>Fácil de generar en el cliente antes de enviar</li>
+          </ul>
+        </div>
+        <div class="uuid-card warn">
+          <div class="uuid-card-title">Cuidado con esto</div>
+          <ul>
+            <li>Índices más grandes que Long</li>
+            <li>Random: fragmenta el índice B-tree (lento en inserts masivos)</li>
+            <li>Más bytes en cada FK de tablas relacionadas</li>
+          </ul>
+        </div>
+      </div>
+      <div class="uuid-tip">En el restaurante: úsalo para <strong>reservas, usuarios, pedidos de domicilio</strong> — entidades cuyos IDs van en URLs de confirmación o se comparten con el cliente externo.</div>
+    </div>
+
+    <!-- UUID v7 -->
+    <div class="uuid-panel" id="uuid-v7">
+      <span class="uuid-badge v7">UUID v7 — ordenado por tiempo</span>
+      <div class="uuid-code"><span style="color:#546e7a">// Spring Boot 3.2+ / Java 21+ con Hibernate 6.4+</span><br>@Id @UuidGenerator(style = UuidGenerator.Style.TIME)<br>private UUID id;<br><br><span style="color:#546e7a">// O con librería uuid-creator:</span><br><span style="color:#c792ea">@PrePersist</span><br><span style="color:#89d3fe">void</span> generarId() {<br>    if (id == null) id = UuidCreator.getTimeOrderedEpoch(); // v7<br>}<br><br><span style="color:#546e7a">// Ejemplo: 018e8f3a-1b2c-7xxx-xxxx-xxxxxxxxxxxx</span><br><span style="color:#546e7a">// Los primeros 48 bits son timestamp — ordenado cronológicamente</span></div>
+      <div class="uuid-grid" style="margin-top:16px">
+        <div class="uuid-card ok">
+          <div class="uuid-card-title">Lo mejor de ambos mundos</div>
+          <ul>
+            <li>UUID: no revela secuencia ni cantidad</li>
+            <li>Ordenado por tiempo: no fragmenta el índice</li>
+            <li>INSERT tan eficiente como Long en secuencia</li>
+            <li>Compatible con sistemas distribuidos</li>
+            <li>Se puede generar antes del INSERT</li>
+          </ul>
+        </div>
+        <div class="uuid-card warn">
+          <div class="uuid-card-title">Contexto necesario</div>
+          <ul>
+            <li>Requiere Hibernate 6.4+ o librería externa</li>
+            <li>El timestamp está en los bits — visible si se decodifica</li>
+            <li>Overkill para proyectos pequeños</li>
+          </ul>
+        </div>
+      </div>
+      <div class="uuid-tip"><strong>UUID v7 es el futuro del ID en sistemas distribuidos.</strong> En el restaurante aplica a <strong>pedidos de alta frecuencia, eventos de auditoría, logs de caja</strong> — donde quieres UUID en URL pero muchos inserts rápidos sin degradar el índice.</div>
+    </div>
+
+    <!-- MONGO ObjectId -->
+    <div class="uuid-panel" id="uuid-mongo">
+      <span class="uuid-badge mongo">ObjectId — MongoDB</span>
+      <div class="uuid-code">@Id<br>private String id;  // Mongo genera ObjectId automáticamente<br><br><span style="color:#546e7a">// Ejemplo: 64f3a1b2c3d4e5f6a7b8c9d0</span><br><span style="color:#546e7a">// 12 bytes: 4 timestamp + 5 random + 3 contador incremental</span><br><span style="color:#546e7a">// Ya es ordenado por tiempo — como UUID v7 para Mongo</span></div>
+      <div class="uuid-grid" style="margin-top:16px">
+        <div class="uuid-card ok">
+          <div class="uuid-card-title">Por qué String en Mongo</div>
+          <ul>
+            <li>Mongo genera ObjectId automáticamente al insertar</li>
+            <li>Incluye timestamp — sin fragmentar índice</li>
+            <li>Se puede usar UUID si necesitas consistencia cross-BD</li>
+            <li>Más corto que UUID (24 hex chars vs 36)</li>
+          </ul>
+        </div>
+        <div class="uuid-card warn">
+          <div class="uuid-card-title">Alternativa: UUID en Mongo</div>
+          <ul>
+            <li>Si el mismo ID debe existir en Postgres y Mongo</li>
+            <li>Usar <code>@Field("_id")</code> con tipo UUID</li>
+            <li>Mongo lo guarda como Binary subtype 4</li>
+          </ul>
+        </div>
+      </div>
+      <div class="uuid-tip">En el restaurante: deja que Mongo genere el ObjectId para <strong>eventos y logs</strong>. Si necesitas referenciar el mismo registro desde PostgreSQL, usa UUID v4 o v7 como ID en ambas bases.</div>
+    </div>
+  </div>
+
+  <!-- DECISION TABLE -->
+  <h3 style="margin:28px 0 14px;font-size:1rem">Tabla de decisión — cuál usar en cada caso</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Caso</th><th>Tipo recomendado</th><th>Razón</th></tr></thead>
+      <tbody>
+        <tr><td>Tabla de platos, categorías, roles</td><td><code>Long</code></td><td>ID interno, nunca en URL pública, JOINs rápidos</td></tr>
+        <tr><td>Reservas, confirmaciones que se envían al cliente</td><td><code>UUID v4</code></td><td>No revela secuencia, seguro en URL pública</td></tr>
+        <tr><td>Pedidos de alta frecuencia, auditoría</td><td><code>UUID v7</code></td><td>UUID en URL + índice sin fragmentar, ordenado por tiempo</td></tr>
+        <tr><td>Documentos MongoDB — logs, eventos</td><td><code>String</code> (ObjectId)</td><td>Mongo lo genera y ya es ordenado por tiempo</td></tr>
+        <tr><td>ID compartido entre PostgreSQL y MongoDB</td><td><code>UUID</code> en ambos</td><td>Consistencia cross-store sin join problemático</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SCENARIO QUIZZES -->
+  <h3 style="margin:28px 0 14px;font-size:1rem">Practica — elige el ID correcto</h3>
+
+  <div class="scenario-quiz" id="sq1">
+    <div class="sq-header">Escenario 1 de 4</div>
+    <div class="sq-title">El gerente quiere enviarle al cliente un link de confirmación de su reserva por WhatsApp. ¿Qué tipo de ID le conviene a la tabla de reservas?</div>
+    <div class="sq-options">
+      <button class="sq-btn" onclick="checkSq('sq1',this,'wrong')">Long secuencial</button>
+      <button class="sq-btn" onclick="checkSq('sq1',this,'correct')">UUID v4</button>
+      <button class="sq-btn" onclick="checkSq('sq1',this,'wrong')">ObjectId (Mongo)</button>
+      <button class="sq-btn" onclick="checkSq('sq1',this,'wrong')">int autoincrement</button>
+    </div>
+    <div class="sq-feedback correct" id="sq1-ok">Correcto. UUID v4 en la URL hace imposible que un cliente adivine el link de otra reserva. Con Long secuencial, /reservas/43 revela que hay 43 reservas y que la próxima será la 44.</div>
+    <div class="sq-feedback wrong" id="sq1-err">No es la mejor opción. Piensa en qué pasa si el ID es predecible en una URL pública — ¿podría alguien adivinar la reserva de otro cliente?</div>
+    <button class="sq-reset" onclick="resetSq('sq1')">Reintentar</button>
+  </div>
+
+  <div class="scenario-quiz" id="sq2">
+    <div class="sq-header">Escenario 2 de 4</div>
+    <div class="sq-title">El sistema necesita registrar cada cambio de estado de cada pedido como un evento. Se esperan miles de inserts por hora. ¿Qué ID usar para la colección de eventos en MongoDB?</div>
+    <div class="sq-options">
+      <button class="sq-btn" onclick="checkSq('sq2',this,'correct')">String (ObjectId generado por Mongo)</button>
+      <button class="sq-btn" onclick="checkSq('sq2',this,'wrong')">Long secuencial</button>
+      <button class="sq-btn" onclick="checkSq('sq2',this,'wrong')">UUID v4 aleatorio</button>
+      <button class="sq-btn" onclick="checkSq('sq2',this,'wrong')">Sin ID — los eventos no se consultan</button>
+    </div>
+    <div class="sq-feedback correct" id="sq2-ok">Correcto. En MongoDB usas String y dejas que Mongo genere el ObjectId — que ya es ordenado por tiempo como UUID v7, sin fragmentar el índice. Para miles de inserts por hora, el orden del índice importa mucho.</div>
+    <div class="sq-feedback wrong" id="sq2-err">Recuerda: en MongoDB el tipo de campo @Id es String, y Mongo genera el ObjectId automáticamente. Long no existe nativamente en Mongo como tipo de ID generado. Y los eventos sí se consultan — para historial y auditoría.</div>
+    <button class="sq-reset" onclick="resetSq('sq2')">Reintentar</button>
+  </div>
+
+  <div class="scenario-quiz" id="sq3">
+    <div class="sq-header">Escenario 3 de 4</div>
+    <div class="sq-title">La tabla de categorías de platos (Entradas, Principales, Postres, Bebidas) raramente cambia, no se expone en URLs públicas y tiene relaciones con muchas otras tablas. ¿Qué ID usas?</div>
+    <div class="sq-options">
+      <button class="sq-btn" onclick="checkSq('sq3',this,'correct')">Long secuencial</button>
+      <button class="sq-btn" onclick="checkSq('sq3',this,'wrong')">UUID v4</button>
+      <button class="sq-btn" onclick="checkSq('sq3',this,'wrong')">UUID v7</button>
+      <button class="sq-btn" onclick="checkSq('sq3',this,'wrong')">String</button>
+    </div>
+    <div class="sq-feedback correct" id="sq3-ok">Correcto. Long es ideal para tablas de soporte internas — ocupa 8 bytes vs 16 de UUID, los JOINs son más rápidos, el índice es más pequeño, y el ID nunca sale en una URL que el usuario vea.</div>
+    <div class="sq-feedback wrong" id="sq3-err">Para una tabla interna con muchos JOINs, UUID agrega overhead sin beneficio — el ID nunca va en una URL pública, así que la opacidad de UUID no aporta nada aquí.</div>
+    <button class="sq-reset" onclick="resetSq('sq3')">Reintentar</button>
+  </div>
+
+  <div class="scenario-quiz" id="sq4">
+    <div class="sq-header">Escenario 4 de 4</div>
+    <div class="sq-title">El restaurante recibe 500 pedidos por hora. Cada pedido tiene un ID que va en la URL de seguimiento del cliente. Quieres que el índice no se fragmente. ¿Qué ID usas?</div>
+    <div class="sq-options">
+      <button class="sq-btn" onclick="checkSq('sq4',this,'wrong')">Long secuencial</button>
+      <button class="sq-btn" onclick="checkSq('sq4',this,'wrong')">UUID v4 aleatorio</button>
+      <button class="sq-btn" onclick="checkSq('sq4',this,'correct')">UUID v7 ordenado por tiempo</button>
+      <button class="sq-btn" onclick="checkSq('sq4',this,'wrong')">ObjectId de Mongo</button>
+    </div>
+    <div class="sq-feedback correct" id="sq4-ok">Correcto. UUID v7 combina lo mejor de Long (inserts ordenados, índice sin fragmentar) con lo mejor de UUID v4 (opaco en URL, no revela secuencia). Es el tipo moderno para entidades de alta frecuencia con ID en URL pública.</div>
+    <div class="sq-feedback wrong" id="sq4-err">Long está en URL (predecible). UUID v4 fragmenta el índice con inserts aleatorios a alta frecuencia. ObjectId es de MongoDB. UUID v7 resuelve exactamente esta combinación de requisitos.</div>
+    <button class="sq-reset" onclick="resetSq('sq4')">Reintentar</button>
+  </div>
+
+  <div class="sep" style="margin:36px 0"></div>
+
+  <h3 style="margin:0 0 14px;font-size:1rem">El ServiceImpl con Repository — los streams siguen igual</h3>
+  <pre><code><span class="span-cmt">// service/impl/PlatoServiceImpl.java
+// El Repository reemplaza el ConcurrentHashMap — el resto es igual</span>
+<span class="span-an">@Service</span>
+<span class="span-an">@Slf4j</span>
+<span class="span-an">@RequiredArgsConstructor</span>
+<span class="span-kw">public class</span> <span class="span-ty">PlatoServiceImpl</span> <span class="span-kw">implements</span> <span class="span-ty">IPlatoService</span> {
+
+    <span class="span-kw">private final</span> <span class="span-ty">PlatoRepository</span> platoRepository;
+    <span class="span-kw">private final</span> <span class="span-ty">PlatoEntityMapper</span> entityMapper;   <span class="span-cmt">// nuevo: dominio ↔ entidad</span>
+    <span class="span-kw">private final</span> <span class="span-ty">IPlatoValidator</span>   validator;
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">public</span> <span class="span-ty">List</span>&lt;<span class="span-ty">Plato</span>&gt; <span class="span-fn">obtenerTodos</span>() {
+        <span class="span-cmt">// Repository devuelve List&lt;PlatoEntity&gt; → stream → dominio</span>
+        <span class="span-kw">return</span> platoRepository.<span class="span-fn">findAll</span>().<span class="span-fn">stream</span>()
+                .<span class="span-fn">map</span>(entityMapper::<span class="span-fn">toDomain</span>)
+                .<span class="span-fn">toList</span>();
+    }
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">public</span> <span class="span-ty">List</span>&lt;<span class="span-ty">Plato</span>&gt; <span class="span-fn">obtenerDisponibles</span>() {
+        <span class="span-kw">return</span> platoRepository.<span class="span-fn">findByDisponibleTrue</span>().<span class="span-fn">stream</span>()
+                .<span class="span-fn">map</span>(entityMapper::<span class="span-fn">toDomain</span>)
+                .<span class="span-fn">toList</span>();
+    }
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">public</span> <span class="span-ty">Plato</span> <span class="span-fn">obtenerPorId</span>(<span class="span-ty">Long</span> id) {
+        <span class="span-kw">return</span> platoRepository.<span class="span-fn">findById</span>(id)
+                .<span class="span-fn">map</span>(entityMapper::<span class="span-fn">toDomain</span>)
+                .<span class="span-fn">orElseThrow</span>(() -> <span class="span-kw">new</span> <span class="span-ty">RecursoNoEncontradoException</span>(<span class="span-st">"Plato"</span>, id));
+    }
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">public</span> <span class="span-ty">Plato</span> <span class="span-fn">crear</span>(<span class="span-ty">Plato</span> plato) {
+        validator.<span class="span-fn">validarNombreUnico</span>(plato.getNombre());
+        <span class="span-ty">PlatoEntity</span> guardado = platoRepository.<span class="span-fn">save</span>(entityMapper.<span class="span-fn">toEntity</span>(plato));
+        <span class="span-fn">log</span>.info(<span class="span-st">"Plato creado: id={}, nombre={}"</span>, guardado.getId(), guardado.getNombre());
+        <span class="span-kw">return</span> entityMapper.<span class="span-fn">toDomain</span>(guardado);
+    }
+
+    <span class="span-an">@Override</span>
+    <span class="span-an">@Transactional</span>  <span class="span-cmt">// findById + save en una sola transacción — evita inconsistencias</span>
+    <span class="span-kw">public</span> <span class="span-ty">Plato</span> <span class="span-fn">actualizar</span>(<span class="span-ty">Long</span> id, <span class="span-ty">Plato</span> nuevosDatos) {
+        <span class="span-ty">PlatoEntity</span> existente = platoRepository.<span class="span-fn">findById</span>(id)
+                .<span class="span-fn">orElseThrow</span>(() -> <span class="span-kw">new</span> <span class="span-ty">RecursoNoEncontradoException</span>(<span class="span-st">"Plato"</span>, id));
+        validator.<span class="span-fn">validarNombreUnicoExcluyendo</span>(nuevosDatos.getNombre(), id);
+        existente.<span class="span-fn">setNombre</span>(nuevosDatos.getNombre());
+        existente.<span class="span-fn">setPrecio</span>(nuevosDatos.getPrecio());
+        existente.<span class="span-fn">setCategoria</span>(nuevosDatos.getCategoria());
+        existente.<span class="span-fn">setDescripcion</span>(nuevosDatos.getDescripcion());
+        <span class="span-kw">return</span> entityMapper.<span class="span-fn">toDomain</span>(platoRepository.<span class="span-fn">save</span>(existente));
+    }
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">public</span> <span class="span-ty">Plato</span> <span class="span-fn">cambiarDisponibilidad</span>(<span class="span-ty">Long</span> id, <span class="span-kw">boolean</span> disponible) {
+        <span class="span-ty">PlatoEntity</span> entidad = platoRepository.<span class="span-fn">findById</span>(id)
+                .<span class="span-fn">orElseThrow</span>(() -> <span class="span-kw">new</span> <span class="span-ty">RecursoNoEncontradoException</span>(<span class="span-st">"Plato"</span>, id));
+        entidad.<span class="span-fn">setDisponible</span>(disponible);
+        <span class="span-kw">return</span> entityMapper.<span class="span-fn">toDomain</span>(platoRepository.<span class="span-fn">save</span>(entidad));
+    }
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">public void</span> <span class="span-fn">eliminar</span>(<span class="span-ty">Long</span> id) {
+        <span class="span-kw">if</span> (!platoRepository.<span class="span-fn">existsById</span>(id)) {
+            <span class="span-kw">throw new</span> <span class="span-ty">RecursoNoEncontradoException</span>(<span class="span-st">"Plato"</span>, id);
+        }
+        platoRepository.<span class="span-fn">deleteById</span>(id);
+        <span class="span-fn">log</span>.info(<span class="span-st">"Plato eliminado: id={}"</span>, id);
+    }
+}</code></pre>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div><strong>Nota el cambio en el Validator:</strong> con JPA, <code>validarNombreUnico</code> ya no recibe la colección — llama directamente al Repository: <code>platoRepository.existsByNombreIgnoreCase(nombre)</code>. El Validator recibe el Repository inyectado. El Service ya no pasa la lista completa.</div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Validator actualizado para JPA</h3>
+  <pre><code><span class="span-cmt">// validator/PlatoValidator.java — ahora usa el Repository directamente</span>
+<span class="span-an">@Component</span>
+<span class="span-an">@RequiredArgsConstructor</span>
+<span class="span-kw">public class</span> <span class="span-ty">PlatoValidator</span> <span class="span-kw">implements</span> <span class="span-ty">IPlatoValidator</span> {
+
+    <span class="span-kw">private final</span> <span class="span-ty">PlatoRepository</span> platoRepository;
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">public void</span> <span class="span-fn">validarNombreUnico</span>(<span class="span-ty">String</span> nombre) {
+        <span class="span-kw">if</span> (platoRepository.<span class="span-fn">existsByNombreIgnoreCase</span>(nombre)) {
+            <span class="span-kw">throw new</span> <span class="span-ty">ConflictoException</span>(<span class="span-st">"Ya existe un plato con el nombre '"</span> + nombre + <span class="span-st">"'"</span>);
+        }
+    }
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">public void</span> <span class="span-fn">validarNombreUnicoExcluyendo</span>(<span class="span-ty">String</span> nombre, <span class="span-ty">Long</span> id) {
+        <span class="span-kw">if</span> (platoRepository.<span class="span-fn">existsByNombreIgnoreCaseAndIdNot</span>(nombre, id)) {
+            <span class="span-kw">throw new</span> <span class="span-ty">ConflictoException</span>(<span class="span-st">"Ya existe otro plato con el nombre '"</span> + nombre + <span class="span-st">"'"</span>);
+        }
+    }
+}</code></pre>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Pausa rápida</span>
+      <span class="qi-title">JPA — comprueba que entiendes</span>
+    </div>
+    <div class="qi-q">¿Por qué PlatoEntity y Plato son clases distintas?</div>
+    <div class="qi-a">Porque tienen responsabilidades distintas. Plato tiene comportamiento de negocio (estaDisponible, activar). PlatoEntity tiene anotaciones de persistencia (@Column, @GeneratedValue). Si las mezclas, cambiar el esquema de la BD impacta la lógica de negocio — dos razones de cambio en una clase.</div>
+    <div class="qi-q">¿Quién asigna el ID ahora — el código o la BD?</div>
+    <div class="qi-a">La base de datos, con @GeneratedValue(strategy = IDENTITY). Por eso desaparece el AtomicLong del Service. El ID está disponible después del save() — el repositorio lo retorna en el objeto guardado.</div>
+    <div class="qi-q">¿Por qué el Validator ya no recibe la colección completa de platos?</div>
+    <div class="qi-a">Porque ya no tiene sentido cargar todos los platos en memoria para buscar duplicados. El Validator inyecta el Repository y llama existsByNombreIgnoreCase() — una query que el motor de base de datos ejecuta de forma óptima, con índice en la columna.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- MAPPER JPA -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 02</div>
+    <div class="sc-title">El Mapper<br><span>ahora tiene 3 capas</span></div>
+    <div class="sc-desc">El Mapper de S08 traducía entre RequestDTO y dominio, y entre dominio y ResponseDTO. En S09 agrega una tercera traducción: dominio ↔ entidad JPA. Cada dirección tiene un nombre claro.</div>
+  </div>
+  <div class="sc-right">🔄</div>
+</div>
+
+<section class="section" id="mapper-jpa">
+  <div class="section-header">
+    <div class="section-icon">🔄</div>
+    <div>
+      <span class="section-num">Paso 02 — mapper/</span>
+      <div class="section-title">Mapper de 3 capas — RequestDTO, Dominio, Entidad</div>
+    </div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Las tres traducciones del Mapper</div>
+    <div class="mermaid">
+flowchart LR
+    RQ["RequestDTO"]
+    DO["Dominio\nPlato"]
+    EN["Entidad JPA\nPlatoEntity"]
+    RS["ResponseDTO"]
+
+    RQ -- "PlatoMapper\n.toDomain()" --> DO
+    DO -- "PlatoEntityMapper\n.toEntity()" --> EN
+    EN -- "PlatoEntityMapper\n.toDomain()" --> DO
+    DO -- "PlatoMapper\n.toResponse()" --> RS
+
+    style DO fill:#3d8b5e,color:#fff
+    style EN fill:#3a9bd5,color:#fff
+    style RQ fill:#f0f7f3,stroke:#6abf8a
+    style RS fill:#f0f7f3,stroke:#6abf8a
+    </div>
+  </div>
+
+  <p style="margin:0 0 14px;font-size:.9rem;color:var(--gris-med)">Se usan <strong>dos interfaces MapStruct separadas</strong> — una para la capa de presentación (Controller) y otra para la capa de persistencia (Service). Cada una tiene una responsabilidad clara.</p>
+
+  <pre><code><span class="span-cmt">// mapper/PlatoMapper.java — igual que S08, lo usa el Controller</span>
+<span class="span-an">@Mapper</span>(componentModel = <span class="span-st">"spring"</span>)
+<span class="span-kw">public interface</span> <span class="span-ty">PlatoMapper</span> {
+    <span class="span-an">@Mapping</span>(target = <span class="span-st">"id"</span>,         ignore = <span class="span-kw">true</span>)
+    <span class="span-an">@Mapping</span>(target = <span class="span-st">"disponible"</span>, constant = <span class="span-st">"true"</span>)
+    <span class="span-ty">Plato</span>            <span class="span-fn">toDomain</span>(<span class="span-ty">PlatoRequestDTO</span> dto);
+    <span class="span-ty">PlatoResponseDTO</span> <span class="span-fn">toResponse</span>(<span class="span-ty">Plato</span> plato);
+    <span class="span-ty">List</span>&lt;<span class="span-ty">PlatoResponseDTO</span>&gt; <span class="span-fn">toResponseList</span>(<span class="span-ty">List</span>&lt;<span class="span-ty">Plato</span>&gt; platos);
+}
+
+<span class="span-cmt">// mapper/PlatoEntityMapper.java — nuevo en S09, lo usa el ServiceImpl</span>
+<span class="span-an">@Mapper</span>(componentModel = <span class="span-st">"spring"</span>)
+<span class="span-kw">public interface</span> <span class="span-ty">PlatoEntityMapper</span> {
+
+    <span class="span-cmt">// Dominio → Entidad JPA (para guardar en BD)
+    // El id se ignora en creación — la BD lo asigna</span>
+    <span class="span-an">@Mapping</span>(target = <span class="span-st">"creadoEn"</span>, ignore = <span class="span-kw">true</span>)  <span class="span-cmt">// @CreationTimestamp lo llena Hibernate</span>
+    <span class="span-ty">PlatoEntity</span> <span class="span-fn">toEntity</span>(<span class="span-ty">Plato</span> plato);
+
+    <span class="span-cmt">// Entidad JPA → Dominio (al leer de BD)</span>
+    <span class="span-ty">Plato</span>       <span class="span-fn">toDomain</span>(<span class="span-ty">PlatoEntity</span> entidad);
+}</code></pre>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>toEntity() en creación vs actualización:</strong> al <strong>crear</strong>, el dominio no tiene ID todavía — la BD lo asignará. Al <strong>actualizar</strong>, el dominio ya tiene ID y debes pasarlo para que Hibernate haga UPDATE y no INSERT. En <code>actualizar()</code> del Service, el patrón correcto es cargar la entidad existente con <code>findById()</code> y mutar sus campos — así Hibernate detecta que la entidad ya existe (por su ID en el contexto de persistencia) y emite UPDATE automáticamente.</div>
+  </div>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Mapper</th><th>Lo inyecta</th><th>Traducciones</th><th>Dirección</th></tr></thead>
+      <tbody>
+        <tr><td><code>PlatoMapper</code></td><td>Controller</td><td>RequestDTO → Dominio<br>Dominio → ResponseDTO</td><td>Presentación</td></tr>
+        <tr><td><code>PlatoEntityMapper</code></td><td>ServiceImpl</td><td>Dominio → PlatoEntity<br>PlatoEntity → Dominio</td><td>Persistencia</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div><strong>El Controller nunca ve una PlatoEntity.</strong> El ServiceImpl nunca ve un RequestDTO ni un ResponseDTO. Cada capa habla solo con la capa adyacente a través del dominio. El dominio es el idioma común.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- MONGO -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 03</div>
+    <div class="sc-title">Persistencia<br><span>No Relacional — MongoDB</span></div>
+    <div class="sc-desc">Algunos dominios del restaurante encajan mejor en documentos: registros de auditoría, logs de eventos, catálogos con estructura variable. El patrón es el mismo — Documento en vez de Entity, MongoRepository en vez de JpaRepository.</div>
+  </div>
+  <div class="sc-right">🍃</div>
+</div>
+
+<section class="section" id="mongo">
+  <div class="section-header">
+    <div class="section-icon">🍃</div>
+    <div>
+      <span class="section-num">Paso 03 — persistence/document/ + repository/</span>
+      <div class="section-title">Documentos MongoDB y MongoRepository</div>
+    </div>
+  </div>
+
+  <h3 style="margin:0 0 14px;font-size:1rem">Dependencia y configuración</h3>
+  <pre><code><span class="span-cmt">&lt;!-- pom.xml --&gt;</span>
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-mongodb&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+  <pre><code><span class="span-cmt"># application.yml</span>
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/restaurante
+      <span class="span-cmt"># Con MongoDB Atlas (cloud):</span>
+      <span class="span-cmt"># uri: mongodb+srv://usuario:password@cluster.mongodb.net/restaurante</span></code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">¿Cuándo usar MongoDB en el restaurante?</h3>
+  <div class="grid-2">
+    <div style="background:#e8f7ef;border-radius:10px;padding:18px">
+      <div style="font-size:.75rem;font-weight:700;color:var(--verde);text-transform:uppercase;margin-bottom:8px">✅ Buena elección para MongoDB</div>
+      <ul style="list-style:none;font-size:.88rem;line-height:1.9">
+        <li>📋 Historial de cambios de estado de pedidos</li>
+        <li>📊 Reportes con estructura variable por concepto</li>
+        <li>🎫 Logs de eventos (qué hizo quién y cuándo)</li>
+        <li>🖼️ Catálogo con imágenes y campos opcionales</li>
+        <li>🗂️ Documentos de configuración del restaurante</li>
+      </ul>
+    </div>
+    <div style="background:#fdecea;border-radius:10px;padding:18px">
+      <div style="font-size:.75rem;font-weight:700;color:var(--danger);text-transform:uppercase;margin-bottom:8px">⚠️ Mejor en PostgreSQL</div>
+      <ul style="list-style:none;font-size:.88rem;line-height:1.9">
+        <li>💰 Cuentas y pagos (necesitas ACID)</li>
+        <li>🪑 Mesas y reservas (relaciones estrictas)</li>
+        <li>🚗 Registros de parqueadero (integridad crítica)</li>
+        <li>👤 Usuarios y roles (seguridad)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">El documento — mismo patrón que la entidad JPA</h3>
+  <pre><code><span class="span-cmt">// persistence/document/EventoRestauranteDocument.java
+// Guarda cada cambio de estado de un pedido como un evento</span>
+<span class="span-an">@Document</span>(collection = <span class="span-st">"eventos_restaurante"</span>)
+<span class="span-an">@Data</span>
+<span class="span-an">@NoArgsConstructor</span>
+<span class="span-an">@AllArgsConstructor</span>
+<span class="span-an">@Builder</span>
+<span class="span-kw">public class</span> <span class="span-ty">EventoRestauranteDocument</span> {
+
+    <span class="span-an">@Id</span>
+    <span class="span-kw">private</span> <span class="span-ty">String</span> id;  <span class="span-cmt">// Mongo usa String por defecto (ObjectId en BSON)</span>
+
+    <span class="span-kw">private</span> <span class="span-ty">String</span>        tipo;         <span class="span-cmt">// "PEDIDO_CREADO", "PLATO_AGOTADO", etc.</span>
+    <span class="span-kw">private</span> <span class="span-ty">String</span>        entidadTipo;  <span class="span-cmt">// "Pedido", "Plato", "Mesa"</span>
+    <span class="span-kw">private</span> <span class="span-ty">Long</span>          entidadId;
+    <span class="span-kw">private</span> <span class="span-ty">String</span>        descripcion;
+    <span class="span-kw">private</span> <span class="span-ty">String</span>        usuario;
+    <span class="span-kw">private</span> <span class="span-ty">LocalDateTime</span> timestamp;
+
+    <span class="span-cmt">// Mongo permite campos opcionales — los que no aplican simplemente no van</span>
+    <span class="span-kw">private</span> <span class="span-ty">Map</span>&lt;<span class="span-ty">String</span>, <span class="span-ty">Object</span>&gt; metadatos;
+}</code></pre>
+
+  <pre><code><span class="span-cmt">// repository/EventoRestauranteRepository.java</span>
+<span class="span-an">@Repository</span>
+<span class="span-kw">public interface</span> <span class="span-ty">EventoRestauranteRepository</span>
+        <span class="span-kw">extends</span> <span class="span-ty">MongoRepository</span>&lt;<span class="span-ty">EventoRestauranteDocument</span>, <span class="span-ty">String</span>&gt; {
+
+    <span class="span-ty">List</span>&lt;<span class="span-ty">EventoRestauranteDocument</span>&gt; <span class="span-fn">findByEntidadTipoAndEntidadId</span>(
+            <span class="span-ty">String</span> entidadTipo, <span class="span-ty">Long</span> entidadId);
+
+    <span class="span-ty">List</span>&lt;<span class="span-ty">EventoRestauranteDocument</span>&gt; <span class="span-fn">findByTipoAndTimestampBetween</span>(
+            <span class="span-ty">String</span> tipo, <span class="span-ty">LocalDateTime</span> desde, <span class="span-ty">LocalDateTime</span> hasta);
+}</code></pre>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>¿Necesitas @EnableMongoRepositories?</strong> Generalmente no — Spring Boot lo detecta automáticamente si los repositorios están en subpaquetes del paquete principal. Solo agrégalo a la clase <code>@SpringBootApplication</code> si ves el error <code>No qualifying bean of type MongoRepository</code>: <code>@EnableMongoRepositories(basePackages = "com.tuapp.repository")</code>. Igual aplica a JPA con <code>@EnableJpaRepositories</code>.</div>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>Embebido vs Referenciado en MongoDB:</strong> si los datos del subdocumento solo tienen sentido dentro del documento padre (ej: los items de un pedido), embeberlos es correcto. Si el subdocumento se consulta solo y se comparte (ej: un plato), mejor referenciar por ID y tener su propia colección o tabla.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- MAPPER MONGO -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 04</div>
+    <div class="sc-title">Mapper para<br><span>documentos Mongo</span></div>
+    <div class="sc-desc">El mismo patrón. El dominio no sabe que el almacenamiento es Mongo — el DocumentMapper es quien traduce entre el objeto de negocio y el documento de persistencia.</div>
+  </div>
+  <div class="sc-right">🔄</div>
+</div>
+
+<section class="section" id="mapper-mongo">
+  <div class="section-header">
+    <div class="section-icon">🔄</div>
+    <div>
+      <span class="section-num">Paso 04 — mapper/ (documento)</span>
+      <div class="section-title">DocumentMapper — dominio a documento Mongo y viceversa</div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:14px;font-size:.9rem;color:var(--gris-med)"><code>EventoRestaurante</code> es el objeto de dominio equivalente al Document — tiene los mismos campos pero sin anotaciones Mongo. Vive en <code>model/domain/</code> como cualquier otro dominio del restaurante.</p>
+
+  <pre><code><span class="span-cmt">// mapper/EventoMapper.java</span>
+<span class="span-an">@Mapper</span>(componentModel = <span class="span-st">"spring"</span>)
+<span class="span-kw">public interface</span> <span class="span-ty">EventoMapper</span> {
+
+    <span class="span-cmt">// Dominio → Documento (para guardar en Mongo)
+    // El id lo asigna Mongo al hacer save()</span>
+    <span class="span-an">@Mapping</span>(target = <span class="span-st">"id"</span>, ignore = <span class="span-kw">true</span>)
+    <span class="span-ty">EventoRestauranteDocument</span> <span class="span-fn">toDocument</span>(<span class="span-ty">EventoRestaurante</span> evento);
+
+    <span class="span-cmt">// Documento → Dominio (al leer de Mongo)</span>
+    <span class="span-ty">EventoRestaurante</span> <span class="span-fn">toDomain</span>(<span class="span-ty">EventoRestauranteDocument</span> doc);
+}</code></pre>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Tipo de persistencia</th><th>Clase de persistencia</th><th>Mapper</th><th>Repository extiende</th></tr></thead>
+      <tbody>
+        <tr><td>Relacional (PostgreSQL)</td><td><code>*Entity</code> — <code>@Entity</code></td><td><code>*EntityMapper</code></td><td><code>JpaRepository&lt;Entity, Long&gt;</code></td></tr>
+        <tr><td>No relacional (MongoDB)</td><td><code>*Document</code> — <code>@Document</code></td><td><code>*DocumentMapper</code> o <code>*Mapper</code></td><td><code>MongoRepository&lt;Doc, String&gt;</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout key">
+    <span class="callout-icon">🌿</span>
+    <div><strong>El flujo completo con persistencia:</strong><br>
+    <strong>Escritura:</strong> Controller recibe RequestDTO → <code>PlatoMapper.toDomain()</code> → Service valida → <code>PlatoEntityMapper.toEntity()</code> → Repository guarda → <code>PlatoEntityMapper.toDomain()</code> → <code>PlatoMapper.toResponse()</code> → Controller responde.<br>
+    <strong>Lectura:</strong> Repository retorna Entity → <code>PlatoEntityMapper.toDomain()</code> → <code>PlatoMapper.toResponse()</code> → Controller responde.
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- STREAMS -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 05</div>
+    <div class="sc-title">Los Streams<br><span>siguen funcionando</span></div>
+    <div class="sc-desc">El Service sigue operando con streams sobre listas de dominio. La diferencia es que ahora esas listas vienen del Repository — no del Map en memoria. El código de transformación no cambia.</div>
+  </div>
+  <div class="sc-right">🌊</div>
+</div>
+
+<section class="section" id="streams">
+  <div class="section-header">
+    <div class="section-icon">🌊</div>
+    <div>
+      <span class="section-num">Paso 05 — Streams con persistencia</span>
+      <div class="section-title">Lógica que no cambia — solo cambia de dónde vienen los datos</div>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="compare-col a">
+      <h4>S08 — datos en memoria</h4>
+      <ul>
+        <li><code>platos.values().stream()</code></li>
+        <li><code>.filter(...).toList()</code></li>
+        <li><code>.findFirst().orElseThrow()</code></li>
+      </ul>
+    </div>
+    <div class="compare-col b">
+      <h4>S09 — datos del Repository</h4>
+      <ul>
+        <li><code>platoRepository.findAll().stream()</code></li>
+        <li><code>.map(entityMapper::toDomain).filter(...).</code></li>
+        <li><code>platoRepository.findById(id).map(entityMapper::toDomain).orElseThrow()</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="margin:18px 0 14px;font-size:.9rem;color:var(--gris-med)">La operación <code>map(entityMapper::toDomain)</code> convierte cada Entity a dominio antes de que el stream siga procesando — así el resto del código solo ve objetos de dominio, exactamente igual que antes.</p>
+
+  <pre><code><span class="span-cmt">// Comparación directa — el procesamiento del stream es idéntico</span>
+
+<span class="span-cmt">// S08: datos en memoria</span>
+<span class="span-kw">public</span> <span class="span-ty">List</span>&lt;<span class="span-ty">Plato</span>&gt; <span class="span-fn">obtenerPorCategoria</span>(<span class="span-ty">String</span> categoria) {
+    <span class="span-kw">return</span> platos.values().<span class="span-fn">stream</span>()
+            .<span class="span-fn">filter</span>(p -> p.<span class="span-fn">getCategoria</span>().<span class="span-fn">equalsIgnoreCase</span>(categoria))
+            .<span class="span-fn">toList</span>();
+}
+
+<span class="span-cmt">// S09: datos del Repository — solo cambia la fuente y se agrega .map()</span>
+<span class="span-kw">public</span> <span class="span-ty">List</span>&lt;<span class="span-ty">Plato</span>&gt; <span class="span-fn">obtenerPorCategoria</span>(<span class="span-ty">String</span> categoria) {
+    <span class="span-kw">return</span> platoRepository.<span class="span-fn">findByCategoriaIgnoreCase</span>(categoria).<span class="span-fn">stream</span>()
+            .<span class="span-fn">map</span>(entityMapper::<span class="span-fn">toDomain</span>)   <span class="span-cmt">// ← única diferencia</span>
+            .<span class="span-fn">toList</span>();
+    <span class="span-cmt">// O mejor aún: dejar que la BD filtre y convertir solo el resultado</span>
+}</code></pre>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>Filtra en la base de datos, no en el stream.</strong> <code>findByCategoriaIgnoreCase(categoria)</code> devuelve solo los platos de esa categoría — la BD usa el índice. No hagas <code>findAll().stream().filter(...)</code> cuando puedes agregar el método al Repository. Con millones de registros, la diferencia es enorme.</div>
+  </div>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Pausa rápida</span>
+      <span class="qi-title">Persistencia — ¿entiendes el patrón?</span>
+    </div>
+    <div class="qi-q">¿Dónde va la lógica de filtrado — en el Repository o en el stream del Service?</div>
+    <div class="qi-a">En el Repository siempre que sea posible. Un método como findByDisponibleTrue() delega el filtrado a la BD con una query eficiente. El stream se usa para transformaciones sobre el resultado — como convertir Entity a dominio con .map(entityMapper::toDomain).</div>
+    <div class="qi-q">¿Por qué el ServiceImpl inyecta dos Mappers (PlatoEntityMapper) además del Validator y el Repository?</div>
+    <div class="qi-a">Porque tiene tres responsabilidades al guardar: validar (Validator), convertir a entidad para persistir (PlatoEntityMapper.toEntity), y convertir de vuelta a dominio para retornar (PlatoEntityMapper.toDomain). El PlatoMapper del Controller no entra al Service — ese es solo de presentación.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- JWT -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 06</div>
+    <div class="sc-title">Seguridad —<br><span>Autenticación con JWT</span></div>
+    <div class="sc-desc">JWT permite que el servidor no guarde sesiones. El cliente presenta un token firmado en cada petición. Spring Security verifica la firma y extrae el usuario antes de que llegue al Controller.</div>
+  </div>
+  <div class="sc-right">🔐</div>
+</div>
+
+<section class="section" id="jwt">
+  <div class="section-header">
+    <div class="section-icon">🔐</div>
+    <div>
+      <span class="section-num">Paso 06 — Spring Security + JWT</span>
+      <div class="section-title">Autenticación — ¿quién eres tú?</div>
+    </div>
+  </div>
+
+  <h3 style="margin:0 0 14px;font-size:1rem">Dependencias</h3>
+  <pre><code><span class="span-cmt">&lt;!-- Spring Security --&gt;</span>
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+<span class="span-cmt">&lt;!-- Librería para crear y validar JWT --&gt;</span>
+&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-api&lt;/artifactId&gt;
+    &lt;version&gt;0.12.3&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-impl&lt;/artifactId&gt;
+    &lt;version&gt;0.12.3&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt-jackson&lt;/artifactId&gt;
+    &lt;version&gt;0.12.3&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Cómo funciona JWT:</strong> el cliente llama a <code>POST /auth/login</code> con usuario y contraseña. El servidor verifica y retorna un token firmado. En cada petición siguiente, el cliente incluye ese token en el header <code>Authorization: Bearer &lt;token&gt;</code>. Spring Security verifica la firma del token — sin consultar la BD en cada petición.</div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Flujo completo de autenticación JWT</div>
+    <div class="mermaid">
+sequenceDiagram
+    participant C as Cliente
+    participant F as JwtAuthFilter
+    participant A as AuthController
+    participant J as JwtUtil
+    participant DB as Base de datos
+
+    C->>A: POST /auth/login {usuario, password}
+    A->>DB: buscar usuario por email
+    DB-->>A: UsuarioEntity
+    A->>J: generarToken(email, roles)
+    J-->>A: token JWT firmado
+    A-->>C: { token: "eyJ..." }
+
+    Note over C,DB: Peticiones siguientes
+
+    C->>F: GET /api/v1/platos<br/>Authorization: Bearer eyJ...
+    F->>J: esValido(token)
+    J-->>F: true / false
+    F->>F: setear SecurityContext
+    F-->>C: (si false → sigue sin auth → 401 por SecurityConfig)
+    </div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">JwtUtil — genera y valida tokens</h3>
+  <pre><code><span class="span-cmt">// security/JwtUtil.java</span>
+<span class="span-an">@Component</span>
+<span class="span-kw">public class</span> <span class="span-ty">JwtUtil</span> {
+
+    <span class="span-an">@Value</span>(<span class="span-st">"${jwt.secret}"</span>)
+    <span class="span-kw">private</span> <span class="span-ty">String</span> secret;
+
+    <span class="span-an">@Value</span>(<span class="span-st">"${jwt.expiration}"</span>)
+    <span class="span-kw">private</span> <span class="span-ty">Long</span> expiration;  <span class="span-cmt">// en milisegundos, ej: 86400000 = 24h</span>
+
+    <span class="span-kw">private</span> <span class="span-ty">SecretKey</span> <span class="span-fn">getKey</span>() {
+        <span class="span-kw">return</span> <span class="span-ty">Keys</span>.<span class="span-fn">hmacShaKeyFor</span>(<span class="span-ty">Decoders</span>.BASE64.<span class="span-fn">decode</span>(secret));
+    }
+
+    <span class="span-kw">public</span> <span class="span-ty">String</span> <span class="span-fn">generarToken</span>(<span class="span-ty">String</span> email, <span class="span-ty">List</span>&lt;<span class="span-ty">String</span>&gt; roles) {
+        <span class="span-kw">return</span> <span class="span-ty">Jwts</span>.<span class="span-fn">builder</span>()
+                .<span class="span-fn">subject</span>(email)
+                .<span class="span-fn">claim</span>(<span class="span-st">"roles"</span>, roles)          <span class="span-cmt">// los roles van en el payload</span>
+                .<span class="span-fn">issuedAt</span>(<span class="span-kw">new</span> <span class="span-ty">Date</span>())
+                .<span class="span-fn">expiration</span>(<span class="span-kw">new</span> <span class="span-ty">Date</span>(<span class="span-ty">System</span>.<span class="span-fn">currentTimeMillis</span>() + expiration))
+                .<span class="span-fn">signWith</span>(<span class="span-fn">getKey</span>())
+                .<span class="span-fn">compact</span>();
+    }
+
+    <span class="span-kw">public</span> <span class="span-ty">String</span> <span class="span-fn">extraerEmail</span>(<span class="span-ty">String</span> token) {
+        <span class="span-kw">return</span> <span class="span-fn">parsear</span>(token).<span class="span-fn">getPayload</span>().<span class="span-fn">getSubject</span>();
+    }
+
+    <span class="span-kw">public boolean</span> <span class="span-fn">esValido</span>(<span class="span-ty">String</span> token) {
+        <span class="span-kw">try</span> {
+            <span class="span-fn">parsear</span>(token);
+            <span class="span-kw">return true</span>;
+        } <span class="span-kw">catch</span> (<span class="span-ty">JwtException</span> e) {
+            <span class="span-kw">return false</span>;
+        }
+    }
+
+    <span class="span-kw">private</span> <span class="span-ty">Jws</span>&lt;<span class="span-ty">Claims</span>&gt; <span class="span-fn">parsear</span>(<span class="span-ty">String</span> token) {
+        <span class="span-kw">return</span> <span class="span-ty">Jwts</span>.<span class="span-fn">parser</span>().<span class="span-fn">verifyWith</span>(<span class="span-fn">getKey</span>()).<span class="span-fn">build</span>().<span class="span-fn">parseSignedClaims</span>(token);
+    }
+}</code></pre>
+
+  <pre><code><span class="span-cmt"># application.yml — variables de JWT</span>
+jwt:
+  secret: <span class="span-st">VGVzdFNlY3JldEtleVRlc3RTZWNyZXRLZXlUZXN0U2Vj</span>   <span class="span-cmt"># Base64 de al menos 44 chars (= 32 bytes para HS256)</span>
+  expiration: 86400000   <span class="span-cmt"># 24 horas en milisegundos</span></code></pre>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>Necesitas implementar UserDetailsService.</strong> Spring Security lo necesita para cargar el usuario por email. Crea una clase <code>UsuarioService implements UserDetailsService</code> con el método <code>loadUserByUsername(String email)</code> — que busca el usuario en la BD por email y retorna un <code>UserDetails</code> con su contraseña y roles. Sin esto, el filtro lanza <code>UsernameNotFoundException</code> en cada petición.</div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">El filtro JWT — intercepta cada petición</h3>
+  <pre><code><span class="span-cmt">// security/JwtAuthFilter.java
+// Se ejecuta ANTES de llegar al Controller — valida el token</span>
+<span class="span-an">@Component</span>
+<span class="span-an">@RequiredArgsConstructor</span>
+<span class="span-kw">public class</span> <span class="span-ty">JwtAuthFilter</span> <span class="span-kw">extends</span> <span class="span-ty">OncePerRequestFilter</span> {
+
+    <span class="span-kw">private final</span> <span class="span-ty">JwtUtil</span>            jwtUtil;
+    <span class="span-kw">private final</span> <span class="span-ty">UserDetailsService</span> userDetailsService;
+
+    <span class="span-an">@Override</span>
+    <span class="span-kw">protected void</span> <span class="span-fn">doFilterInternal</span>(<span class="span-ty">HttpServletRequest</span>  request,
+                                       <span class="span-ty">HttpServletResponse</span> response,
+                                       <span class="span-ty">FilterChain</span>         chain)
+            <span class="span-kw">throws</span> <span class="span-ty">ServletException</span>, <span class="span-ty">IOException</span> {
+
+        <span class="span-ty">String</span> header = request.<span class="span-fn">getHeader</span>(<span class="span-st">"Authorization"</span>);
+
+        <span class="span-cmt">// Si no hay header o no empieza con "Bearer ", dejar pasar (sin autenticar)</span>
+        <span class="span-kw">if</span> (header == <span class="span-kw">null</span> || !header.<span class="span-fn">startsWith</span>(<span class="span-st">"Bearer "</span>)) {
+            chain.<span class="span-fn">doFilter</span>(request, response);
+            <span class="span-kw">return</span>;
+        }
+
+        <span class="span-ty">String</span> token = header.<span class="span-fn">substring</span>(<span class="span-nu">7</span>);  <span class="span-cmt">// quita "Bearer "</span>
+
+        <span class="span-kw">if</span> (jwtUtil.<span class="span-fn">esValido</span>(token)) {
+            <span class="span-ty">String</span> email = jwtUtil.<span class="span-fn">extraerEmail</span>(token);
+            <span class="span-ty">UserDetails</span> user = userDetailsService.<span class="span-fn">loadUserByUsername</span>(email);
+
+            <span class="span-ty">UsernamePasswordAuthenticationToken</span> auth =
+                    <span class="span-kw">new</span> <span class="span-ty">UsernamePasswordAuthenticationToken</span>(
+                            user, <span class="span-kw">null</span>, user.<span class="span-fn">getAuthorities</span>());
+
+            <span class="span-cmt">// Registra la autenticación en el contexto de Spring Security</span>
+            <span class="span-ty">SecurityContextHolder</span>.<span class="span-fn">getContext</span>().<span class="span-fn">setAuthentication</span>(auth);
+        }
+
+        chain.<span class="span-fn">doFilter</span>(request, response);
+    }
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">SecurityConfig — la configuración central</h3>
+  <pre><code><span class="span-cmt">// config/SecurityConfig.java</span>
+<span class="span-an">@Configuration</span>
+<span class="span-an">@EnableWebSecurity</span>
+<span class="span-an">@RequiredArgsConstructor</span>
+<span class="span-kw">public class</span> <span class="span-ty">SecurityConfig</span> {
+
+    <span class="span-kw">private final</span> <span class="span-ty">JwtAuthFilter</span> jwtAuthFilter;
+
+    <span class="span-an">@Bean</span>
+    <span class="span-kw">public</span> <span class="span-ty">SecurityFilterChain</span> <span class="span-fn">filterChain</span>(<span class="span-ty">HttpSecurity</span> http) <span class="span-kw">throws</span> <span class="span-ty">Exception</span> {
+        <span class="span-kw">return</span> http
+            .<span class="span-fn">csrf</span>(<span class="span-ty">AbstractHttpConfigurer</span>::<span class="span-fn">disable</span>)  <span class="span-cmt">// JWT es stateless — CSRF no aplica</span>
+            .<span class="span-fn">sessionManagement</span>(s -> s
+                .<span class="span-fn">sessionCreationPolicy</span>(<span class="span-ty">SessionCreationPolicy</span>.STATELESS))
+            .<span class="span-fn">authorizeHttpRequests</span>(auth -> auth
+                <span class="span-cmt">// Rutas públicas — no requieren token</span>
+                .<span class="span-fn">requestMatchers</span>(<span class="span-st">"/auth/**"</span>).permitAll()
+                .<span class="span-fn">requestMatchers</span>(<span class="span-ty">HttpMethod</span>.GET, <span class="span-st">"/api/v1/menu/**"</span>).permitAll()
+                <span class="span-cmt">// Swagger — acceso libre en desarrollo</span>
+                .<span class="span-fn">requestMatchers</span>(<span class="span-st">"/swagger-ui/**"</span>, <span class="span-st">"/v3/api-docs/**"</span>).permitAll()
+                <span class="span-cmt">// Todo lo demás requiere autenticación</span>
+                .<span class="span-fn">anyRequest</span>().<span class="span-fn">authenticated</span>()
+            )
+            .<span class="span-fn">addFilterBefore</span>(jwtAuthFilter, <span class="span-ty">UsernamePasswordAuthenticationFilter</span>.<span class="span-kw">class</span>)
+            .<span class="span-fn">build</span>();
+    }
+
+    <span class="span-an">@Bean</span>
+    <span class="span-kw">public</span> <span class="span-ty">PasswordEncoder</span> <span class="span-fn">passwordEncoder</span>() {
+        <span class="span-kw">return new</span> <span class="span-ty">BCryptPasswordEncoder</span>();  <span class="span-cmt">// nunca guardes passwords en texto plano</span>
+    }
+
+    <span class="span-an">@Bean</span>
+    <span class="span-kw">public</span> <span class="span-ty">AuthenticationManager</span> <span class="span-fn">authenticationManager</span>(
+            <span class="span-ty">AuthenticationConfiguration</span> config) <span class="span-kw">throws</span> <span class="span-ty">Exception</span> {
+        <span class="span-kw">return</span> config.<span class="span-fn">getAuthenticationManager</span>();
+    }
+}</code></pre>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">AuthController — el endpoint de login</h3>
+  <pre><code><span class="span-cmt">// controller/AuthController.java</span>
+<span class="span-an">@RestController</span>
+<span class="span-an">@RequestMapping</span>(<span class="span-st">"/auth"</span>)
+<span class="span-an">@RequiredArgsConstructor</span>
+<span class="span-kw">public class</span> <span class="span-ty">AuthController</span> {
+
+    <span class="span-kw">private final</span> <span class="span-ty">AuthenticationManager</span> authManager;
+    <span class="span-kw">private final</span> <span class="span-ty">JwtUtil</span>               jwtUtil;
+    <span class="span-kw">private final</span> <span class="span-ty">UserDetailsService</span>     userDetailsService;
+
+    <span class="span-an">@PostMapping</span>(<span class="span-st">"/login"</span>)
+    <span class="span-kw">public</span> <span class="span-ty">ResponseEntity</span>&lt;<span class="span-ty">TokenResponseDTO</span>&gt; <span class="span-fn">login</span>(
+            <span class="span-an">@RequestBody</span> <span class="span-an">@Valid</span> <span class="span-ty">LoginRequestDTO</span> dto) {
+
+        <span class="span-cmt">// 1. Verificar credenciales — lanza excepción si son incorrectas</span>
+        authManager.<span class="span-fn">authenticate</span>(
+                <span class="span-kw">new</span> <span class="span-ty">UsernamePasswordAuthenticationToken</span>(dto.email(), dto.password()));
+
+        <span class="span-cmt">// 2. Cargar el usuario con sus roles</span>
+        <span class="span-ty">UserDetails</span> user = userDetailsService.<span class="span-fn">loadUserByUsername</span>(dto.email());
+        <span class="span-ty">List</span>&lt;<span class="span-ty">String</span>&gt; roles = user.<span class="span-fn">getAuthorities</span>().<span class="span-fn">stream</span>()
+                .<span class="span-fn">map</span>(<span class="span-ty">GrantedAuthority</span>::<span class="span-fn">getAuthority</span>)
+                .<span class="span-fn">toList</span>();
+
+        <span class="span-cmt">// 3. Generar y retornar el token</span>
+        <span class="span-ty">String</span> token = jwtUtil.<span class="span-fn">generarToken</span>(dto.email(), roles);
+        <span class="span-kw">return</span> <span class="span-ty">ResponseEntity</span>.<span class="span-fn">ok</span>(<span class="span-kw">new</span> <span class="span-ty">TokenResponseDTO</span>(token));
+    }
+}
+
+<span class="span-cmt">// DTOs del auth</span>
+<span class="span-kw">public record</span> <span class="span-ty">LoginRequestDTO</span>(<span class="span-an">@NotBlank</span> <span class="span-ty">String</span> email, <span class="span-an">@NotBlank</span> <span class="span-ty">String</span> password) {}
+<span class="span-kw">public record</span> <span class="span-ty">TokenResponseDTO</span>(<span class="span-ty">String</span> token) {}</code></pre>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Pausa rápida</span>
+      <span class="qi-title">JWT — verifica que entiendes el flujo</span>
+    </div>
+    <div class="qi-q">¿Por qué se deshabilita CSRF en una API con JWT?</div>
+    <div class="qi-a">CSRF explota que el navegador envía cookies automáticamente. JWT se envía en el header Authorization, que el navegador NO incluye automáticamente en peticiones cross-site. Por eso las APIs JWT stateless no son vulnerables a CSRF y deshabilitarlo simplifica la configuración.</div>
+    <div class="qi-q">¿Dónde van los roles del usuario dentro del token JWT?</div>
+    <div class="qi-a">En el payload, como un claim. El método .claim("roles", roles) los incrusta. Al validar el token, Spring Security los lee y los convierte en GrantedAuthorities — sin hacer ninguna consulta a la BD.</div>
+    <div class="qi-q">¿Qué pasa si el token expiró?</div>
+    <div class="qi-a">jwtUtil.esValido(token) retorna false porque Jwts lanza ExpiredJwtException al parsear. El filtro no setea la autenticación, Spring Security rechaza la petición con 401 Unauthorized.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- AUTORIZACIÓN -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 07</div>
+    <div class="sc-title">Autorización —<br><span>¿qué tienes permitido?</span></div>
+    <div class="sc-desc">Ya sabes quién es el usuario. Ahora defines qué puede hacer. El gerente puede crear y eliminar platos. El cliente solo puede ver el menú. El mesero puede tomar pedidos. Los roles lo controlan.</div>
+  </div>
+  <div class="sc-right">🛡️</div>
+</div>
+
+<section class="section" id="autorizacion">
+  <div class="section-header">
+    <div class="section-icon">🛡️</div>
+    <div>
+      <span class="section-num">Paso 07 — Roles y permisos</span>
+      <div class="section-title">Autorización por roles en el restaurante</div>
+    </div>
+  </div>
+
+  <h3 style="margin:0 0 14px;font-size:1rem">Los roles del restaurante</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Rol</th><th>Puede hacer</th><th>No puede</th></tr></thead>
+      <tbody>
+        <tr><td><code>ROLE_GERENTE</code></td><td>CRUD platos, ver reportes, gestionar usuarios</td><td>—</td></tr>
+        <tr><td><code>ROLE_MESERO</code></td><td>Ver menú, crear pedidos, ver mesas</td><td>Modificar precios, ver reportes</td></tr>
+        <tr><td><code>ROLE_CLIENTE</code></td><td>Ver menú (GET /menu), ver su historial</td><td>Acceder a admin ni a pedidos de otros</td></tr>
+        <tr><td><code>ROLE_COCINERO</code></td><td>Ver pedidos activos, cambiar estado de pedido</td><td>Crear platos, ver cuentas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Habilitar autorización por anotaciones</h3>
+  <pre><code><span class="span-cmt">// Agregar a SecurityConfig.java — encima de la clase</span>
+<span class="span-an">@EnableMethodSecurity</span>  <span class="span-cmt">// habilita @PreAuthorize, @PostAuthorize en los métodos</span></code></pre>
+
+  <h3 style="margin:20px 0 14px;font-size:1rem">Proteger endpoints por rol — dos formas</h3>
+
+  <p style="margin-bottom:14px;font-size:.9rem;color:var(--gris-med)"><strong>Forma 1 — en SecurityConfig (global):</strong> para reglas sencillas por ruta.</p>
+  <pre><code><span class="span-fn">authorizeHttpRequests</span>(auth -> auth
+    .<span class="span-fn">requestMatchers</span>(<span class="span-ty">HttpMethod</span>.GET, <span class="span-st">"/api/v1/menu/**"</span>).<span class="span-fn">permitAll</span>()
+    .<span class="span-fn">requestMatchers</span>(<span class="span-st">"/api/v1/platos/**"</span>).<span class="span-fn">hasRole</span>(<span class="span-st">"GERENTE"</span>)
+    .<span class="span-fn">requestMatchers</span>(<span class="span-st">"/api/v1/pedidos/**"</span>).<span class="span-fn">hasAnyRole</span>(<span class="span-st">"MESERO"</span>, <span class="span-st">"COCINERO"</span>)
+    .<span class="span-fn">anyRequest</span>().<span class="span-fn">authenticated</span>()
+)</code></pre>
+
+  <p style="margin:18px 0 14px;font-size:.9rem;color:var(--gris-med)"><strong>Forma 2 — @PreAuthorize en el Controller (granular):</strong> para reglas distintas por método.</p>
+  <pre><code><span class="span-cmt">// controller/PlatoController.java</span>
+<span class="span-an">@RestController</span>
+<span class="span-an">@RequestMapping</span>(<span class="span-st">"/api/v1/platos"</span>)
+<span class="span-an">@RequiredArgsConstructor</span>
+<span class="span-kw">public class</span> <span class="span-ty">PlatoController</span> <span class="span-kw">implements</span> <span class="span-ty">PlatoApi</span> {
+
+    <span class="span-cmt">// Cualquiera autenticado puede ver — mesero, cocinero, gerente</span>
+    <span class="span-an">@Override</span> <span class="span-an">@GetMapping</span>
+    <span class="span-an">@PreAuthorize</span>(<span class="span-st">"isAuthenticated()"</span>)
+    <span class="span-kw">public</span> <span class="span-ty">ResponseEntity</span>&lt;<span class="span-ty">List</span>&lt;<span class="span-ty">PlatoResponseDTO</span>&gt;&gt; <span class="span-fn">listar</span>() { ... }
+
+    <span class="span-cmt">// Solo el gerente puede crear</span>
+    <span class="span-an">@Override</span> <span class="span-an">@PostMapping</span>
+    <span class="span-an">@PreAuthorize</span>(<span class="span-st">"hasRole('GERENTE')"</span>)
+    <span class="span-kw">public</span> <span class="span-ty">ResponseEntity</span>&lt;<span class="span-ty">PlatoResponseDTO</span>&gt; <span class="span-fn">crear</span>(...) { ... }
+
+    <span class="span-cmt">// Solo el gerente puede eliminar</span>
+    <span class="span-an">@Override</span> <span class="span-an">@DeleteMapping</span>(<span class="span-st">"/{id}"</span>)
+    <span class="span-an">@PreAuthorize</span>(<span class="span-st">"hasRole('GERENTE')"</span>)
+    <span class="span-kw">public</span> <span class="span-ty">ResponseEntity</span>&lt;<span class="span-ty">Void</span>&gt; <span class="span-fn">eliminar</span>(...) { ... }
+
+    <span class="span-cmt">// Gerente o mesero puede cambiar disponibilidad</span>
+    <span class="span-an">@Override</span> <span class="span-an">@PatchMapping</span>(<span class="span-st">"/{id}/disponible"</span>)
+    <span class="span-an">@PreAuthorize</span>(<span class="span-st">"hasAnyRole('GERENTE', 'MESERO')"</span>)
+    <span class="span-kw">public</span> <span class="span-ty">ResponseEntity</span>&lt;<span class="span-ty">PlatoResponseDTO</span>&gt; <span class="span-fn">cambiarDisponibilidad</span>(...) { ... }
+}</code></pre>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>Spring Security agrega el prefijo <code>ROLE_</code> automáticamente.</strong> Si usas <code>hasRole("GERENTE")</code>, Spring busca la authority <code>ROLE_GERENTE</code>. Si usas <code>hasAuthority("ROLE_GERENTE")</code>, busca exactamente ese string. Guarda los roles en la BD como <code>ROLE_GERENTE</code> y usa <code>hasRole("GERENTE")</code> en el Controller — consistente y sin sorpresas.</div>
+  </div>
+
+  <h3 style="margin:24px 0 14px;font-size:1rem">Los errores HTTP de seguridad</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Código</th><th>Cuándo ocurre</th><th>Mensaje al cliente</th></tr></thead>
+      <tbody>
+        <tr><td><code>401 Unauthorized</code></td><td>Sin token, token inválido, token expirado</td><td>"No autenticado — incluye tu token"</td></tr>
+        <tr><td><code>403 Forbidden</code></td><td>Token válido pero el rol no tiene permiso</td><td>"No tienes permiso para esta acción"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <pre><code><span class="span-cmt">// Agregar al GlobalExceptionHandler
+// Spring Security lanza estas excepciones — hay que capturarlas</span>
+<span class="span-an">@ExceptionHandler</span>(<span class="span-ty">AccessDeniedException</span>.<span class="span-kw">class</span>)
+<span class="span-an">@ResponseStatus</span>(<span class="span-ty">HttpStatus</span>.FORBIDDEN)
+<span class="span-kw">public</span> <span class="span-ty">ErrorResponseDTO</span> <span class="span-fn">handleAccessDenied</span>(<span class="span-ty">AccessDeniedException</span> ex) {
+    <span class="span-kw">return new</span> <span class="span-ty">ErrorResponseDTO</span>(<span class="span-nu">403</span>, <span class="span-st">"No tienes permiso para esta acción"</span>);
+}</code></pre>
+</section>
+
+<div class="sep"></div>
+
+<!-- CORS -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Paso 08</div>
+    <div class="sc-title">CORS —<br><span>controlando el acceso</span></div>
+    <div class="sc-desc">Cuando el frontend vive en un dominio diferente al backend, el navegador bloquea las peticiones por seguridad. CORS le dice al navegador cuáles dominios tienen permitido consumir la API.</div>
+  </div>
+  <div class="sc-right">🌐</div>
+</div>
+
+<section class="section" id="cors">
+  <div class="section-header">
+    <div class="section-icon">🌐</div>
+    <div>
+      <span class="section-num">Paso 08 — CORS</span>
+      <div class="section-title">Cross-Origin Resource Sharing</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>¿Cuándo aparece el error CORS?</strong> Cuando el frontend (ej: <code>http://localhost:5173</code>) hace una petición al backend (ej: <code>http://localhost:8080</code>). Son puertos distintos — el navegador los trata como orígenes distintos y bloquea la respuesta si el servidor no tiene CORS configurado.</div>
+  </div>
+
+  <h3 style="margin:18px 0 14px;font-size:1rem">Configuración global — recomendada</h3>
+  <pre><code><span class="span-cmt">// config/CorsConfig.java</span>
+<span class="span-an">@Configuration</span>
+<span class="span-kw">public class</span> <span class="span-ty">CorsConfig</span> {
+
+    <span class="span-an">@Bean</span>
+    <span class="span-kw">public</span> <span class="span-ty">CorsConfigurationSource</span> <span class="span-fn">corsConfigurationSource</span>() {
+        <span class="span-ty">CorsConfiguration</span> config = <span class="span-kw">new</span> <span class="span-ty">CorsConfiguration</span>();
+
+        <span class="span-cmt">// Orígenes permitidos — lista tu frontend aquí</span>
+        config.<span class="span-fn">setAllowedOrigins</span>(<span class="span-ty">List</span>.of(
+                <span class="span-st">"http://localhost:5173"</span>,   <span class="span-cmt">// Vite / React en desarrollo</span>
+                <span class="span-st">"http://localhost:3000"</span>,   <span class="span-cmt">// Next.js en desarrollo</span>
+                <span class="span-st">"https://tu-app.vercel.app"</span> <span class="span-cmt">// producción</span>
+        ));
+
+        config.<span class="span-fn">setAllowedMethods</span>(<span class="span-ty">List</span>.of(<span class="span-st">"GET"</span>, <span class="span-st">"POST"</span>, <span class="span-st">"PUT"</span>, <span class="span-st">"PATCH"</span>, <span class="span-st">"DELETE"</span>, <span class="span-st">"OPTIONS"</span>));
+        config.<span class="span-fn">setAllowedHeaders</span>(<span class="span-ty">List</span>.of(<span class="span-st">"*"</span>));
+        config.<span class="span-fn">setAllowCredentials</span>(<span class="span-kw">true</span>);
+
+        <span class="span-ty">UrlBasedCorsConfigurationSource</span> source = <span class="span-kw">new</span> <span class="span-ty">UrlBasedCorsConfigurationSource</span>();
+        source.<span class="span-fn">registerCorsConfiguration</span>(<span class="span-st">"/**"</span>, config);
+        <span class="span-kw">return</span> source;
+    }
+}</code></pre>
+
+  <pre><code><span class="span-cmt">// Agregar en SecurityConfig.filterChain() — debe ir antes del addFilterBefore</span>
+http.<span class="span-fn">cors</span>(cors -> cors.<span class="span-fn">configurationSource</span>(<span class="span-fn">corsConfigurationSource</span>()))</code></pre>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div><strong>Nunca uses <code>allowedOrigins("*")</code> con <code>allowCredentials(true)</code>.</strong> El navegador lo rechaza. Si necesitas credenciales (como el header Authorization con JWT), debes listar los orígenes explícitamente. Para APIs públicas sin credenciales, <code>"*"</code> está bien.</div>
+  </div>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Pausa rápida</span>
+      <span class="qi-title">Seguridad — las preguntas clave</span>
+    </div>
+    <div class="qi-q">¿Cuál es la diferencia entre autenticación y autorización?</div>
+    <div class="qi-a">Autenticación responde "¿quién eres?" — verifica la identidad con el token JWT. Autorización responde "¿qué puedes hacer?" — verifica si el rol del usuario le permite ejecutar esa acción. Siempre ocurren en ese orden: primero sabemos quién eres, luego decidimos qué puedes hacer.</div>
+    <div class="qi-q">¿Por qué el password se guarda con BCrypt y no en texto plano?</div>
+    <div class="qi-a">BCrypt es una función de hashing de una sola vía con sal (salt). Si la BD se expone, el atacante solo ve el hash — no puede recuperar el password original. Al login, Spring compara el password ingresado contra el hash con passwordEncoder.matches() — nunca desencripta.</div>
+    <div class="qi-q">¿CORS lo configura el frontend o el backend?</div>
+    <div class="qi-a">El backend. El frontend no puede cambiar las políticas CORS — el navegador las recibe del servidor en los headers de respuesta (Access-Control-Allow-Origin). Solo el servidor puede declarar qué orígenes están permitidos.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- EJERCICIO -->
+<div class="section-cover">
+  <div>
+    <div class="sc-badge">Ejercicio guiado</div>
+    <div class="sc-title">Aplícalo a<br><span>tu restaurante</span></div>
+    <div class="sc-desc">Cada concepto del restaurante tiene un caso de uso distinto — algunos encajan en SQL, otros en MongoDB. La seguridad aplica igual a todos. Aquí está el mapa para el tuyo.</div>
+  </div>
+  <div class="sc-right">🛠️</div>
+</div>
+
+<section class="section" id="ejercicio">
+  <div class="section-header">
+    <div class="section-icon">🛠️</div>
+    <div>
+      <span class="section-num">Ejercicio — aplica a tu concepto</span>
+      <div class="section-title">Checklist de migración S08 → S09</div>
+    </div>
+  </div>
+
+  <h3 style="margin:0 0 14px;font-size:1rem">¿Qué va en PostgreSQL y qué en MongoDB?</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Concepto</th><th>PostgreSQL (JPA)</th><th>MongoDB</th></tr></thead>
+      <tbody>
+        <tr><td>Restaurante japonés</td><td>Platos, mesas, reservas, pedidos, cuenta</td><td>Historial de cambios de menú, logs de eventos</td></tr>
+        <tr><td>Restaurante italiano</td><td>Platos, ingredientes, pedidos, domicilios</td><td>Reseñas de clientes, catálogo con fotos</td></tr>
+        <tr><td>Parrilla colombiana</td><td>Cortes, pedidos, mesas, cuentas, pagos</td><td>Registro de temperaturas, eventos de cocina</td></tr>
+        <tr><td>Cafetería</td><td>Bebidas, pedidos, caja, usuarios</td><td>Preferencias de clientes, historial de bebidas</td></tr>
+        <tr><td>Fast food</td><td>Productos, combos, pedidos, delivery</td><td>Analytics de ventas, logs de tiempo de preparación</td></tr>
+        <tr><td>Restaurante vegano</td><td>Platos, ingredientes, pedidos, alergias</td><td>Certificaciones, proveedores, trazabilidad</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:26px 0 14px;font-size:1rem">Checklist por dominio — migración de S08 a S09</h3>
+
+  <div class="rule-box">
+    <h4>Para cada dominio del restaurante</h4>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Crear la entidad</strong> — <code>persistence/entity/NombreEntity.java</code> con <code>@Entity</code>, <code>@Table</code>, <code>@Id</code>, <code>@GeneratedValue</code>. Sin lógica de negocio.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Crear el Repository</strong> — <code>repository/NombreRepository.java</code> extends <code>JpaRepository&lt;NombreEntity, Long&gt;</code> (o <code>UUID</code> si elegiste UUID). Agregar los métodos de búsqueda necesarios.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Crear el EntityMapper</strong> — <code>mapper/NombreEntityMapper.java</code> con <code>@Mapper(componentModel="spring")</code>. Métodos: <code>toEntity(Dominio)</code> y <code>toDomain(Entity)</code>.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Actualizar el ServiceImpl</strong> — inyectar Repository y EntityMapper. Eliminar ConcurrentHashMap y AtomicLong. Usar <code>repository.save()</code>, <code>findById()</code>, <code>deleteById()</code>.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Actualizar el Validator</strong> — inyectar Repository. Reemplazar búsquedas en colecciones por queries del Repository (<code>existsBy...</code>).</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Identificar datos para MongoDB</strong> — logs, historiales, documentos con estructura variable. Crear <code>*Document.java</code> en <code>persistence/document/</code>.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Definir roles del restaurante</strong> — ¿quién puede crear platos? ¿quién puede ver reportes? ¿quién toma pedidos? Mapearlo en la tabla de permisos.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Agregar @PreAuthorize</strong> a cada endpoint del Controller según el rol que puede acceder.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Configurar CORS</strong> — agregar el origen de tu frontend en <code>CorsConfig</code>.</div></div>
+    <div class="rule-item"><span class="rule-ok">☐</span><div><strong>Probar el flujo completo</strong>: POST /auth/login → obtener token → usar token en Swagger → verificar 401 sin token y 403 con rol incorrecto.</div></div>
+  </div>
+
+  <div class="tut-check">
+    <strong>✅ Verificaciones obligatorias antes de mostrar tu entrega</strong>
+    <ul>
+      <li>La BD se crea automáticamente con <code>ddl-auto: update</code> al levantar la app</li>
+      <li><code>POST /auth/login</code> con credenciales correctas devuelve un token</li>
+      <li><code>POST /auth/login</code> con credenciales incorrectas devuelve 401</li>
+      <li><code>GET /api/v1/platos</code> sin token devuelve 401</li>
+      <li><code>GET /api/v1/platos</code> con token de MESERO devuelve 200</li>
+      <li><code>POST /api/v1/platos</code> con token de MESERO devuelve 403</li>
+      <li><code>POST /api/v1/platos</code> con token de GERENTE devuelve 201</li>
+      <li><code>GET /api/v1/menu</code> sin token devuelve 200 (ruta pública)</li>
+      <li>Los platos creados persisten al reiniciar la aplicación</li>
+    </ul>
+  </div>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div>
+      <strong>Los 5 errores más comunes en S09:</strong><br>
+      ❌ Mezclar lógica de negocio en la Entity (métodos de comportamiento en @Entity)<br>
+      ❌ Inyectar EntityMapper en el Controller — va en el ServiceImpl<br>
+      ❌ Guardar passwords en texto plano — siempre BCrypt<br>
+      ❌ Poner <code>allowedOrigins("*")</code> con <code>allowCredentials(true)</code> — el navegador lo rechaza<br>
+      ❌ Olvidar <code>@EnableMethodSecurity</code> en SecurityConfig y preguntarse por qué @PreAuthorize no funciona
+    </div>
+  </div>
+
+  <div class="quiz-inline">
+    <div class="qi-header">
+      <span class="qi-badge">⏸ Repaso de cierre</span>
+      <span class="qi-title">S09 — sin mirar la guía</span>
+    </div>
+    <div class="qi-q">¿Cuántos Mappers tiene ahora el sistema para el dominio Plato?</div>
+    <div class="qi-a">Dos: PlatoMapper (Controller ↔ Dominio, para presentación) y PlatoEntityMapper (Dominio ↔ PlatoEntity, para persistencia). El Controller inyecta el primero, el ServiceImpl inyecta el segundo.</div>
+    <div class="qi-q">¿Qué reemplaza al ConcurrentHashMap del ServiceImpl en S09?</div>
+    <div class="qi-a">El PlatoRepository. Las operaciones son equivalentes: findAll() en vez de values(), findById() en vez de get(), save() en vez de put(), deleteById() en vez de remove(). Los streams sobre el resultado son idénticos.</div>
+    <div class="qi-q">Un usuario con ROLE_MESERO llama a DELETE /api/v1/platos/1. ¿Qué responde el servidor?</div>
+    <div class="qi-a">403 Forbidden. El token es válido (autenticación OK) pero el rol MESERO no tiene permiso para eliminar platos — eso es solo de ROLE_GERENTE. Spring Security intercepta antes de que llegue al Controller.</div>
+    <div class="qi-q">¿Por qué el ID de la entidad JPA ya no se asigna en el Service?</div>
+    <div class="qi-a">Porque @GeneratedValue(strategy = IDENTITY) delega la asignación a la base de datos. La BD genera el ID al hacer INSERT y lo retorna en el objeto guardado. Por eso el save() retorna la entidad con el ID ya asignado.</div>
+  </div>
+
+</section>
+
+</div>
+
+<footer>
+  🌿 <span>Guía Turtwig de Studio</span> &nbsp;·&nbsp; Semana 9 — Persistencia y Seguridad &nbsp;·&nbsp; DOSW · Escuela Colombiana de Ingeniería
+</footer>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true, theme: 'base',
+  themeVariables: {
+    primaryColor: '#e8f7ef', primaryTextColor: '#1e2a24',
+    primaryBorderColor: '#6abf8a', lineColor: '#4a5e54',
+    secondaryColor: '#f0f7f3', tertiaryColor: '#fff',
+    background: '#fff', fontFamily: 'Space Grotesk, sans-serif', fontSize: '13px'
+  },
+  flowchart: { curve: 'basis', padding: 20 },
+  sequence: { actorMargin: 60, messageMargin: 40 }
+});
+
+// UUID tab switcher
+function showUuid(evt, type) {
+  document.querySelectorAll('.uuid-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.uuid-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('uuid-' + type).classList.add('active');
+  evt.currentTarget.classList.add('active');
+}
+
+// Scenario quiz logic
+function checkSq(id, btn, result) {
+  const container = document.getElementById(id);
+  container.querySelectorAll('.sq-btn').forEach(b => {
+    b.disabled = true;
+    b.classList.remove('correct','wrong');
+  });
+  btn.classList.add(result);
+  container.querySelector('#' + id + '-ok').style.display = result === 'correct' ? 'block' : 'none';
+  container.querySelector('#' + id + '-err').style.display = result === 'wrong' ? 'block' : 'none';
+  container.querySelector('.sq-reset').style.display = 'inline-block';
+}
+
+function resetSq(id) {
+  const container = document.getElementById(id);
+  container.querySelectorAll('.sq-btn').forEach(b => {
+    b.disabled = false;
+    b.classList.remove('correct','wrong');
+  });
+  container.querySelector('#' + id + '-ok').style.display = 'none';
+  container.querySelector('#' + id + '-err').style.display = 'none';
+  container.querySelector('.sq-reset').style.display = 'none';
+}
+</script>
+</body>
+</html>

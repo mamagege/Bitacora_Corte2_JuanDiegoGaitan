@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Guía Turtwig de Studio — Semana 7</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --verde-turtwig: #3d8b5e;
+    --verde-claro: #6abf8a;
+    --verde-hoja: #a8d5b5;
+    --verde-fondo: #f0f7f3;
+    --tierra: #5c3d2e;
+    --amarillo-hoja: #d4e157;
+    --gris-oscuro: #1e2a24;
+    --gris-medio: #4a5e54;
+    --gris-claro: #c8d8cf;
+    --blanco: #ffffff;
+    --code-bg: #1a2e24;
+    --code-text: #a8d5b5;
+    --warning: #f4a435;
+    --info: #3a9bd5;
+    --tip: #7c4dff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--verde-fondo);
+    color: var(--gris-oscuro);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* HEADER */
+  .hero {
+    background: var(--gris-oscuro);
+    color: var(--blanco);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -60px;
+    width: 300px; height: 300px;
+    background: var(--verde-turtwig);
+    border-radius: 50%;
+    opacity: 0.15;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 10%;
+    width: 200px; height: 200px;
+    background: var(--amarillo-hoja);
+    border-radius: 50%;
+    opacity: 0.08;
+  }
+  .hero-inner { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--verde-turtwig);
+    color: var(--blanco);
+    font-size: 12px; font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--verde-claro); }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--gris-claro);
+    max-width: 580px;
+    font-weight: 300;
+  }
+  .hero-meta {
+    margin-top: 30px;
+    display: flex; gap: 24px; flex-wrap: wrap;
+  }
+  .meta-chip {
+    font-size: 13px;
+    color: var(--verde-hoja);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* NAV */
+  .nav-toc {
+    background: var(--blanco);
+    border-bottom: 2px solid var(--verde-hoja);
+    padding: 0 40px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(30,42,36,0.08);
+  }
+  .nav-toc ul {
+    max-width: 860px; margin: 0 auto;
+    display: flex; gap: 0; list-style: none;
+    overflow-x: auto;
+  }
+  .nav-toc ul li a {
+    display: block;
+    padding: 14px 18px;
+    font-size: 13px; font-weight: 500;
+    color: var(--gris-medio);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-toc ul li a:hover {
+    color: var(--verde-turtwig);
+    border-bottom-color: var(--verde-turtwig);
+  }
+
+  /* CONTENT */
+  .content { max-width: 860px; margin: 0 auto; padding: 50px 40px 80px; }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 64px;
+    scroll-margin-top: 60px;
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--verde-hoja);
+  }
+  .section-icon {
+    width: 42px; height: 42px;
+    background: var(--verde-turtwig);
+    color: white; font-size: 18px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 1.5rem; font-weight: 700; color: var(--gris-oscuro); }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    color: var(--verde-turtwig);
+    letter-spacing: 1px;
+    display: block;
+  }
+
+  /* CONCEPTOS */
+  .concepto {
+    background: var(--blanco);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    border-left: 4px solid var(--verde-turtwig);
+    box-shadow: 0 2px 8px rgba(30,42,36,0.06);
+  }
+  .concepto h3 {
+    font-size: 1rem; font-weight: 600;
+    color: var(--verde-turtwig);
+    margin-bottom: 8px;
+  }
+  .concepto p { font-size: 0.95rem; color: var(--gris-oscuro); }
+
+  /* CALLOUTS */
+  .callout {
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 20px 0;
+    display: flex; gap: 14px;
+    font-size: 0.92rem;
+  }
+  .callout-icon { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
+  .callout.tip { background: #f3eeff; border-left: 4px solid var(--tip); }
+  .callout.warning { background: #fff8ec; border-left: 4px solid var(--warning); }
+  .callout.info { background: #eaf5fb; border-left: 4px solid var(--info); }
+  .callout.key { background: #e8f7ef; border-left: 4px solid var(--verde-turtwig); }
+  .callout strong { display: block; font-weight: 600; margin-bottom: 4px; }
+
+  /* MERMAID */
+  .diagram-wrap {
+    background: var(--blanco);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 24px 0;
+    box-shadow: 0 2px 12px rgba(30,42,36,0.08);
+    overflow-x: auto;
+  }
+  .diagram-label {
+    font-size: 12px; font-weight: 600;
+    color: var(--verde-turtwig);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .diagram-label::before { content: '◆'; font-size: 8px; }
+
+  /* CODE */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    line-height: 1.6;
+    margin: 16px 0;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(61,139,94,0.12);
+    color: var(--verde-turtwig);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.87em;
+  }
+  pre code { background: none; color: inherit; padding: 0; }
+
+  /* TABLA */
+  .tabla-wrap { overflow-x: auto; margin: 20px 0; border-radius: 10px; box-shadow: 0 2px 8px rgba(30,42,36,0.07); }
+  table { width: 100%; border-collapse: collapse; background: var(--blanco); }
+  th {
+    background: var(--gris-oscuro); color: var(--blanco);
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; padding: 12px 16px; text-align: left;
+  }
+  td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--verde-hoja); color: var(--gris-oscuro); }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--verde-fondo); }
+  .badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 12px; font-size: 11px; font-weight: 600;
+  }
+  .badge.seguro { background: #d1f5e0; color: #1a7a3f; }
+  .badge.inseguro { background: #fde8e8; color: #b71c1c; }
+  .badge.idempotente { background: #dce8ff; color: #1a3a8f; }
+  .badge.no-idempotente { background: #fff3cd; color: #7d5800; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* QUIZ */
+  .quiz-box {
+    background: var(--gris-oscuro);
+    color: var(--verde-hoja);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 24px 0;
+  }
+  .quiz-box h4 {
+    font-size: 0.85rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--amarillo-hoja); margin-bottom: 16px;
+  }
+  .quiz-item {
+    margin-bottom: 14px; padding-bottom: 14px;
+    border-bottom: 1px solid rgba(168,213,181,0.15);
+    font-size: 0.93rem;
+  }
+  .quiz-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .quiz-q { color: var(--blanco); font-weight: 500; margin-bottom: 4px; }
+  .quiz-a { color: var(--verde-claro); font-size: 0.88rem; font-style: italic; }
+
+  /* COMPARACION */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(30,42,36,0.08); margin: 20px 0; }
+  .compare-col { padding: 22px 24px; }
+  .compare-col.a { background: #eaf5fb; }
+  .compare-col.b { background: #e8f7ef; }
+  .compare-col h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; }
+  .compare-col.a h4 { color: var(--info); }
+  .compare-col.b h4 { color: var(--verde-turtwig); }
+  .compare-col ul { list-style: none; font-size: 0.9rem; }
+  .compare-col ul li { padding: 4px 0; }
+  .compare-col ul li::before { content: '→ '; font-weight: 700; }
+  .compare-col.a ul li::before { color: var(--info); }
+  .compare-col.b ul li::before { color: var(--verde-turtwig); }
+  @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  /* CAPA CARDS */
+  .capa-flow { display: flex; flex-direction: column; gap: 8px; margin: 20px 0; }
+  .capa-card {
+    background: var(--blanco);
+    border-radius: 10px;
+    padding: 18px 22px;
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 20px;
+    align-items: start;
+    box-shadow: 0 2px 6px rgba(30,42,36,0.06);
+    border: 1px solid var(--verde-hoja);
+  }
+  .capa-card:nth-child(1) { border-left: 5px solid #3a9bd5; }
+  .capa-card:nth-child(2) { border-left: 5px solid var(--verde-turtwig); }
+  .capa-card:nth-child(3) { border-left: 5px solid var(--tierra); }
+  .capa-card:nth-child(4) { border-left: 5px solid #7c4dff; }
+  .capa-name { font-weight: 700; font-size: 0.95rem; }
+  .capa-alias { font-size: 11px; color: var(--gris-medio); font-family: 'JetBrains Mono', monospace; }
+  .capa-details { font-size: 0.88rem; color: var(--gris-medio); }
+  .capa-details strong { color: var(--gris-oscuro); font-weight: 600; display: block; margin-bottom: 4px; }
+  .capa-details ul { list-style: none; }
+  .capa-details ul li::before { content: '✓ '; color: var(--verde-turtwig); font-size: 11px; }
+
+  /* SEPARADOR */
+  .sep { height: 1px; background: linear-gradient(90deg, var(--verde-hoja), transparent); margin: 48px 0; }
+
+  /* FOOTER */
+  footer {
+    background: var(--gris-oscuro);
+    color: var(--gris-claro);
+    text-align: center;
+    padding: 30px;
+    font-size: 13px;
+  }
+  footer span { color: var(--verde-claro); }
+
+  .mermaid svg { max-width: 100%; height: auto; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🌿 Guía Turtwig de Studio</div>
+    <h1>Semana 7 — <span>Todo lo que necesitas saber</span></h1>
+    <p class="hero-sub">Una guía complementaria para que revises, practiques y entiendas cada concepto de la sesión. Con diagramas, ejemplos y preguntas de repaso.</p>
+    <div class="hero-meta">
+      <span class="meta-chip">📦 Cobertura de Pruebas</span>
+      <span class="meta-chip">🏗️ Arquitectura MVC</span>
+      <span class="meta-chip">🌐 APIs REST</span>
+      <span class="meta-chip">♻️ DI, Interfaces & IoC</span>
+      <span class="meta-chip">🔄 MapperIn / MapperOut</span>
+      <span class="meta-chip">🍃 Spring Boot</span>
+    </div>
+  </div>
+</div>
+
+<nav class="nav-toc">
+  <ul>
+    <li><a href="#cobertura">Cobertura</a></li>
+    <li><a href="#sistemas">Stateful/Stateless</a></li>
+    <li><a href="#mvc">MVC & Capas</a></li>
+    <li><a href="#estructuras">DTOs & Mappers</a></li>
+    <li><a href="#diagramas">Diagramas</a></li>
+    <li><a href="#apis">APIs REST</a></li>
+    <li><a href="#ioc">DI, Interfaces & IoC</a></li>
+    <li><a href="#springboot">Spring Boot</a></li>
+  </ul>
+</nav>
+
+<div class="content">
+
+  <!-- ===== SECCIÓN 1: COBERTURA ===== -->
+  <section class="section" id="cobertura">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <div>
+        <span class="section-num">SECCIÓN 01</span>
+        <div class="section-title">Tipos de Cobertura de Pruebas</div>
+      </div>
+    </div>
+
+    <p style="margin-bottom:20px;">La cobertura mide <strong>qué porcentaje de tu código fue ejecutado</strong> por las pruebas. No garantiza que el código sea correcto, pero sí que fue probado. Cada tipo de cobertura mide cosas distintas.</p>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th>Tipo</th><th>Qué mide</th><th>Ejemplo clave</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Line Coverage</strong></td><td>% de líneas ejecutadas al menos una vez</td><td>¿Corrió esta línea alguna vez?</td></tr>
+          <tr><td><strong>Branch Coverage</strong></td><td>Cada rama de if/else fue probada</td><td>¿El if fue true Y false?</td></tr>
+          <tr><td><strong>Function Coverage</strong></td><td>Cada función fue llamada al menos una vez</td><td>¿Se invocó calcularDescuento()?</td></tr>
+          <tr><td><strong>Condition Coverage</strong></td><td>Cada condición booleana evaluó true y false</td><td>En <code>a && b</code>: ¿a fue false? ¿b fue false?</td></tr>
+          <tr><td><strong>Path Coverage</strong></td><td>Todos los caminos posibles del programa</td><td>El más completo y difícil de alcanzar</td></tr>
+          <tr><td><strong>Loop Coverage</strong></td><td>Los ciclos se ejecutaron 0, 1 y N veces</td><td>¿El for corrió sin iteraciones?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div><strong>¿Por qué importa el tipo?</strong> Line Coverage al 100% no garantiza haber probado todas las ramas. Un if sin else tiene cobertura de línea completa aunque nunca se evalúe la condición como false.</div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Flujo de Branch y Path Coverage para calcularDescuento()</div>
+      <div class="mermaid">
+flowchart TD
+    A([🟢 START calcularDescuento\nprecio, cliente]) --> B{precio > 0?}
+    B -- ❌ NO --> E([🔴 Lanzar excepción\nPrecio inválido])
+    B -- ✅ SÍ --> C{cliente.esVip?}
+    C -- ✅ SÍ --> D1[descuento = 20%]
+    C -- ❌ NO --> D2{precio > 100?}
+    D2 -- ✅ SÍ --> D3[descuento = 10%]
+    D2 -- ❌ NO --> D4[descuento = 0%]
+    D1 --> F([✅ RETURN\nprecio - descuento])
+    D3 --> F
+    D4 --> F
+
+    style A fill:#3d8b5e,color:#fff
+    style F fill:#3d8b5e,color:#fff
+    style E fill:#c0392b,color:#fff
+    style B fill:#1e2a24,color:#a8d5b5
+    style C fill:#1e2a24,color:#a8d5b5
+    style D2 fill:#1e2a24,color:#a8d5b5
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🌿</span>
+      <div>
+        <strong>Branch Coverage aquí requiere:</strong>
+        Un test donde <code>precio ≤ 0</code> (rama izquierda B), uno donde el cliente es VIP, uno donde no es VIP pero precio &gt; 100, y uno donde no es VIP y precio ≤ 100. Son <strong>4 ramas = 4 tests mínimos</strong> para Branch Coverage completa.
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Loop Coverage para un ciclo</div>
+      <div class="mermaid">
+flowchart LR
+    subgraph LT["Loop Coverage — 3 escenarios"]
+        direction TB
+        Z0["📋 Test 0: lista vacía\n→ el for no entra"] 
+        Z1["📋 Test 1: lista con 1 elemento\n→ el for entra una vez"]
+        ZN["📋 Test N: lista con varios\n→ el for itera múltiples veces"]
+    end
+    Z0 --> OK(["✅ Loop Coverage\nCompleta"])
+    Z1 --> OK
+    ZN --> OK
+
+    style OK fill:#3d8b5e,color:#fff
+    style LT fill:#e8f7ef
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <h4>🧠 Preguntas de Repaso — Cobertura</h4>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Qué diferencia hay entre Branch Coverage y Condition Coverage?</div>
+        <div class="quiz-a">Branch ve si cada camino del if/else se ejecutó. Condition mira cada sub-condición booleana dentro de la decisión por separado.</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Es posible tener 100% Line Coverage y 0% Branch Coverage?</div>
+        <div class="quiz-a">Sí — si solo hay código en el bloque if y nunca se prueba el else, todas las líneas se ejecutan pero la rama else no.</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Por qué Path Coverage es la más difícil de lograr?</div>
+        <div class="quiz-a">Porque el número de caminos crece exponencialmente con cada decisión. Con n decisiones hay 2ⁿ caminos posibles.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== SECCIÓN 2: STATEFUL / STATELESS ===== -->
+  <section class="section" id="sistemas">
+    <div class="section-header">
+      <div class="section-icon">🧠</div>
+      <div>
+        <span class="section-num">SECCIÓN 02</span>
+        <div class="section-title">Sistemas con Estado vs Sin Estado</div>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col a">
+        <h4>💾 CON ESTADO (Stateful)</h4>
+        <ul>
+          <li>El servidor recuerda al cliente entre peticiones</li>
+          <li>Guarda contexto de sesión</li>
+          <li>Útil para flujos largos y complejos</li>
+          <li>Más costoso en recursos del servidor</li>
+          <li>Difícil de escalar horizontalmente</li>
+        </ul>
+      </div>
+      <div class="compare-col b">
+        <h4>🌐 SIN ESTADO (Stateless)</h4>
+        <ul>
+          <li>Cada petición es independiente</li>
+          <li>El cliente envía todo lo necesario</li>
+          <li>Más fácil de escalar</li>
+          <li>Más simple de implementar</li>
+          <li>REST es stateless por definición</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Diferencia entre Stateful y Stateless</div>
+      <div class="mermaid">
+sequenceDiagram
+    participant C as 🧑 Cliente
+    participant SF as 🖥️ Servidor STATEFUL
+    participant SL as 🌐 Servidor STATELESS
+
+    Note over C,SF: Flujo STATEFUL — el servidor recuerda
+    C->>SF: POST /login (user, pass)
+    SF-->>C: ✅ OK — sesión #1234 guardada
+    C->>SF: GET /perfil (sin user)
+    SF-->>C: ✅ Datos de sesión #1234
+
+    Note over C,SL: Flujo STATELESS — el cliente envía todo
+    C->>SL: POST /login (user, pass)
+    SL-->>C: ✅ Token JWT eyJhbG...
+    C->>SL: GET /perfil (Bearer: eyJhbG...)
+    SL-->>C: ✅ Datos del token (sin memoria del servidor)
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">🎮</span>
+      <div><strong>Tip de clase:</strong> Un MMORPG (World of Warcraft) es Stateful — el servidor sabe dónde estás en el mundo. Un restaurante de comida rápida es Stateless — cada vez que pides, eres un cliente nuevo.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== SECCIÓN 3: ARQUITECTURA CLIENTE-SERVIDOR Y MVC ===== -->
+  <section class="section" id="mvc">
+    <div class="section-header">
+      <div class="section-icon">🏗️</div>
+      <div>
+        <span class="section-num">SECCIÓN 03</span>
+        <div class="section-title">Arquitectura Cliente–Servidor & MVC en Capas</div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">📋</span>
+      <div>
+        <strong>Las 3 reglas del patrón Cliente–Servidor:</strong>
+        1) El cliente pide, el servidor responde — nunca al revés. &nbsp; 2) El servidor no recuerda al cliente (stateless). &nbsp; 3) Muchos clientes hablan con el mismo servidor.
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Flujo completo Cliente → Servidor con capas internas</div>
+      <div class="mermaid">
+flowchart LR
+    subgraph CLI["🧑 CLIENTE"]
+        direction TB
+        BR["Navegador / App\nMóvil / Postman"]
+    end
+
+    subgraph SRV["🖥️ SERVIDOR"]
+        direction TB
+        CTL["🎯 CONTROLLER\n@RestController\n— Recibe HTTP\n— Extrae datos del request\n— Llama al Service"]
+        SVC["⚙️ SERVICE\n@Service\n— Lógica de negocio\n— Valida reglas del dominio\n— Llama al Repository"]
+        REPO["🗃️ REPOSITORY\n@Repository / Interface\n— Accede a la BD\n— Operaciones CRUD\n— Solo habla SQL/JPA"]
+        CTL --> SVC --> REPO
+    end
+
+    subgraph DB["💾 BASE DE DATOS"]
+        BD[("PostgreSQL\nMySQL\nMongoDB")]
+    end
+
+    CLI -- "REQUEST →\n(HTTP + Body + Headers)" --> CTL
+    REPO -- "Consulta ↕" --> BD
+    CTL -- "← RESPONSE\n(JSON + Status Code)" --> CLI
+
+    style CLI fill:#eaf5fb
+    style SRV fill:#e8f7ef
+    style DB fill:#f3eeff
+    style CTL fill:#3a9bd5,color:#fff
+    style SVC fill:#3d8b5e,color:#fff
+    style REPO fill:#5c3d2e,color:#fff
+      </div>
+    </div>
+
+    <h3 style="margin: 28px 0 16px; font-size: 1.1rem;">Las 4 Capas — Responsabilidades claras</h3>
+
+    <div class="capa-flow">
+      <div class="capa-card">
+        <div>
+          <div class="capa-name">CONTROLLER</div>
+          <div class="capa-alias">El Mesero</div>
+        </div>
+        <div class="capa-details">
+          <strong>Responsabilidad:</strong>
+          <ul>
+            <li>Recibe la petición HTTP</li>
+            <li>Extrae datos del request</li>
+            <li>Llama al Service</li>
+            <li>Devuelve el Response DTO</li>
+            <li>NO tiene lógica propia</li>
+          </ul>
+        </div>
+      </div>
+      <div class="capa-card">
+        <div>
+          <div class="capa-name">SERVICE</div>
+          <div class="capa-alias">La Cocina</div>
+        </div>
+        <div class="capa-details">
+          <strong>Responsabilidad:</strong>
+          <ul>
+            <li>Contiene la lógica de negocio</li>
+            <li>Valida reglas del dominio</li>
+            <li>Llama al Repository</li>
+            <li>Transforma datos (Entidad ↔ DTO)</li>
+            <li>NO conoce HTTP</li>
+          </ul>
+        </div>
+      </div>
+      <div class="capa-card">
+        <div>
+          <div class="capa-name">REPOSITORY</div>
+          <div class="capa-alias">La Despensa</div>
+        </div>
+        <div class="capa-details">
+          <strong>Responsabilidad:</strong>
+          <ul>
+            <li>Accede a la base de datos</li>
+            <li>Guarda y recupera datos</li>
+            <li>Solo habla SQL/JPA</li>
+            <li>NO conoce la API</li>
+            <li>NO tiene lógica de negocio</li>
+          </ul>
+        </div>
+      </div>
+      <div class="capa-card">
+        <div>
+          <div class="capa-name">CLIENT</div>
+          <div class="capa-alias">El Proveedor</div>
+        </div>
+        <div class="capa-details">
+          <strong>Responsabilidad:</strong>
+          <ul>
+            <li>Accede a servicios externos</li>
+            <li>Abstrae APIs de terceros</li>
+            <li>Lógica de abstracciones externas</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>Error común:</strong> Poner lógica de negocio en el Controller o consultas a la BD directamente desde el Controller. Cada capa debe respetar sus responsabilidades — esto es lo que hace que el código sea mantenible y testeable.</div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== SECCIÓN 4: DTOs, RECORDS, ENUMS, ENTIDADES ===== -->
+  <section class="section" id="estructuras">
+    <div class="section-header">
+      <div class="section-icon">📦</div>
+      <div>
+        <span class="section-num">SECCIÓN 04</span>
+        <div class="section-title">DTOs, Records, Enums, Entidades, MapperIn/Out & MapStruct</div>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — MapperIn y MapperOut: dónde vive cada uno</div>
+      <div class="mermaid">
+flowchart LR
+    subgraph CTRL["🎯 Controller"]
+        RQ["📥 RequestDTO\n(datos del cliente)"]
+        RS["📤 ResponseDTO\n(datos al cliente)"]
+    end
+
+    subgraph SVC["⚙️ Service"]
+        ENB["🎯 Entidad de Negocio\n(lógica, reglas)"]
+        MI["🔄 MapperIn\nRequestDTO\n→ EntidadNegocio"]
+        MO["🔄 MapperOut\nEntidadNegocio\n→ ResponseDTO"]
+        MI2["🔄 MapperOut\nEntidadNegocio\n→ Modelo BD"]
+        MI3["🔄 MapperIn\nModelo BD\n→ EntidadNegocio"]
+    end
+
+    subgraph REPO["🗃️ Repository"]
+        MOD["🗄️ Modelo / @Entity\n(estructura de BD)"]
+    end
+
+    RQ -- "entra" --> MI --> ENB
+    ENB --> MO --> RS
+    ENB --> MI2 --> MOD
+    MOD --> MI3 --> ENB
+
+    style CTRL fill:#eaf5fb
+    style SVC fill:#e8f7ef
+    style REPO fill:#fff8ec
+    style MI fill:#3d8b5e,color:#fff
+    style MO fill:#3d8b5e,color:#fff
+    style MI2 fill:#3d8b5e,color:#fff
+    style MI3 fill:#3d8b5e,color:#fff
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🔄</span>
+      <div>
+        <strong>La regla de los dos Mappers:</strong><br>
+        <strong>MapperIn</strong> convierte lo que <em>entra</em> al Service — ya sea un RequestDTO del Controller o un Modelo que llega del Repository.<br>
+        <strong>MapperOut</strong> convierte lo que <em>sale</em> del Service — hacia un ResponseDTO para el Controller, o hacia un Modelo para persistir en BD.<br>
+        El Service solo opera con <strong>Entidades de Negocio</strong> — nunca toca DTOs ni Modelos directamente.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="concepto">
+        <h3>DTO (Data Transfer Object)</h3>
+        <p>Objeto simple para <strong>transportar datos entre capas</strong>. No tiene lógica de negocio. Evita exponer directamente las entidades de la BD. Controla qué info entra y sale de la API.</p>
+      </div>
+      <div class="concepto">
+        <h3>Record (Java)</h3>
+        <p>Forma concisa de crear DTOs <strong>inmutables</strong>. Auto-genera constructor, getters, equals, hashCode y toString. Ideal para DTOs y respuestas JSON en APIs.</p>
+      </div>
+      <div class="concepto">
+        <h3>Enum (Enumeración)</h3>
+        <p>Tipo especial para representar un <strong>conjunto fijo de constantes</strong>. Muy usados para estados (<code>ACTIVO</code>, <code>INACTIVO</code>), roles, o categorías en APIs.</p>
+      </div>
+      <div class="concepto">
+        <h3>Mapper</h3>
+        <p>Se encarga de <strong>transformar datos entre capas</strong>. Puede hacerse manual o con <strong>MapStruct</strong> (genera el código en tiempo de compilación automáticamente).</p>
+      </div>
+    </div>
+
+    <h3 style="margin: 28px 0 14px; font-size: 1.05rem;">MapperIn — del DTO a la Entidad de Negocio (manual vs MapStruct)</h3>
+
+    <pre><code>// ──── MANUAL: MapperIn (Controller → Service) ────
+// El Controller recibe un RequestDTO y el Service necesita una EntidadNegocio
+
+// 1. El DTO que llega del cliente
+public record PedidoRequestDTO(String producto, int cantidad, Long clienteId) {}
+
+// 2. La Entidad de Negocio (sin anotaciones de BD)
+public class Pedido {
+    private String producto;
+    private int cantidad;
+    private Long clienteId;
+    // + reglas de negocio, constructores, etc.
+}
+
+// 3. MapperIn — convierte RequestDTO → Pedido (Entidad de Negocio)
+@Component
+public class PedidoMapperIn {
+    public Pedido toDomain(PedidoRequestDTO dto) {
+        Pedido pedido = new Pedido();
+        pedido.setProducto(dto.producto());
+        pedido.setCantidad(dto.cantidad());
+        pedido.setClienteId(dto.clienteId());
+        return pedido;
+    }
+}
+
+// ──── CON MAPSTRUCT: mismo resultado, cero código manual ────
+@Mapper(componentModel = "spring")   // ← Spring inyecta el mapper automáticamente
+public interface PedidoMapperIn {
+    Pedido toDomain(PedidoRequestDTO dto);   // MapStruct genera la implementación
+}</code></pre>
+
+    <h3 style="margin: 28px 0 14px; font-size: 1.05rem;">MapperOut — de la Entidad de Negocio al DTO de respuesta (y al Modelo)</h3>
+
+    <pre><code>// ──── MapperOut hacia el Controller (Entidad de Negocio → ResponseDTO) ────
+public record PedidoResponseDTO(Long id, String producto, String estado) {}
+
+// Manual
+@Component
+public class PedidoMapperOut {
+    public PedidoResponseDTO toDTO(Pedido pedido) {
+        return new PedidoResponseDTO(
+            pedido.getId(),
+            pedido.getProducto(),
+            pedido.getEstado().name()
+        );
+    }
+}
+
+// Con MapStruct
+@Mapper(componentModel = "spring")
+public interface PedidoMapperOut {
+    PedidoResponseDTO toDTO(Pedido pedido);
+    PedidoEntity toEntity(Pedido pedido);  // ← también mapea al Modelo de BD
+}
+
+// ──── En el Service: así se usan los mappers ────
+@Service
+@RequiredArgsConstructor          // ← Lombok genera el constructor automáticamente
+public class PedidoServiceImpl implements PedidoService {
+
+    private final PedidoMapperIn  mapperIn;   // inyectado por Spring via constructor
+    private final PedidoMapperOut mapperOut;
+    private final PedidoRepository repository;
+
+    @Override
+    public PedidoResponseDTO crear(PedidoRequestDTO dto) {
+        Pedido pedido   = mapperIn.toDomain(dto);         // 1. DTO → Entidad de negocio
+        // ... lógica de negocio aquí ...
+        PedidoEntity ent = mapperOut.toEntity(pedido);    // 2. Negocio → Modelo BD
+        repository.save(ent);
+        return mapperOut.toDTO(pedido);                   // 3. Negocio → ResponseDTO
+    }
+}</code></pre>
+
+    <h3 style="margin: 28px 0 14px; font-size: 1.05rem;">MapStruct — dependencia en pom.xml</h3>
+
+    <pre><code>&lt;!-- pom.xml — agregar MapStruct + procesador de anotaciones --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.mapstruct&lt;/groupId&gt;
+    &lt;artifactId&gt;mapstruct&lt;/artifactId&gt;
+    &lt;version&gt;1.5.5.Final&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!-- En maven-compiler-plugin: el procesador genera las clases en compilación --&gt;
+&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+    &lt;configuration&gt;
+        &lt;annotationProcessorPaths&gt;
+            &lt;path&gt;
+                &lt;groupId&gt;org.mapstruct&lt;/groupId&gt;
+                &lt;artifactId&gt;mapstruct-processor&lt;/artifactId&gt;
+                &lt;version&gt;1.5.5.Final&lt;/version&gt;
+            &lt;/path&gt;
+            &lt;path&gt;
+                &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+                &lt;artifactId&gt;lombok&lt;/artifactId&gt; &lt;!-- Lombok debe ir antes de MapStruct --&gt;
+            &lt;/path&gt;
+        &lt;/annotationProcessorPaths&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;</code></pre>
+
+    <h3 style="margin: 28px 0 14px; font-size: 1.05rem;">¿Qué pasa si los campos se llaman distinto? — <code>@Mapping</code></h3>
+
+    <p style="margin-bottom: 16px; font-size: 0.95rem;">MapStruct mapea automáticamente campos con el <strong>mismo nombre</strong>. Pero cuando el DTO y la Entidad tienen campos con nombres distintos, le dices cómo conectarlos con <code>@Mapping</code>.</p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — campos distintos en DTO vs Entidad de Negocio</div>
+      <div class="mermaid">
+flowchart LR
+    subgraph DTO["📥 PedidoRequestDTO"]
+        direction TB
+        F1["nombreProducto"]
+        F2["cantidadUnidades"]
+        F3["idCliente"]
+        F4["precioUnitario"]
+    end
+
+    subgraph ENT["🎯 Pedido (Entidad Negocio)"]
+        direction TB
+        E1["producto"]
+        E2["cantidad"]
+        E3["clienteId"]
+        E4["precio"]
+    end
+
+    F1 -- "@Mapping\nsource='nombreProducto'\ntarget='producto'" --> E1
+    F2 -- "@Mapping\nsource='cantidadUnidades'\ntarget='cantidad'" --> E2
+    F3 -- "@Mapping\nsource='idCliente'\ntarget='clienteId'" --> E3
+    F4 -- "@Mapping\nsource='precioUnitario'\ntarget='precio'" --> E4
+
+    style DTO fill:#eaf5fb
+    style ENT fill:#e8f7ef
+      </div>
+    </div>
+
+    <pre><code>// ──── Escenario: los campos tienen nombres distintos ────
+
+// DTO que llega del cliente
+public record PedidoRequestDTO(
+    String nombreProducto,    // ← se llama "nombreProducto"
+    int    cantidadUnidades,  // ← se llama "cantidadUnidades"
+    Long   idCliente,         // ← se llama "idCliente"
+    double precioUnitario     // ← se llama "precioUnitario"
+) {}
+
+// Entidad de Negocio (nombres internos distintos)
+public class Pedido {
+    private String producto;  // ← se llama "producto"
+    private int    cantidad;  // ← se llama "cantidad"
+    private Long   clienteId; // ← se llama "clienteId"
+    private double precio;    // ← se llama "precio"
+}
+
+// ──── MapStruct con @Mapping para campos con nombre distinto ────
+@Mapper(componentModel = "spring")
+public interface PedidoMapperIn {
+
+    @Mapping(source = "nombreProducto",  target = "producto")
+    @Mapping(source = "cantidadUnidades", target = "cantidad")
+    @Mapping(source = "idCliente",        target = "clienteId")
+    @Mapping(source = "precioUnitario",   target = "precio")
+    Pedido toDomain(PedidoRequestDTO dto);
+    // MapStruct genera la implementación aplicando cada @Mapping declarado
+}
+
+// ──── También sirve para campos anidados (objetos dentro de objetos) ────
+public record RestauranteRequestDTO(
+    String nombre,
+    String calleDir,       // campo plano
+    String ciudadDir       // campo plano
+) {}
+
+public class Restaurante {
+    private String    nombre;
+    private Direccion direccion; // ← objeto anidado
+}
+
+public class Direccion {
+    private String calle;
+    private String ciudad;
+}
+
+@Mapper(componentModel = "spring")
+public interface RestauranteMapperIn {
+
+    @Mapping(source = "calleDir",  target = "direccion.calle")   // ← notación de punto
+    @Mapping(source = "ciudadDir", target = "direccion.ciudad")  // ← para campos anidados
+    Restaurante toDomain(RestauranteRequestDTO dto);
+}
+
+// ──── ¿Y si un campo del target NO debe mapearse? ────
+@Mapper(componentModel = "spring")
+public interface PedidoMapperOut {
+
+    @Mapping(target = "fechaCreacion", ignore = true) // ← MapStruct lo ignora, tú lo seteas en el Service
+    @Mapping(source = "estado",        target = "estadoDescripcion") // renombrar
+    PedidoResponseDTO toDTO(Pedido pedido);
+}</code></pre>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div>
+        <strong>Si un campo no tiene @Mapping y los nombres son distintos</strong>, MapStruct lo dejará como <code>null</code> en la clase generada — no lanzará error. Por eso es importante revisar los campos o activar <code>unmappedTargetPolicy = ReportingPolicy.ERROR</code> en el <code>@Mapper</code> para que falle en compilación si queda algo sin mapear.
+      </div>
+    </div>
+
+    <pre><code>// Configuración estricta: falla en compilación si algún campo queda sin mapear
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
+public interface PedidoMapperIn {
+
+    @Mapping(source = "nombreProducto", target = "producto")
+    // Si olvidas mapear "cantidadUnidades" → error de compilación, no en runtime ✅
+    Pedido toDomain(PedidoRequestDTO dto);
+}</code></pre>
+
+    <div class="callout tip">
+      <span class="callout-icon">✨</span>
+      <div>
+        <strong>¿Por qué MapStruct y no ModelMapper?</strong> MapStruct genera el código de mapeo <em>en tiempo de compilación</em> — no usa Reflection en runtime, así que es más rápido, más seguro (errores se ven al compilar) y más fácil de depurar. ModelMapper sí usa Reflection en runtime, lo que lo hace más lento y los errores aparecen en ejecución.
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">🔑</span>
+      <div>
+        <strong>Diferencia clave: Entidad de Negocio vs @Entity</strong><br>
+        La <strong>Entidad de Negocio</strong> tiene reglas y comportamiento, no depende de la BD.<br>
+        La <strong>@Entity</strong> refleja cómo se guarda en la BD — no tiene lógica de negocio.
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== SECCIÓN 5: DIAGRAMAS DE COMPONENTES ===== -->
+  <section class="section" id="diagramas">
+    <div class="section-header">
+      <div class="section-icon">📐</div>
+      <div>
+        <span class="section-num">SECCIÓN 05</span>
+        <div class="section-title">Diagramas de Componentes</div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">📌</span>
+      <div>
+        <strong>Nota importante sobre los diagramas del curso:</strong> Los diagramas de componentes que entreguen en el proyecto deben seguir el esquema UML formal con los símbolos de <strong>Componente</strong> (rectángulo con dos rectángulos pequeños), <strong>Puerto</strong> (cuadrado en el borde del componente), <strong>Interfaz</strong> (círculo "lollipop" o socket) y <strong>Base de datos</strong>. Los diagramas de esta guía están simplificados <em>únicamente para entender los conceptos</em> — no son el formato que se entrega.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="concepto">
+        <h3>Diagrama General</h3>
+        <p>Muestra la arquitectura <strong>global del sistema</strong>. Cómo se conecta con otros sistemas externos. Define responsabilidades globales y agrupaciones por dominio.</p>
+      </div>
+      <div class="concepto">
+        <h3>Diagrama Específico</h3>
+        <p>Muestra la arquitectura <strong>dentro de un solo aplicativo</strong>: cómo están organizados sus módulos internos (Controller, Service, Repository, BD, etc.).</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama General — Sistema Restaurante (vista externa)</div>
+      <div class="mermaid">
+graph TB
+    subgraph EXT["🌐 Clientes Externos"]
+        APP["📱 App Móvil"]
+        WEB["💻 Web Browser"]
+        POS["🖨️ POS / Terminal"]
+    end
+
+    subgraph CORE["🏠 Sistema Restaurante"]
+        API["🎯 API REST\nrestaurante-api"]
+        AUTH["🔐 Auth Service"]
+        PAY["💳 Payment Service"]
+    end
+
+    subgraph THIRD["🔌 Servicios Externos"]
+        STRIPE["Stripe\nPagos"]
+        TWILIO["Twilio\nNotificaciones"]
+        S3["AWS S3\nImágenes"]
+    end
+
+    subgraph DATA["💾 Persistencia"]
+        PG[("PostgreSQL")]
+        REDIS[("Redis\nCache")]
+    end
+
+    APP -- "HTTPS" --> API
+    WEB -- "HTTPS" --> API
+    POS -- "HTTPS" --> API
+    API --> AUTH
+    API --> PAY
+    PAY -- "API" --> STRIPE
+    API -- "SMS/Email" --> TWILIO
+    API -- "Images" --> S3
+    API --> PG
+    API --> REDIS
+
+    style CORE fill:#e8f7ef
+    style EXT fill:#eaf5fb
+    style THIRD fill:#f3eeff
+    style DATA fill:#fff8ec
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama Específico — Componentes internos del restaurante-api</div>
+      <div class="mermaid">
+graph TB
+    subgraph CTRL["🎯 Capa Controller"]
+        MC["MenuController\n@RestController"]
+        PC["PedidoController\n@RestController"]
+        RC["ReservaController\n@RestController"]
+    end
+
+    subgraph SRVC["⚙️ Capa Service"]
+        MS["MenuService\n@Service"]
+        PS["PedidoService\n@Service"]
+        RS["ReservaService\n@Service"]
+        NT["NotificacionClient\n@Component"]
+    end
+
+    subgraph REPO["🗃️ Capa Repository"]
+        MR["MenuRepository\nJpaRepository"]
+        PR["PedidoRepository\nJpaRepository"]
+        RR["ReservaRepository\nMongoRepository"]
+    end
+
+    subgraph MODELS["📦 Modelos"]
+        DTO["DTOs / Records"]
+        ENT["@Entity / @Document"]
+        ENUM["Enums"]
+        MAP["Mappers"]
+    end
+
+    MC --> MS --> MR
+    PC --> PS --> PR
+    RC --> RS --> RR
+    PS --> NT
+
+    CTRL -.-> DTO
+    SRVC -.-> MAP
+    REPO -.-> ENT
+
+    style CTRL fill:#eaf5fb
+    style SRVC fill:#e8f7ef
+    style REPO fill:#fff8ec
+    style MODELS fill:#f3eeff
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== SECCIÓN 6: APIs REST ===== -->
+  <section class="section" id="apis">
+    <div class="section-header">
+      <div class="section-icon">🌐</div>
+      <div>
+        <span class="section-num">SECCIÓN 06</span>
+        <div class="section-title">Diseño de APIs REST</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">📌</span>
+      <div><strong>Para recordar:</strong> No toda API es REST, pero todo servicio REST es una API. REST es un conjunto de principios arquitectónicos, no un protocolo. El protocolo concreto es HTTP.</div>
+    </div>
+
+    <h3 style="margin: 24px 0 16px; font-size: 1.05rem;">Verbos HTTP — La guía completa</h3>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th>Verbo</th><th>CRUD</th><th>Qué hace</th><th>Seguro</th><th>Idempotente</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>GET</code></td><td>Read</td>
+            <td>Obtener recurso — solo lectura, nunca modifica</td>
+            <td><span class="badge seguro">✅ Seguro</span></td>
+            <td><span class="badge idempotente">✅ Idempotente</span></td>
+          </tr>
+          <tr>
+            <td><code>POST</code></td><td>Create</td>
+            <td>Crear nuevo recurso, procesa el body</td>
+            <td><span class="badge inseguro">❌ Inseguro</span></td>
+            <td><span class="badge no-idempotente">❌ No idempotente</span></td>
+          </tr>
+          <tr>
+            <td><code>PUT</code></td><td>Update/Replace</td>
+            <td>Reemplaza el recurso completo en la URL</td>
+            <td><span class="badge inseguro">❌ Inseguro</span></td>
+            <td><span class="badge idempotente">✅ Idempotente</span></td>
+          </tr>
+          <tr>
+            <td><code>PATCH</code></td><td>Update/Partial</td>
+            <td>Modifica solo algunas propiedades del recurso</td>
+            <td><span class="badge inseguro">❌ Inseguro</span></td>
+            <td><span class="badge no-idempotente">⚠️ Depende impl.</span></td>
+          </tr>
+          <tr>
+            <td><code>DELETE</code></td><td>Delete</td>
+            <td>Elimina el recurso identificado por la URL</td>
+            <td><span class="badge inseguro">❌ Inseguro</span></td>
+            <td><span class="badge idempotente">✅ Idempotente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">🔁</span>
+      <div>
+        <strong>Idempotencia</strong> — Ejecutar la misma petición 1 o N veces produce el mismo efecto en el estado del sistema. <strong>Importante:</strong> esto NO ocurre por arte de magia — debes implementarlo en tu servicio. PUT al mismo recurso con los mismos datos siempre da el mismo resultado. POST crea N recursos si se llama N veces.
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Anatomía de un Request y Response REST</div>
+      <div class="mermaid">
+flowchart LR
+    subgraph REQ["📤 REQUEST del Cliente"]
+        direction TB
+        M["Método HTTP\nGET / POST / PUT..."]
+        URL["URL del recurso\nhttps://api.restaurante.com/menu/5"]
+        H1["Headers\nContent-Type: application/json\nAuthorization: Bearer &lt;token&gt;"]
+        B1["Body (opcional)\n{ 'nombre': 'Tacos', 'precio': 15000 }"]
+    end
+
+    subgraph RES["📥 RESPONSE del Servidor"]
+        direction TB
+        SC["Status Code\n200 OK / 201 Created\n400 Bad Request / 404 Not Found"]
+        H2["Headers\nContent-Type: application/json"]
+        B2["Body (opcional)\n{ 'id': 5, 'nombre': 'Tacos' }"]
+    end
+
+    REQ -- "→ Viaje por Internet →" --> RES
+
+    style REQ fill:#eaf5fb
+    style RES fill:#e8f7ef
+      </div>
+    </div>
+
+    <h3 style="margin: 28px 0 16px; font-size: 1.05rem;">Buenas Prácticas de URL Design</h3>
+
+    <div class="concepto">
+      <h3>✅ Usa sustantivos en plural</h3>
+      <p><code>/users</code> ✅ &nbsp;&nbsp; <code>/getUsers</code> ❌ &nbsp;&nbsp; <code>/user</code> ❌</p>
+    </div>
+    <div class="concepto">
+      <h3>✅ Usa jerarquías lógicas padre-hijo</h3>
+      <p><code>/restaurants/5/menu/3</code> ✅ &nbsp;&nbsp; <code>/getMenuOfRestaurant5</code> ❌</p>
+    </div>
+    <div class="concepto">
+      <h3>✅ Query params para filtros y paginación</h3>
+      <p><code>/menu?categoria=vegetariano&page=2</code> ✅ — nunca para identificar recursos</p>
+    </div>
+    <div class="concepto">
+      <h3>✅ Consistencia en nombres</h3>
+      <p>No mezcles <code>snake_case</code> con <code>kebab-case</code>. No mezcles singular y plural. Elige uno y mantenlo.</p>
+    </div>
+
+    <div class="quiz-box">
+      <h4>🧠 Preguntas de Repaso — APIs REST</h4>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Por qué GET es considerado "seguro"?</div>
+        <div class="quiz-a">Porque nunca modifica el estado del recurso en el servidor — solo lee y devuelve datos.</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Cuál es la diferencia entre PUT y PATCH?</div>
+        <div class="quiz-a">PUT reemplaza el recurso completo. PATCH solo modifica los campos especificados en el body.</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Por qué usar /restaurants/{id}/orders en vez de /getOrdersOfRestaurant?</div>
+        <div class="quiz-a">REST usa sustantivos y jerarquías, no verbos. Los verbos HTTP ya expresan la acción.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== SECCIÓN 7: IoC & DI ===== -->
+  <section class="section" id="ioc">
+    <div class="section-header">
+      <div class="section-icon">♻️</div>
+      <div>
+        <span class="section-num">SECCIÓN 07</span>
+        <div class="section-title">Inyección de Dependencias, Interfaces, IoC & Spring + Lombok</div>
+      </div>
+    </div>
+
+    <div class="callout key">
+      <span class="callout-icon">🌿</span>
+      <div>
+        <strong>Principio de Inversión de Dependencias (DIP):</strong><br>
+        Los módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de <strong>abstracciones (interfaces)</strong>. Esto logra bajo acoplamiento y alta cohesión.
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — ¿Por qué se inyecta la interfaz, no la clase concreta?</div>
+      <div class="mermaid">
+flowchart TB
+    subgraph SIN["❌ SIN Inversión de Dependencias — acoplamiento fuerte"]
+        direction LR
+        A1["PedidoController"] -- "new PedidoServiceImpl()" --> B1["PedidoServiceImpl\n(clase concreta)"]
+        B1 -- "new EmailNotificacion()" --> C1["EmailNotificacion\n(clase concreta)"]
+        note1["Si cambia EmailNotificacion,\nhay que tocar PedidoServiceImpl"]
+    end
+
+    subgraph CON["✅ CON Interfaces + DI — acoplamiento débil"]
+        direction LR
+        A2["PedidoController"] -- "depende de ↓" --> I1["«interface»\nIPedidoService"]
+        I1 -- "implementa" --> B2["PedidoServiceImpl\n@Service"]
+        B2 -- "depende de ↓" --> I2["«interface»\nINotificacionService"]
+        I2 -- "implementa" --> C2["EmailNotificacion\n@Component"]
+        I2 -- "implementa" --> D2["SMSNotificacion\n@Component"]
+        note2["Spring decide qué implementación\ninyectar — el Controller no sabe cuál"]
+    end
+
+    style SIN fill:#fde8e8
+    style CON fill:#e8f7ef
+    style I1 fill:#3d8b5e,color:#fff
+    style I2 fill:#3d8b5e,color:#fff
+      </div>
+    </div>
+
+    <h3 style="margin: 28px 0 14px; font-size: 1.05rem;">¿Cómo se define y usa una interfaz en Spring?</h3>
+
+    <pre><code>// 1. Defines la INTERFAZ — el "contrato" que cualquier implementación debe cumplir
+public interface IPedidoService {
+    PedidoResponseDTO crear(PedidoRequestDTO dto);
+    PedidoResponseDTO buscarPorId(Long id);
+    List&lt;PedidoResponseDTO&gt; listarTodos();
+}
+
+// 2. Creas la IMPLEMENTACIÓN — la clase que hace el trabajo real
+@Service                           // ← Spring la registra como Bean
+@RequiredArgsConstructor           // ← Lombok genera el constructor con los campos final
+public class PedidoServiceImpl implements IPedidoService {
+
+    private final PedidoRepository     repository;   // ← inyectado por Spring
+    private final PedidoMapperIn       mapperIn;     // ← inyectado por Spring
+    private final PedidoMapperOut      mapperOut;    // ← inyectado por Spring
+    private final INotificacionService notificacion; // ← también es interfaz
+
+    @Override
+    public PedidoResponseDTO crear(PedidoRequestDTO dto) {
+        Pedido pedido = mapperIn.toDomain(dto);
+        // reglas de negocio...
+        repository.save(mapperOut.toEntity(pedido));
+        notificacion.enviar("Pedido creado: " + pedido.getId());
+        return mapperOut.toDTO(pedido);
+    }
+}
+
+// 3. El CONTROLLER depende de la INTERFAZ, no de la implementación
+@RestController
+@RequestMapping("/api/v1/pedidos")
+@RequiredArgsConstructor           // ← Lombok hace el constructor
+public class PedidoController {
+
+    private final IPedidoService pedidoService;  // ← interfaz, no PedidoServiceImpl
+
+    @PostMapping
+    public PedidoResponseDTO crear(@RequestBody @Valid PedidoRequestDTO dto) {
+        return pedidoService.crear(dto);          // ← llama al servicio sin saber qué implementación es
+    }
+}</code></pre>
+
+    <div class="callout info">
+      <span class="callout-icon">🤔</span>
+      <div>
+        <strong>¿Por qué poner <code>private final IPedidoService</code> y no <code>PedidoServiceImpl</code>?</strong><br>
+        Porque el Controller no debería saber <em>cómo</em> se implementa el servicio — solo sabe <em>qué puede hacer</em> (el contrato de la interfaz). Si mañana cambias la implementación (de base SQL a NoSQL, o para tests), el Controller no cambia ni una línea.
+      </div>
+    </div>
+
+    <h3 style="margin: 28px 0 14px; font-size: 1.05rem;">Las 3 formas de inyectar dependencias en Spring</h3>
+
+    <pre><code>// ❌ FORMA 1: Inyección por campo (@Autowired directo) — NO recomendada
+@Service
+public class PedidoServiceImpl implements IPedidoService {
+    @Autowired
+    private PedidoRepository repository;  // Spring inyecta, pero no puedes hacer final
+    // Problema: no testeable fácilmente, el campo no puede ser final
+}
+
+// ⚠️ FORMA 2: Inyección por setter — rara vez usada
+@Service
+public class PedidoServiceImpl implements IPedidoService {
+    private PedidoRepository repository;
+
+    @Autowired
+    public void setRepository(PedidoRepository repository) {
+        this.repository = repository;
+    }
+}
+
+// ✅ FORMA 3: Inyección por CONSTRUCTOR — RECOMENDADA (con Lombok es trivial)
+@Service
+@RequiredArgsConstructor          // Lombok genera: public PedidoServiceImpl(PedidoRepository repo) {...}
+public class PedidoServiceImpl implements IPedidoService {
+
+    private final PedidoRepository repository;   // final = inmutable, seguro
+    private final PedidoMapperIn   mapperIn;
+    // Spring detecta el único constructor y lo usa para inyectar
+}
+
+// Sin Lombok, el constructor sería manual:
+@Service
+public class PedidoServiceImpl implements IPedidoService {
+    private final PedidoRepository repository;
+
+    public PedidoServiceImpl(PedidoRepository repository) {  // Spring inyecta aquí
+        this.repository = repository;
+    }
+}</code></pre>
+
+    <div class="callout tip">
+      <span class="callout-icon">🏆</span>
+      <div>
+        <strong>¿Por qué constructor injection + Lombok es la combinación ganadora?</strong><br>
+        <code>@RequiredArgsConstructor</code> genera automáticamente el constructor con todos los campos <code>final</code>. Spring detecta ese único constructor y lo usa para inyectar. Las dependencias son inmutables (<code>final</code>), explícitas, y en tests puedes pasar mocks directamente sin frameworks especiales.
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Flujo Normal vs IoC (Inversión de Control)</div>
+      <div class="mermaid">
+sequenceDiagram
+    participant P as 👨‍💻 Programador
+    participant APP as 🏗️ Tu Código
+    participant FW as 🍃 Spring IoC Container
+
+    Note over P,APP: FLUJO NORMAL — el programador controla la creación
+    P->>APP: PedidoRepository repo = new PedidoRepositoryImpl()
+    P->>APP: PedidoService svc = new PedidoServiceImpl(repo)
+    P->>APP: PedidoController ctrl = new PedidoController(svc)
+    APP-->>P: Funciona, pero tú gestionas todo
+
+    Note over APP,FW: IOC — Spring toma el control del ciclo de vida
+    FW->>APP: Escanea @Service, @Repository, @RestController...
+    FW->>APP: Crea PedidoRepository via Reflection (sin new)
+    FW->>APP: Crea PedidoServiceImpl e inyecta el repository
+    FW->>APP: Crea PedidoController e inyecta el service
+    APP-->>FW: Todo listo — tú solo defines las clases y sus @Annotations
+    Note over FW: El contenedor gestiona el ciclo de vida completo de los Beans
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — IoC Container: del @SpringBootApplication al Bean listo</div>
+      <div class="mermaid">
+flowchart TD
+    START(["▶ main() @SpringBootApplication"]) --> SCAN
+
+    subgraph IOC["🫙 IoC Container — ApplicationContext"]
+        SCAN["🔍 @ComponentScan\nEscanea todos los paquetes"] --> READ
+        READ["📖 Reflection\nLee @Annotations de cada clase"] --> INST
+        INST["🏗️ Instancia los Beans\n(sin que tú uses new)"] --> INJ
+        INJ["💉 Inyecta dependencias\nvía constructor @RequiredArgsConstructor"] --> READY
+        READY["✅ Beans disponibles\nen el contexto de Spring"]
+    end
+
+    READY --> CTRL["PedidoController\nlisto con su IPedidoService"]
+    READY --> SVC["PedidoServiceImpl\nlisto con su Repository + Mappers"]
+    READY --> REPO["PedidoRepository\nlisto con conexión a BD"]
+
+    style START fill:#1e2a24,color:#a8d5b5
+    style IOC fill:#e8f7ef
+    style READY fill:#3d8b5e,color:#fff
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="concepto">
+        <h3>Reflection (Introspección)</h3>
+        <p>Técnica para analizar clases <strong>en tiempo de ejecución</strong>. Permite saber propiedades, métodos, clases que extiende, ejecutar operaciones — todo sin conocer la clase de antemano. Es la base de IoC en Spring.</p>
+      </div>
+      <div class="concepto">
+        <h3>Annotations (@)</h3>
+        <p>Metadatos en el código. Spring los lee via Reflection para entender la app. <code>@Service</code> dice "esto es un bean de negocio". <code>@Repository</code> dice "esto accede a BD". Sin ellos, Spring no sabe qué hacer con tu clase.</p>
+      </div>
+    </div>
+
+    <div class="quiz-box">
+      <h4>🧠 Preguntas de Repaso — DI, Interfaces e IoC</h4>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Por qué en el Controller ponemos <code>IPedidoService</code> (interfaz) y no <code>PedidoServiceImpl</code>?</div>
+        <div class="quiz-a">Para depender de la abstracción, no del detalle. El Controller solo sabe qué puede hacer el servicio, no cómo lo hace. Esto permite cambiar la implementación sin tocar el Controller.</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Qué hace <code>@RequiredArgsConstructor</code> de Lombok?</div>
+        <div class="quiz-a">Genera automáticamente un constructor con todos los campos marcados como <code>final</code>. Spring usa ese constructor para inyectar las dependencias.</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Cuál es la diferencia entre IoC e Inyección de Dependencias?</div>
+        <div class="quiz-a">IoC es el principio general — el Framework controla el ciclo de vida de los objetos. La Inyección de Dependencias es el mecanismo concreto — Spring pasa las dependencias al constructor en lugar de que tú uses <code>new</code>.</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Qué pasaría si tienes dos clases que implementan <code>IPedidoService</code>?</div>
+        <div class="quiz-a">Spring lanzaría un error de ambigüedad. Se resuelve con <code>@Primary</code> en la implementación preferida, o con <code>@Qualifier("nombreBean")</code> en el punto de inyección.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sep"></div>
+
+  <!-- ===== SECCIÓN 8: SPRING BOOT ===== -->
+  <section class="section" id="springboot">
+    <div class="section-header">
+      <div class="section-icon">🍃</div>
+      <div>
+        <span class="section-num">SECCIÓN 08</span>
+        <div class="section-title">Spring Boot — Anotaciones Esenciales</div>
+      </div>
+    </div>
+
+    <p style="margin-bottom: 20px;">Spring Boot es un framework empresarial para construir aplicaciones Java independientes, de producción, con configuración automática y enfoque obstinado.</p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-label">Diagrama — Cómo Spring Boot gestiona los componentes</div>
+      <div class="mermaid">
+flowchart TB
+    subgraph BOOT["🍃 Spring Boot Application Context"]
+        direction TB
+        CTX["🫙 IoC Container\n(ApplicationContext)"]
+        
+        subgraph BEANS["Beans Gestionados por Spring"]
+            direction LR
+            B1["@RestController\nPedidoController"]
+            B2["@Service\nPedidoService"]
+            B3["@Repository\nPedidoRepository"]
+            B4["@Component\nEmailUtil"]
+        end
+
+        CTX -- "Crea y gestiona" --> BEANS
+        B1 -- "@Autowired ↓" --> B2
+        B2 -- "@Autowired ↓" --> B3
+    end
+
+    START["@SpringBootApplication\nmain()"] -- "Arranca" --> BOOT
+    CONFIG["application.properties\nDB URL, puerto, etc."] -- "Configura" --> BOOT
+
+    style BOOT fill:#e8f7ef
+    style CTX fill:#3d8b5e,color:#fff
+    style START fill:#1e2a24,color:#a8d5b5
+      </div>
+    </div>
+
+    <h3 style="margin: 28px 0 16px; font-size: 1.05rem;">Anotaciones clave y su propósito</h3>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th>Anotación</th><th>Capa</th><th>Qué hace</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>@SpringBootApplication</code></td><td>Main</td><td>Combina @Configuration + @ComponentScan + @EnableAutoConfiguration</td></tr>
+          <tr><td><code>@RestController</code></td><td>Controller</td><td>Marca la clase como controlador REST (combina @Controller + @ResponseBody)</td></tr>
+          <tr><td><code>@RequestMapping</code></td><td>Controller</td><td>Define la ruta base del controller</td></tr>
+          <tr><td><code>@GetMapping</code> / <code>@PostMapping</code></td><td>Controller</td><td>Mapea un método HTTP a un endpoint específico</td></tr>
+          <tr><td><code>@Service</code></td><td>Service</td><td>Marca la clase como lógica de negocio — Spring la gestiona</td></tr>
+          <tr><td><code>@Repository</code></td><td>Repository</td><td>Marca acceso a datos y habilita traducción de excepciones de BD</td></tr>
+          <tr><td><code>@Component</code></td><td>Cualquiera</td><td>Clase genérica gestionada por Spring (utilidades, helpers)</td></tr>
+          <tr><td><code>@Autowired</code></td><td>Cualquiera</td><td>Inyecta automáticamente la dependencia (DI)</td></tr>
+          <tr><td><code>@Entity</code></td><td>Model</td><td>Mapea la clase a una tabla en BD relacional (JPA)</td></tr>
+          <tr><td><code>@Document</code></td><td>Model</td><td>Mapea la clase a una colección en MongoDB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <pre><code>// Ejemplo completo de un Controller básico en Spring Boot
+@RestController
+@RequestMapping("/api/v1/menu")
+public class MenuController {
+
+    private final MenuService menuService; // ← inyección por constructor (recomendada)
+
+    public MenuController(MenuService menuService) {
+        this.menuService = menuService;
+    }
+
+    @GetMapping               // GET /api/v1/menu
+    public List&lt;MenuItemResponseDTO&gt; getAllItems() {
+        return menuService.findAll();
+    }
+
+    @GetMapping("/{id}")      // GET /api/v1/menu/5
+    public MenuItemResponseDTO getById(@PathVariable Long id) {
+        return menuService.findById(id);
+    }
+
+    @PostMapping              // POST /api/v1/menu
+    @ResponseStatus(HttpStatus.CREATED)
+    public MenuItemResponseDTO create(@RequestBody @Valid MenuItemRequestDTO dto) {
+        return menuService.create(dto);
+    }
+
+    @DeleteMapping("/{id}")   // DELETE /api/v1/menu/5
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        menuService.delete(id);
+    }
+}</code></pre>
+
+    <div class="quiz-box">
+      <h4>🧠 Preguntas de Repaso — Spring Boot</h4>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Por qué se recomienda inyección por constructor en vez de @Autowired en el campo?</div>
+        <div class="quiz-a">Porque facilita las pruebas unitarias (puedes pasar un mock), hace explícitas las dependencias y permite campos final (inmutables).</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Qué diferencia hay entre @Entity y @Document?</div>
+        <div class="quiz-a">@Entity es para bases de datos relacionales (JPA/Hibernate). @Document es para MongoDB (Spring Data MongoDB).</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Qué hace @ComponentScan?</div>
+        <div class="quiz-a">Le dice a Spring en qué paquetes buscar clases anotadas (@Component, @Service, etc.) para agregarlas al contexto (IoC Container).</div>
+      </div>
+      <div class="quiz-item">
+        <div class="quiz-q">¿Cuál es la diferencia entre @Controller y @RestController?</div>
+        <div class="quiz-a">@RestController = @Controller + @ResponseBody. Los métodos de @RestController devuelven datos directamente (JSON) en vez de nombres de vistas.</div>
+      </div>
+    </div>
+
+    <div class="callout key" style="margin-top: 28px;">
+      <span class="callout-icon">📋</span>
+      <div>
+        <strong>Checklist de Actividad — Semana 7:</strong><br>
+        ✅ Crear repositorio Bitacora_Corte2_NombreApellido con pom.xml y Maven<br>
+        ✅ Agregar dependencias de pruebas, Spring Boot y Lombok<br>
+        ✅ README con nombre y descripción del restaurante<br>
+        ✅ Incluir diagramas de componentes en el README<br>
+        ✅ Crear estructura de carpetas con clases vacías<br>
+        ✅ Taller TDD disponible en Semana 7 — desarrollarlo individualmente
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  🌿 <span>Guía Turtwig de Studio</span> — Semana 7 &nbsp;·&nbsp; Escuela Colombiana de Ingeniería &nbsp;·&nbsp; Diseñada para reforzar, no reemplazar la clase
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#3d8b5e',
+      primaryTextColor: '#1e2a24',
+      primaryBorderColor: '#6abf8a',
+      lineColor: '#4a5e54',
+      secondaryColor: '#e8f7ef',
+      tertiaryColor: '#f0f7f3',
+      background: '#ffffff',
+      mainBkg: '#e8f7ef',
+      nodeBorder: '#3d8b5e',
+      clusterBkg: '#f0f7f3',
+      titleColor: '#1e2a24',
+      edgeLabelBackground: '#f0f7f3',
+      fontFamily: 'Space Grotesk, sans-serif',
+      fontSize: '14px'
+    },
+    flowchart: { curve: 'basis', padding: 20 },
+    sequence: { mirrorActors: false, messageAlign: 'center' }
+  });
+</script>
+</body>
+</html>

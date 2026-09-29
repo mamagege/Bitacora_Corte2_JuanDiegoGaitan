@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CuentaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BITACORA-TERCIO2</a> &gt; <a href="index.source.html" class="el_package">com.dows.bitacora2.restaurante.controller</a> &gt; <span class="el_source">CuentaController.java</span></div><h1>CuentaController.java</h1><pre class="source lang-java linenums">package com.dows.bitacora2.restaurante.controller;
+
+import com.dows.bitacora2.restaurante.controller.docs.CuentaApi;
+import com.dows.bitacora2.restaurante.mapper.CuentaMapper;
+import com.dows.bitacora2.restaurante.model.domain.Cuenta;
+import com.dows.bitacora2.restaurante.model.dto.request.CuentaRequestDTO;
+import com.dows.bitacora2.restaurante.model.dto.response.CuentaResponseDTO;
+import com.dows.bitacora2.restaurante.service.ICuentaService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/v1/cuentas&quot;)
+public class CuentaController implements CuentaApi {
+
+    private final ICuentaService cuentaService;
+    private final CuentaMapper cuentaMapper;
+
+<span class="nc" id="L23">    public CuentaController(ICuentaService cuentaService, CuentaMapper cuentaMapper) {</span>
+<span class="nc" id="L24">        this.cuentaService = cuentaService;</span>
+<span class="nc" id="L25">        this.cuentaMapper = cuentaMapper;</span>
+<span class="nc" id="L26">    }</span>
+
+    @Override
+    @GetMapping
+    public ResponseEntity&lt;List&lt;CuentaResponseDTO&gt;&gt; listar() {
+<span class="nc" id="L31">        List&lt;Cuenta&gt; cuentas = cuentaService.obtenerTodas();</span>
+<span class="nc" id="L32">        return ResponseEntity.ok(cuentaMapper.toResponseList(cuentas));</span>
+    }
+
+    @Override
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;CuentaResponseDTO&gt; obtener(@PathVariable Long id) {
+<span class="nc" id="L38">        Cuenta cuenta = cuentaService.obtenerPorId(id);</span>
+<span class="nc" id="L39">        return ResponseEntity.ok(cuentaMapper.toResponse(cuenta));</span>
+    }
+
+    @Override
+    @PostMapping
+    public ResponseEntity&lt;CuentaResponseDTO&gt; crear(@Valid @RequestBody CuentaRequestDTO dto) {
+<span class="nc" id="L45">        Cuenta nueva = cuentaMapper.toDomain(dto);</span>
+<span class="nc" id="L46">        Cuenta creada = cuentaService.crear(nueva);</span>
+<span class="nc" id="L47">        return ResponseEntity.status(HttpStatus.CREATED).body(cuentaMapper.toResponse(creada));</span>
+    }
+
+    @Override
+    @PatchMapping(&quot;/{id}/actualizar-total&quot;)
+    public ResponseEntity&lt;CuentaResponseDTO&gt; actualizarTotal(@PathVariable Long id) {
+<span class="nc" id="L53">        Cuenta actualizada = cuentaService.actualizarTotal(id);</span>
+<span class="nc" id="L54">        return ResponseEntity.ok(cuentaMapper.toResponse(actualizada));</span>
+    }
+
+    @Override
+    @PatchMapping(&quot;/{id}/pagar&quot;)
+    public ResponseEntity&lt;CuentaResponseDTO&gt; pagar(@PathVariable Long id) {
+<span class="nc" id="L60">        Cuenta pagada = cuentaService.pagar(id);</span>
+<span class="nc" id="L61">        return ResponseEntity.ok(cuentaMapper.toResponse(pagada));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

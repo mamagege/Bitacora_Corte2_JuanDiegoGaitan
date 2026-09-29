@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Pedido.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BITACORA-TERCIO2</a> &gt; <a href="index.source.html" class="el_package">com.dows.bitacora2.restaurante.model.domain</a> &gt; <span class="el_source">Pedido.java</span></div><h1>Pedido.java</h1><pre class="source lang-java linenums">package com.dows.bitacora2.restaurante.model.domain;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class Pedido {
+    private Long id;
+    private Long idMesa;
+    private List&lt;ItemPedido&gt; items;
+    private EstadoPedido estado;
+    private LocalDateTime timestamp;
+
+<span class="fc" id="L13">    public Pedido() {}</span>
+
+<span class="nc" id="L15">    public Pedido(Long id, Long idMesa, List&lt;ItemPedido&gt; items, EstadoPedido estado, LocalDateTime timestamp) {</span>
+<span class="nc" id="L16">        this.id = id;</span>
+<span class="nc" id="L17">        this.idMesa = idMesa;</span>
+<span class="nc" id="L18">        this.items = items;</span>
+<span class="nc" id="L19">        this.estado = estado;</span>
+<span class="nc" id="L20">        this.timestamp = timestamp;</span>
+<span class="nc" id="L21">    }</span>
+
+    public boolean puedeModificarse() {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        return this.estado == EstadoPedido.RECIBIDO;</span>
+    }
+
+<span class="fc" id="L27">    public Long getId() { return id; }</span>
+<span class="fc" id="L28">    public void setId(Long id) { this.id = id; }</span>
+<span class="fc" id="L29">    public Long getIdMesa() { return idMesa; }</span>
+<span class="fc" id="L30">    public void setIdMesa(Long idMesa) { this.idMesa = idMesa; }</span>
+<span class="fc" id="L31">    public List&lt;ItemPedido&gt; getItems() { return items; }</span>
+<span class="fc" id="L32">    public void setItems(List&lt;ItemPedido&gt; items) { this.items = items; }</span>
+<span class="fc" id="L33">    public EstadoPedido getEstado() { return estado; }</span>
+<span class="fc" id="L34">    public void setEstado(EstadoPedido estado) { this.estado = estado; }</span>
+<span class="nc" id="L35">    public LocalDateTime getTimestamp() { return timestamp; }</span>
+<span class="nc" id="L36">    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

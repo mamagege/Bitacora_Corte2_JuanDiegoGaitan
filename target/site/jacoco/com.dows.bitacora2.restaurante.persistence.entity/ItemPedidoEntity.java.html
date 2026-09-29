@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ItemPedidoEntity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">BITACORA-TERCIO2</a> &gt; <a href="index.source.html" class="el_package">com.dows.bitacora2.restaurante.persistence.entity</a> &gt; <span class="el_source">ItemPedidoEntity.java</span></div><h1>ItemPedidoEntity.java</h1><pre class="source lang-java linenums">package com.dows.bitacora2.restaurante.persistence.entity;
+
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;item_pedido&quot;)
+public class ItemPedidoEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private Long idPlato;
+
+    @Column(nullable = false)
+    private String nombrePlato;
+
+    @Column(nullable = false)
+    private Double precioCongelado;
+
+    @Column(nullable = false)
+    private Integer cantidad;
+
+    private String masa;
+    
+    private String salsa;
+
+    @ElementCollection
+    @CollectionTable(name = &quot;item_pedido_toppings&quot;, joinColumns = @JoinColumn(name = &quot;item_pedido_id&quot;))
+    @Column(name = &quot;topping&quot;)
+    private List&lt;String&gt; toppings;
+
+<span class="nc" id="L35">    public ItemPedidoEntity() {}</span>
+
+<span class="nc" id="L37">    public Long getId() { return id; }</span>
+<span class="nc" id="L38">    public void setId(Long id) { this.id = id; }</span>
+<span class="nc" id="L39">    public Long getIdPlato() { return idPlato; }</span>
+<span class="nc" id="L40">    public void setIdPlato(Long idPlato) { this.idPlato = idPlato; }</span>
+<span class="nc" id="L41">    public String getNombrePlato() { return nombrePlato; }</span>
+<span class="nc" id="L42">    public void setNombrePlato(String nombrePlato) { this.nombrePlato = nombrePlato; }</span>
+<span class="nc" id="L43">    public Double getPrecioCongelado() { return precioCongelado; }</span>
+<span class="nc" id="L44">    public void setPrecioCongelado(Double precioCongelado) { this.precioCongelado = precioCongelado; }</span>
+<span class="nc" id="L45">    public Integer getCantidad() { return cantidad; }</span>
+<span class="nc" id="L46">    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }</span>
+<span class="nc" id="L47">    public String getMasa() { return masa; }</span>
+<span class="nc" id="L48">    public void setMasa(String masa) { this.masa = masa; }</span>
+<span class="nc" id="L49">    public String getSalsa() { return salsa; }</span>
+<span class="nc" id="L50">    public void setSalsa(String salsa) { this.salsa = salsa; }</span>
+<span class="nc" id="L51">    public List&lt;String&gt; getToppings() { return toppings; }</span>
+<span class="nc" id="L52">    public void setToppings(List&lt;String&gt; toppings) { this.toppings = toppings; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

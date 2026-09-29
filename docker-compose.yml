@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: restaurante_pg
+    environment:
+      POSTGRES_DB: restaurante_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:7
+    container_name: restaurante_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+volumes:
+  pgdata:
+  mongodata:
