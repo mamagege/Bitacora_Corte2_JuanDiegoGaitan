@@ -10,4 +10,5 @@ public interface IPedidoService {
     Pedido actualizar(Long id, Pedido pedido);
     Pedido cambiarEstado(Long id, String estado);
     void eliminar(Long id);
+    com.dows.bitacora2.restaurante.model.dto.response.ResumenDiaDTO resumenDelDia();
 }

@@ -13,26 +13,21 @@ import com.dows.bitacora2.restaurante.repository.CuentaRepository;
 import com.dows.bitacora2.restaurante.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
 
 import java.util.List;
 
 @Service
+@lombok.extern.slf4j.Slf4j
+@lombok.RequiredArgsConstructor
 public class CuentaServiceImpl implements ICuentaService {
-    private static final Logger log = LoggerFactory.getLogger(CuentaServiceImpl.class);
+    
 
     private final CuentaRepository cuentaRepository;
     private final CuentaEntityMapper entityMapper;
     private final PedidoRepository pedidoRepository;
     private final IMesaService mesaService;
-
-    public CuentaServiceImpl(CuentaRepository cuentaRepository, CuentaEntityMapper entityMapper, PedidoRepository pedidoRepository, IMesaService mesaService) {
-        this.cuentaRepository = cuentaRepository;
-        this.entityMapper = entityMapper;
-        this.pedidoRepository = pedidoRepository;
-        this.mesaService = mesaService;
-    }
 
     @Override
     public List<Cuenta> obtenerTodas() {
@@ -41,10 +36,11 @@ public class CuentaServiceImpl implements ICuentaService {
 
     @Override
     public Cuenta obtenerPorId(Long id) {
+        log.debug("Buscando con id={}", id);
         return cuentaRepository.findById(id)
                 .map(entityMapper::toDomain)
                 .orElseThrow(() -> {
-                    log.warn("Cuenta no encontrada: id={}", id);
+                    log.error("Cuenta con id={} no encontrad@ (o error de flujo)", id);
                     return new RecursoNoEncontradoException("Cuenta", id);
                 });
     }
@@ -90,6 +86,14 @@ public class CuentaServiceImpl implements ICuentaService {
             throw new ReglaDeNegocioException("La cuenta ya se encuentra pagada.");
         }
         
+        List<PedidoEntity> pedidos = pedidoRepository.findByIdMesa(cuenta.getIdMesa());
+        boolean hayPedidosPendientes = pedidos.stream()
+                .anyMatch(p -> p.getEstado() != EstadoPedido.ENTREGADO && p.getEstado() != EstadoPedido.CANCELADO);
+        
+        if (hayPedidosPendientes) {
+            throw new ReglaDeNegocioException("No se puede pagar la cuenta. Hay pedidos aún en preparación o sin entregar.");
+        }
+        
         actualizarTotal(id);
         cuenta = obtenerPorId(id); // recargar
         
@@ -106,3 +110,4 @@ public class CuentaServiceImpl implements ICuentaService {
         return actualizarTotal(idCuenta);
     }
 }
+

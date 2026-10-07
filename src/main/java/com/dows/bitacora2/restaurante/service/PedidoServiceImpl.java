@@ -14,30 +14,22 @@ import com.dows.bitacora2.restaurante.persistence.entity.PedidoEntity;
 import com.dows.bitacora2.restaurante.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
 
 import java.util.List;
 
 @Service
+@lombok.extern.slf4j.Slf4j
+@lombok.RequiredArgsConstructor
 public class PedidoServiceImpl implements IPedidoService {
-    private static final Logger log = LoggerFactory.getLogger(PedidoServiceImpl.class);
+    
 
     private final PedidoRepository pedidoRepository;
     private final PedidoEntityMapper entityMapper;
     private final IPlatoService platoService;
     private final IMesaService mesaService;
     private final com.dows.bitacora2.restaurante.repository.EventoPedidoMongoRepository eventoMongoRepo;
-
-    public PedidoServiceImpl(PedidoRepository pedidoRepository, PedidoEntityMapper entityMapper, 
-                             IPlatoService platoService, IMesaService mesaService,
-                             com.dows.bitacora2.restaurante.repository.EventoPedidoMongoRepository eventoMongoRepo) {
-        this.pedidoRepository = pedidoRepository;
-        this.entityMapper = entityMapper;
-        this.platoService = platoService;
-        this.mesaService = mesaService;
-        this.eventoMongoRepo = eventoMongoRepo;
-    }
 
     @Override
     public List<Pedido> obtenerTodos() {
@@ -47,10 +39,11 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public Pedido obtenerPorId(Long id) {
+        log.debug("Buscando con id={}", id);
         return pedidoRepository.findById(id)
                 .map(entityMapper::toDomain)
                 .orElseThrow(() -> {
-                    log.warn("Pedido no encontrado: id={}", id);
+                    log.error("Pedido con id={} no encontrad@ (o error de flujo)", id);
                     return new RecursoNoEncontradoException("Pedido", id);
                 });
     }
@@ -116,7 +109,7 @@ public class PedidoServiceImpl implements IPedidoService {
 
             return entityMapper.toDomain(entity);
         } catch (IllegalArgumentException e) {
-            throw new EstadoInvalidoException("Estado de pedido inválido: " + estadoStr);
+            throw new EstadoInvalidoException("Estado de pedido invÃƒÂ¡lido: " + estadoStr);
         }
     }
 
@@ -125,7 +118,7 @@ public class PedidoServiceImpl implements IPedidoService {
     public void eliminar(Long id) {
         Pedido pedido = obtenerPorId(id);
         if (!pedido.puedeModificarse()) {
-            throw new ReglaDeNegocioException("El pedido no se puede eliminar porque ya está en preparación o listo.");
+            throw new ReglaDeNegocioException("El pedido no se puede eliminar porque ya estÃƒÂ¡ en preparaciÃƒÂ³n o listo.");
         }
         String estadoAnterior = pedido.getEstado().name();
         pedido.setEstado(EstadoPedido.CANCELADO);
@@ -144,7 +137,7 @@ public class PedidoServiceImpl implements IPedidoService {
             Plato plato = platoService.obtenerPorId(item.getIdPlato());
             
             if (!plato.estaDisponible()) {
-                throw new ReglaDeNegocioException("El plato " + plato.getNombre() + " no está disponible.");
+                throw new ReglaDeNegocioException("El plato " + plato.getNombre() + " no estÃƒÂ¡ disponible.");
             }
 
             item.setNombrePlato(plato.getNombre());
@@ -162,9 +155,30 @@ public class PedidoServiceImpl implements IPedidoService {
 
             if (esPizza) {
                 if (item.getToppings() != null && item.getToppings().size() > 5) {
-                    throw new ToppingsExcedidosException("RN-02: Una pizza no puede llevar más de 5 toppings.");
+                    throw new ToppingsExcedidosException("RN-02: Una pizza no puede llevar mÃƒÂ¡s de 5 toppings.");
                 }
             }
         }
+    }
+
+    @Override
+    public com.dows.bitacora2.restaurante.model.dto.response.ResumenDiaDTO resumenDelDia() {
+        java.util.List<com.dows.bitacora2.restaurante.persistence.entity.PedidoEntity> pedidos = pedidoRepository.findAll();
+
+        long totalPedidos = pedidos.stream().count();
+
+        double ingresoTotal = pedidos.stream()
+                .flatMap(p -> p.getItems().stream())
+                .mapToDouble(item -> item.getPrecioCongelado() * item.getCantidad())
+                .sum();
+
+        java.util.Map<String, Long> platosMasPedidos = pedidos.stream()
+                .flatMap(p -> p.getItems().stream())
+                .collect(java.util.stream.Collectors.groupingBy(
+                        item -> item.getNombrePlato(),
+                        java.util.stream.Collectors.counting()
+                ));
+
+        return new com.dows.bitacora2.restaurante.model.dto.response.ResumenDiaDTO(totalPedidos, ingresoTotal, platosMasPedidos);
     }
 }

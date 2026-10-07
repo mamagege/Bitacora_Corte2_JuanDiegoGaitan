@@ -23,7 +23,7 @@ public interface PedidoMapper {
     @Mapping(target = "precioCongelado", ignore = true)
     ItemPedido toDomain(ItemPedidoRequestDTO dto);
 
-    @Mapping(target = "totalPedido", expression = "java(calcularTotalPedido(pedido))")
+    @Mapping(target = "total", expression = "java(calcularTotalPedido(pedido))")
     PedidoResponseDTO toResponse(Pedido pedido);
 
     List<PedidoResponseDTO> toResponseList(List<Pedido> pedidos);

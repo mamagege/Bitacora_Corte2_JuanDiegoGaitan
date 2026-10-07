@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-07T02:20:42-0500",
+    date = "2026-10-07T17:30:31-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.12.1 (Eclipse Adoptium)"
 )
 @Component
@@ -24,7 +24,7 @@ public class CuentaMapperImpl implements CuentaMapper {
 
         Cuenta cuenta = new Cuenta();
 
-        cuenta.setIdMesa( dto.getIdMesa() );
+        cuenta.setIdMesa( dto.idMesa() );
 
         cuenta.setTotal( (double) 0.0 );
         cuenta.setEstado( com.dows.bitacora2.restaurante.model.domain.EstadoCuenta.ABIERTA );
@@ -39,15 +39,19 @@ public class CuentaMapperImpl implements CuentaMapper {
             return null;
         }
 
-        CuentaResponseDTO cuentaResponseDTO = new CuentaResponseDTO();
+        Long id = null;
+        Long idMesa = null;
+        Double total = null;
+        String estado = null;
 
-        cuentaResponseDTO.setId( cuenta.getId() );
-        cuentaResponseDTO.setIdMesa( cuenta.getIdMesa() );
-        cuentaResponseDTO.setTotal( cuenta.getTotal() );
+        id = cuenta.getId();
+        idMesa = cuenta.getIdMesa();
+        total = cuenta.getTotal();
         if ( cuenta.getEstado() != null ) {
-            cuentaResponseDTO.setEstado( cuenta.getEstado().name() );
+            estado = cuenta.getEstado().name();
         }
-        cuentaResponseDTO.setFechaApertura( cuenta.getFechaApertura() );
+
+        CuentaResponseDTO cuentaResponseDTO = new CuentaResponseDTO( id, idMesa, total, estado );
 
         return cuentaResponseDTO;
     }

@@ -15,15 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cuentas")
+@lombok.RequiredArgsConstructor
 public class CuentaController implements CuentaApi {
 
     private final ICuentaService cuentaService;
     private final CuentaMapper cuentaMapper;
-
-    public CuentaController(ICuentaService cuentaService, CuentaMapper cuentaMapper) {
-        this.cuentaService = cuentaService;
-        this.cuentaMapper = cuentaMapper;
-    }
 
     @Override
     @GetMapping
@@ -48,14 +44,14 @@ public class CuentaController implements CuentaApi {
     }
 
     @Override
-    @PatchMapping("/{id}/actualizar-total")
+    @PatchMapping("/{id}/total")
     public ResponseEntity<CuentaResponseDTO> actualizarTotal(@PathVariable Long id) {
         Cuenta actualizada = cuentaService.actualizarTotal(id);
         return ResponseEntity.ok(cuentaMapper.toResponse(actualizada));
     }
 
     @Override
-    @PatchMapping("/{id}/pagar")
+    @PatchMapping("/{id}/pago")
     public ResponseEntity<CuentaResponseDTO> pagar(@PathVariable Long id) {
         Cuenta pagada = cuentaService.pagar(id);
         return ResponseEntity.ok(cuentaMapper.toResponse(pagada));

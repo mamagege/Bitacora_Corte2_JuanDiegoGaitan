@@ -1,18 +1,26 @@
 package com.dows.bitacora2.restaurante.validator;
 
 import com.dows.bitacora2.restaurante.exception.ConflictoException;
-import com.dows.bitacora2.restaurante.model.domain.Plato;
+import com.dows.bitacora2.restaurante.repository.PlatoRepository;
 import org.springframework.stereotype.Component;
-import java.util.Collection;
 
 @Component
+@lombok.RequiredArgsConstructor
 public class PlatoValidator implements IPlatoValidator {
+
+    private final PlatoRepository platoRepository;
+
     @Override
-    public void validarNombreUnico(String nombre, Collection<Plato> platosExistentes) {
-        boolean existe = platosExistentes.stream()
-                .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre.strip()));
-        if (existe) {
-            throw new ConflictoException("Ya existe un plato con el nombre: " + nombre);
+    public void validarNombreUnico(String nombre) {
+        if (platoRepository.existsByNombreIgnoreCase(nombre)) {
+            throw new ConflictoException("Ya existe un plato con el nombre '" + nombre + "'");
+        }
+    }
+
+    @Override
+    public void validarNombreUnicoExcluyendo(String nombre, Long id) {
+        if (platoRepository.existsByNombreIgnoreCaseAndIdNot(nombre, id)) {
+            throw new ConflictoException("Ya existe otro plato con el nombre '" + nombre + "'");
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.dows.bitacora2.restaurante.service;
 
 import com.dows.bitacora2.restaurante.exception.RecursoNoEncontradoException;
+import com.dows.bitacora2.restaurante.exception.ConflictoException;
 import com.dows.bitacora2.restaurante.mapper.PlatoEntityMapper;
 import com.dows.bitacora2.restaurante.model.domain.Plato;
 import com.dows.bitacora2.restaurante.persistence.entity.PlatoEntity;
@@ -10,22 +11,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
 
 @Service
+@lombok.extern.slf4j.Slf4j
+@lombok.RequiredArgsConstructor
 public class PlatoServiceImpl implements IPlatoService {
-    private static final Logger log = LoggerFactory.getLogger(PlatoServiceImpl.class);
+    
 
     private final PlatoRepository platoRepository;
     private final PlatoEntityMapper entityMapper;
     private final IPlatoValidator validator;
-
-    public PlatoServiceImpl(PlatoRepository platoRepository, PlatoEntityMapper entityMapper, IPlatoValidator validator) {
-        this.platoRepository = platoRepository;
-        this.entityMapper = entityMapper;
-        this.validator = validator;
-    }
 
     @Override
     public List<Plato> obtenerTodos() {
@@ -46,10 +43,11 @@ public class PlatoServiceImpl implements IPlatoService {
 
     @Override
     public Plato obtenerPorId(Long id) {
+        log.debug("Buscando plato con id={}", id);
         return platoRepository.findById(id)
                 .map(entityMapper::toDomain)
                 .orElseThrow(() -> {
-                    log.warn("Plato no encontrado: id={}", id);
+                    log.error("Plato con id={} no encontrado", id);
                     return new RecursoNoEncontradoException("Plato", id);
                 });
     }
@@ -57,11 +55,10 @@ public class PlatoServiceImpl implements IPlatoService {
     @Override
     @Transactional
     public Plato crear(Plato plato) {
-        if (platoRepository.existsByNombreIgnoreCase(plato.getNombre())) {
-            throw new RuntimeException("El nombre del plato ya existe");
-        }
+        log.info("Creando plato con nombre '{}'", plato.getNombre());
+        validator.validarNombreUnico(plato.getNombre());
         PlatoEntity guardado = platoRepository.save(entityMapper.toEntity(plato));
-        log.info("Plato creado: id={}, nombre={}", guardado.getId(), guardado.getNombre());
+        log.info("Plato '{}' creado con id={}", guardado.getNombre(), guardado.getId());
         return entityMapper.toDomain(guardado);
     }
 
@@ -70,9 +67,7 @@ public class PlatoServiceImpl implements IPlatoService {
     public Plato actualizar(Long id, Plato nuevosDatos) {
         PlatoEntity existente = platoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Plato", id));
-        if (platoRepository.existsByNombreIgnoreCaseAndIdNot(nuevosDatos.getNombre(), id)) {
-            throw new RuntimeException("El nombre del plato ya existe");
-        }
+        validator.validarNombreUnicoExcluyendo(nuevosDatos.getNombre(), id);
         existente.setNombre(nuevosDatos.getNombre());
         existente.setPrecio(nuevosDatos.getPrecio());
         existente.setCategoria(nuevosDatos.getCategoria());
@@ -87,7 +82,7 @@ public class PlatoServiceImpl implements IPlatoService {
         PlatoEntity plato = platoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Plato", id));
         plato.setDisponible(disponible);
-        log.info("Plato id={} → disponible={}", id, disponible);
+        log.info("Plato id={} â†’ disponible={}", id, disponible);
         return entityMapper.toDomain(platoRepository.save(plato));
     }
 
@@ -101,3 +96,5 @@ public class PlatoServiceImpl implements IPlatoService {
         log.info("Plato eliminado: id={}", id);
     }
 }
+
+

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-07T02:20:42-0500",
+    date = "2026-10-07T17:30:31-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.12.1 (Eclipse Adoptium)"
 )
 @Component
@@ -27,8 +27,8 @@ public class PedidoMapperImpl implements PedidoMapper {
 
         Pedido pedido = new Pedido();
 
-        pedido.setIdMesa( dto.getIdMesa() );
-        pedido.setItems( itemPedidoRequestDTOListToItemPedidoList( dto.getItems() ) );
+        pedido.setIdMesa( dto.idMesa() );
+        pedido.setItems( itemPedidoRequestDTOListToItemPedidoList( dto.items() ) );
 
         pedido.setEstado( com.dows.bitacora2.restaurante.model.domain.EstadoPedido.RECIBIDO );
         pedido.setTimestamp( java.time.LocalDateTime.now() );
@@ -44,14 +44,8 @@ public class PedidoMapperImpl implements PedidoMapper {
 
         ItemPedido itemPedido = new ItemPedido();
 
-        itemPedido.setIdPlato( dto.getIdPlato() );
-        itemPedido.setCantidad( dto.getCantidad() );
-        itemPedido.setMasa( dto.getMasa() );
-        itemPedido.setSalsa( dto.getSalsa() );
-        List<String> list = dto.getToppings();
-        if ( list != null ) {
-            itemPedido.setToppings( new ArrayList<String>( list ) );
-        }
+        itemPedido.setIdPlato( dto.idPlato() );
+        itemPedido.setCantidad( dto.cantidad() );
 
         return itemPedido;
     }
@@ -62,17 +56,21 @@ public class PedidoMapperImpl implements PedidoMapper {
             return null;
         }
 
-        PedidoResponseDTO pedidoResponseDTO = new PedidoResponseDTO();
+        Long id = null;
+        Long idMesa = null;
+        String estado = null;
+        List<ItemPedidoResponseDTO> items = null;
 
-        pedidoResponseDTO.setId( pedido.getId() );
-        pedidoResponseDTO.setIdMesa( pedido.getIdMesa() );
-        pedidoResponseDTO.setItems( itemPedidoListToItemPedidoResponseDTOList( pedido.getItems() ) );
+        id = pedido.getId();
+        idMesa = pedido.getIdMesa();
         if ( pedido.getEstado() != null ) {
-            pedidoResponseDTO.setEstado( pedido.getEstado().name() );
+            estado = pedido.getEstado().name();
         }
-        pedidoResponseDTO.setTimestamp( pedido.getTimestamp() );
+        items = itemPedidoListToItemPedidoResponseDTOList( pedido.getItems() );
 
-        pedidoResponseDTO.setTotalPedido( calcularTotalPedido(pedido) );
+        Double total = calcularTotalPedido(pedido);
+
+        PedidoResponseDTO pedidoResponseDTO = new PedidoResponseDTO( id, idMesa, estado, total, items );
 
         return pedidoResponseDTO;
     }
@@ -97,20 +95,18 @@ public class PedidoMapperImpl implements PedidoMapper {
             return null;
         }
 
-        ItemPedidoResponseDTO itemPedidoResponseDTO = new ItemPedidoResponseDTO();
+        Long idPlato = null;
+        String nombrePlato = null;
+        Integer cantidad = null;
 
-        itemPedidoResponseDTO.setIdPlato( item.getIdPlato() );
-        itemPedidoResponseDTO.setNombrePlato( item.getNombrePlato() );
-        itemPedidoResponseDTO.setPrecioCongelado( item.getPrecioCongelado() );
-        itemPedidoResponseDTO.setCantidad( item.getCantidad() );
-        itemPedidoResponseDTO.setMasa( item.getMasa() );
-        itemPedidoResponseDTO.setSalsa( item.getSalsa() );
-        List<String> list = item.getToppings();
-        if ( list != null ) {
-            itemPedidoResponseDTO.setToppings( new ArrayList<String>( list ) );
-        }
+        idPlato = item.getIdPlato();
+        nombrePlato = item.getNombrePlato();
+        cantidad = item.getCantidad();
 
-        itemPedidoResponseDTO.setSubtotal( item.subtotal() );
+        Double subtotal = item.subtotal();
+        String notas = null;
+
+        ItemPedidoResponseDTO itemPedidoResponseDTO = new ItemPedidoResponseDTO( idPlato, nombrePlato, cantidad, subtotal, notas );
 
         return itemPedidoResponseDTO;
     }

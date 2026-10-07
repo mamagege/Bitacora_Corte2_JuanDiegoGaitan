@@ -82,4 +82,40 @@ class PlatoServiceImplTest {
         assertNotNull(result);
         verify(platoRepository).save(entity);
     }
+
+    @Test
+    void crear_nombreDuplicado_debeLanzarExcepcion() {
+        when(platoRepository.existsByNombreIgnoreCase("Pasta")).thenReturn(true);
+
+        com.dows.bitacora2.restaurante.exception.ConflictoException ex = assertThrows(
+            com.dows.bitacora2.restaurante.exception.ConflictoException.class,
+            () -> platoService.crear(plato)
+        );
+
+        assertTrue(ex.getMessage().contains("Ya existe"));
+        verify(platoRepository, never()).save(any());
+    }
+
+    @Test
+    void buscarPorId_idInexistente_debeLanzarExcepcion() {
+        when(platoRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(
+            RecursoNoEncontradoException.class,
+            () -> platoService.obtenerPorId(999L)
+        );
+
+        verifyNoInteractions(entityMapper);
+    }
+
+    @Test
+    void obtenerTodos_listaVacia_devuelveListaVacia() {
+        when(platoRepository.findAll()).thenReturn(java.util.Collections.emptyList());
+        when(entityMapper.toDomainList(java.util.Collections.emptyList())).thenReturn(java.util.Collections.emptyList());
+
+        java.util.List<Plato> resultado = platoService.obtenerTodos();
+
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+    }
 }

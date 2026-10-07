@@ -10,22 +10,19 @@ import com.dows.bitacora2.restaurante.persistence.entity.MesaEntity;
 import com.dows.bitacora2.restaurante.repository.MesaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
 
 import java.util.List;
 
 @Service
+@lombok.extern.slf4j.Slf4j
+@lombok.RequiredArgsConstructor
 public class MesaServiceImpl implements IMesaService {
-    private static final Logger log = LoggerFactory.getLogger(MesaServiceImpl.class);
+    
 
     private final MesaRepository mesaRepository;
     private final MesaEntityMapper entityMapper;
-
-    public MesaServiceImpl(MesaRepository mesaRepository, MesaEntityMapper entityMapper) {
-        this.mesaRepository = mesaRepository;
-        this.entityMapper = entityMapper;
-    }
 
     @Override
     public List<Mesa> obtenerTodas() {
@@ -43,10 +40,11 @@ public class MesaServiceImpl implements IMesaService {
 
     @Override
     public Mesa obtenerPorId(Long id) {
+        log.debug("Buscando con id={}", id);
         return mesaRepository.findById(id)
                 .map(entityMapper::toDomain)
                 .orElseThrow(() -> {
-                    log.warn("Mesa no encontrada: id={}", id);
+                    log.error("Mesa con id={} no encontrad@ (o error de flujo)", id);
                     return new RecursoNoEncontradoException("Mesa", id);
                 });
     }
@@ -127,3 +125,4 @@ public class MesaServiceImpl implements IMesaService {
         return entityMapper.toDomain(mesaRepository.save(mesa));
     }
 }
+

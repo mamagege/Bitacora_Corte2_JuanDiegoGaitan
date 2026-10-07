@@ -6,6 +6,7 @@ import com.dows.bitacora2.restaurante.model.domain.Cuenta;
 import com.dows.bitacora2.restaurante.model.domain.EstadoCuenta;
 import com.dows.bitacora2.restaurante.model.domain.Mesa;
 import com.dows.bitacora2.restaurante.persistence.entity.CuentaEntity;
+import com.dows.bitacora2.restaurante.persistence.entity.PedidoEntity;
 import com.dows.bitacora2.restaurante.repository.CuentaRepository;
 import com.dows.bitacora2.restaurante.repository.PedidoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,9 +75,10 @@ class CuentaServiceImplTest {
     }
 
     @Test
-    void pagar_CuentaAbierta_DebePagarYLiberarMesa() {
+    void pagar_CuentaAbiertaYPedidosEntregados_DebePagarYLiberarMesa() {
         when(cuentaRepository.findById(1L)).thenReturn(Optional.of(cuentaEntity));
         when(entityMapper.toDomain(cuentaEntity)).thenReturn(cuenta);
+        when(pedidoRepository.findByIdMesa(2L)).thenReturn(java.util.Collections.emptyList());
         when(entityMapper.toEntity(cuenta)).thenReturn(cuentaEntity);
         when(cuentaRepository.save(cuentaEntity)).thenReturn(cuentaEntity);
 
@@ -97,5 +99,22 @@ class CuentaServiceImplTest {
         });
 
         assertTrue(exception.getMessage().contains("pagada"));
+    }
+
+    @Test
+    void pagar_CuentaConPedidosPendientes_DebeLanzarExcepcion() {
+        when(cuentaRepository.findById(1L)).thenReturn(Optional.of(cuentaEntity));
+        when(entityMapper.toDomain(cuentaEntity)).thenReturn(cuenta);
+        
+        PedidoEntity pedidoPendiente = new PedidoEntity();
+        pedidoPendiente.setEstado(com.dows.bitacora2.restaurante.model.domain.EstadoPedido.EN_PREPARACION);
+        when(pedidoRepository.findByIdMesa(2L)).thenReturn(java.util.Collections.singletonList(pedidoPendiente));
+
+        ReglaDeNegocioException exception = assertThrows(ReglaDeNegocioException.class, () -> {
+            cuentaService.pagar(1L);
+        });
+
+        assertTrue(exception.getMessage().contains("preparación"));
+        verify(mesaService, never()).cerrarCuenta(any());
     }
 }

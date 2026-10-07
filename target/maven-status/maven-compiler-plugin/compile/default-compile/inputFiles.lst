@@ -17,6 +17,7 @@ C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_C
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\request\MesaRequestDTO.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\request\PedidoRequestDTO.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\response\CuentaResponseDTO.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\service\IAuthService.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\response\MesaResponseDTO.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\repository\CuentaRepository.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\docs\CuentaApi.java
@@ -24,9 +25,12 @@ C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_C
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\persistence\document\EventoPedidoDocument.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\service\CuentaServiceImpl.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\domain\Mesa.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\MenuController.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\mapper\MesaEntityMapper.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\domain\EventoRestaurante.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\docs\PlatoApi.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\response\ItemPedidoResponseDTO.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\mapper\EventoMapper.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\mapper\MesaMapper.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\exception\ToppingsExcedidosException.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\security\UsuarioDetailsService.java
@@ -36,6 +40,7 @@ C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_C
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\exception\ReglaDeNegocioException.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\response\PlatoResponseDTO.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\request\PlatoRequestDTO.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\service\AuthServiceImpl.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\validator\IPlatoValidator.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\domain\ItemPedido.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\MesaController.java
@@ -44,10 +49,12 @@ C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_C
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\service\IPedidoService.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\exception\TransicionEstadoInvalidaException.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\response\ErrorResponseDTO.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\persistence\document\EventoRestauranteDocument.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\repository\MesaRepository.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\docs\MesaApi.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\GlobalExceptionHandler.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\service\ICuentaService.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\repository\EventoRestauranteRepository.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\mapper\PedidoEntityMapper.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\domain\Cuenta.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\CuentaController.java
@@ -60,13 +67,17 @@ C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_C
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\AuthController.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\config\SecurityConfig.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\exception\PlatoNotFoundException.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\controller\docs\MenuApi.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\mapper\PedidoMapper.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\service\MesaServiceImpl.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\exception\BloqueoTemporalException.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\validator\PlatoValidator.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\exception\EstadoInvalidoException.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\mapper\PlatoMapper.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\mapper\CuentaEntityMapper.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\util\TextoUtils.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\repository\UsuarioRepository.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\util\CalculoUtils.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\auth\LoginRequestDTO.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\domain\EstadoPedido.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\persistence\entity\MesaEntity.java
@@ -74,6 +85,7 @@ C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_C
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\RestauranteApplication.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\exception\PlatoAlreadyExistsException.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\repository\PlatoRepository.java
+C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\response\ResumenDiaDTO.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\config\DataSeeder.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\service\PlatoService.java
 C:\Users\USUARIO\Desktop\Universidad\DOWS\CORTE02\ProyectoRestaurante\Bitacora_Corte2_JuanDiegoGaitan\src\main\java\com\dows\bitacora2\restaurante\model\dto\auth\TokenResponseDTO.java

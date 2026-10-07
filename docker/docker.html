@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Guía Turtwig S10 — Dockerización</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+  :root{--azul:#1a237e;--azul-med:#3949ab;--azul-cl:#7986cb;--azul-fondo:#f3f4fd;--amarillo:#ffd600;--gris-osc:#1c1f26;--gris-med:#4a5568;--blanco:#fff;--verde:#2e7d32;--rojo:#c62828;--code-bg:#0f172a;--code-txt:#7dd3fc;--tip:#7c4dff;--warn:#f4a435;--teal:#00695c;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--azul-fondo);color:var(--gris-osc);line-height:1.7;font-size:16px}
+  .hero{background:linear-gradient(135deg,#004d40,#00695c 50%,#00796b);color:#fff;padding:64px 40px 56px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:rgba(255,255,255,.06);border-radius:50%}
+  .hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:1}
+  .dosw-badge{display:inline-flex;align-items:center;gap:8px;background:var(--amarillo);color:#004d40;font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.8px;margin-bottom:18px;text-transform:uppercase}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:700;line-height:1.2;margin-bottom:14px}
+  .hero h1 span{color:var(--amarillo)}
+  .hero-sub{font-size:1rem;color:rgba(255,255,255,.8);max-width:640px;font-weight:300;line-height:1.7}
+  .hero-chips{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:600;padding:5px 13px;border-radius:16px;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.9);font-family:'JetBrains Mono',monospace}
+  .nav-toc{background:var(--blanco);border-bottom:2px solid #b2dfdb;padding:0 40px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,77,64,.08)}
+  .nav-toc ul{max-width:920px;margin:0 auto;display:flex;gap:0;list-style:none;overflow-x:auto}
+  .nav-toc ul li a{display:block;padding:13px 12px;font-size:11px;font-weight:700;color:var(--gris-med);text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;text-transform:uppercase;letter-spacing:.4px}
+  .nav-toc ul li a:hover{color:var(--teal);border-bottom-color:var(--teal)}
+  .content{max-width:920px;margin:0 auto;padding:52px 40px 80px}
+  .section{margin-bottom:72px;scroll-margin-top:60px}
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid #b2dfdb}
+  .section-icon{width:46px;height:46px;background:var(--teal);color:#fff;font-size:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .section-title{font-size:1.4rem;font-weight:700}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--teal);letter-spacing:1.2px;display:block;text-transform:uppercase}
+  .card{background:var(--blanco);border-radius:12px;padding:22px 26px;margin-bottom:14px;border-left:4px solid var(--teal);box-shadow:0 2px 8px rgba(0,77,64,.07)}
+  .card h3{font-size:.95rem;font-weight:700;color:var(--teal);margin-bottom:7px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+  @media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}}
+  .callout{border-radius:10px;padding:16px 20px;margin:18px 0;display:flex;gap:12px;font-size:.9rem}
+  .callout-icon{font-size:19px;flex-shrink:0;line-height:1.5}
+  .callout.tip{background:#f3eeff;border-left:4px solid var(--tip)}
+  .callout.warn{background:#fff8ec;border-left:4px solid var(--warn)}
+  .callout.info{background:#e0f2f1;border-left:4px solid var(--teal)}
+  .callout.key{background:#e8f5e9;border-left:4px solid var(--verde)}
+  .callout.danger{background:#ffebee;border-left:4px solid var(--rojo)}
+  .callout strong{display:block;font-weight:700;margin-bottom:3px}
+  .tabla-wrap{overflow-x:auto;margin:16px 0;border-radius:10px;box-shadow:0 2px 8px rgba(0,77,64,.08)}
+  table{width:100%;border-collapse:collapse;background:var(--blanco)}
+  th{background:var(--teal);color:#fff;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;text-align:left}
+  td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid #e0f2f1;color:var(--gris-osc)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#f5fffe}
+  .steps{counter-reset:step;list-style:none;margin:16px 0}
+  .steps li{counter-increment:step;display:flex;gap:14px;margin-bottom:18px;align-items:flex-start}
+  .steps li::before{content:counter(step);min-width:30px;height:30px;background:var(--teal);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px}
+  .step-title{font-weight:700;font-size:.95rem;margin-bottom:3px;color:#004d40}
+  .step-desc{font-size:.88rem;color:var(--gris-med)}
+  .checklist{list-style:none;margin:14px 0}
+  .checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.91rem;border-bottom:1px solid #e0f2f1}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li::before{content:'☐';color:var(--teal);font-size:1.1rem;flex-shrink:0;margin-top:1px}
+  pre{background:var(--code-bg);color:var(--code-txt);border-radius:10px;padding:18px 22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;overflow-x:auto;line-height:1.65;margin:14px 0}
+  code{font-family:'JetBrains Mono',monospace;background:rgba(0,105,92,.1);color:var(--teal);padding:2px 7px;border-radius:4px;font-size:.85em}
+  pre code{background:none;color:inherit;padding:0}
+  .diagram-wrap{background:var(--blanco);border-radius:12px;padding:26px;margin:20px 0;box-shadow:0 2px 12px rgba(0,77,64,.08);overflow-x:auto}
+  .diagram-label{font-size:11.5px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+  .cmd-box{background:#1a1a2e;border-radius:10px;padding:16px 20px;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.8}
+  .cmd-box .prompt{color:#00e676}
+  .cmd-box .cmd{color:#fff}
+  .cmd-box .comment{color:#546e7a}
+  .readme-box{background:var(--teal);color:#fff;border-radius:12px;padding:24px 28px;margin:16px 0}
+  .readme-box h4{color:var(--amarillo);font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px}
+  .readme-box ul{list-style:none;font-size:.88rem}
+  .readme-box ul li{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+  .readme-box ul li:last-child{border-bottom:none}
+  .readme-box ul li::before{content:'📎 '}
+  .fase-box{background:var(--blanco);border-radius:14px;padding:24px 28px;margin-bottom:20px;border-top:4px solid var(--teal);box-shadow:0 2px 10px rgba(0,77,64,.08)}
+  .fase-box h3{font-size:1rem;font-weight:700;color:#004d40;margin-bottom:14px}
+  .sep{height:1px;background:linear-gradient(90deg,#b2dfdb,transparent);margin:56px 0}
+  footer{background:#004d40;color:rgba(255,255,255,.6);text-align:center;padding:28px;font-size:13px}
+  footer span{color:var(--amarillo)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="dosw-badge">🐳 Semana 10 · DOSW · ECI</div>
+    <h1>Guía Turtwig S10 —<br><span>Dockerización</span></h1>
+    <p class="hero-sub">Su API ya corre en localhost. Docker la empaqueta en una imagen portátil que corre igual en cualquier máquina — la de un compañero, un servidor en la nube o un pipeline de CI/CD. Sin "en mi máquina sí funciona".</p>
+    <div class="hero-chips">
+      <span class="chip">🐳 Docker básico</span>
+      <span class="chip">📦 Dockerfile</span>
+      <span class="chip">🗄️ PostgreSQL / MongoDB</span>
+      <span class="chip">🔧 docker-compose</span>
+      <span class="chip">📋 Todos los comandos</span>
+      <span class="chip">☸️ Kubernetes intro</span>
+    </div>
+  </div>
+</div>
+
+<nav class="nav-toc">
+  <ul>
+    <li><a href="#conceptos">1 · Conceptos</a></li>
+    <li><a href="#dockerfile">2 · Dockerfile</a></li>
+    <li><a href="#bd">3 · BD en Docker</a></li>
+    <li><a href="#compose">4 · Compose</a></li>
+    <li><a href="#comandos">5 · Comandos</a></li>
+    <li><a href="#subir">6 · Subir imagen</a></li>
+    <li><a href="#k8s">7 · Kubernetes</a></li>
+    <li><a href="#verificar">8 · Verificar</a></li>
+    <li><a href="#readme">README</a></li>
+  </ul>
+</nav>
+
+<div class="content">
+
+<!-- PASO 1 — CONCEPTOS -->
+<section class="section" id="conceptos">
+  <div class="section-header">
+    <div class="section-icon">🐳</div>
+    <div>
+      <span class="section-num">Paso 1 — Fundamentos</span>
+      <div class="section-title">Imagen vs Contenedor — qué es Docker y por qué importa</div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card"><h3>📦 Imagen</h3><p>Plantilla inmutable con el código, el runtime y las dependencias. Es el "molde". Se construye con <code>docker build</code> y se puede compartir en Docker Hub.</p></div>
+    <div class="card"><h3>🏃 Contenedor</h3><p>Instancia en ejecución de una imagen. Es el "objeto" creado del molde. Pueden correr muchos contenedores del mismo molde simultáneamente.</p></div>
+    <div class="card"><h3>🗂️ Registry</h3><p>Repositorio de imágenes. Docker Hub es el público. Su empresa o Azure Container Registry son privados. Se usa con <code>docker pull</code> y <code>docker push</code>.</p></div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Flujo completo: código → imagen → contenedor en producción</div>
+    <div class="mermaid">
+flowchart LR
+    C["📁 Código fuente\n+ Dockerfile"]
+    B["🔨 docker build\n→ Imagen local"]
+    R["☁️ Docker Hub /\nAzure Container Registry"]
+    D["🚀 docker run\n→ Contenedor activo"]
+    DB["🗄️ PostgreSQL /\nMongoDB container"]
+    N["🌐 API accesible\nlocalhost:8080"]
+
+    C --> B --> R
+    B --> D
+    R --> D
+    D --> N
+    DB --> N
+
+    style B fill:#00695c,color:#fff
+    style D fill:#004d40,color:#fff
+    style R fill:#e0f2f1
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">🐳</span>
+    <div><strong>Instalar Docker Desktop antes de continuar.</strong> Descárguenlo de <a href="https://www.docker.com/products/docker-desktop" style="color:var(--teal)">docker.com/products/docker-desktop</a>. Verificar con: <code>docker --version</code> y <code>docker compose version</code>. Necesitan ver ambos comandos funcionando.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 2 — DOCKERFILE -->
+<section class="section" id="dockerfile">
+  <div class="section-header">
+    <div class="section-icon">📄</div>
+    <div>
+      <span class="section-num">Paso 2 — Empaquetar la API</span>
+      <div class="section-title">Dockerfile — la receta para construir su imagen</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">El Dockerfile describe paso a paso cómo construir la imagen de su aplicación. Usan un build multietapa: la primera etapa compila el código con Maven, la segunda solo copia el JAR resultante — la imagen final no incluye Maven ni el código fuente.</p>
+
+  <pre><code><span style="color:#546e7a"># ─── Etapa 1: Compilar con Maven ───────────────────────────────</span>
+FROM maven:3.9-eclipse-temurin-21 <span style="color:#89d3fe">AS</span> builder
+WORKDIR /app
+
+<span style="color:#546e7a"># Copiar pom.xml primero para cachear dependencias</span>
+COPY pom.xml .
+RUN mvn dependency:go-offline -q
+
+<span style="color:#546e7a"># Copiar código fuente y compilar</span>
+COPY src ./src
+RUN mvn clean package -DskipTests -q
+
+<span style="color:#546e7a"># ─── Etapa 2: Imagen final ligera ──────────────────────────────</span>
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+<span style="color:#546e7a"># Copiar solo el JAR de la etapa anterior</span>
+COPY --from=builder /app/target/*.jar app.jar
+
+<span style="color:#546e7a"># Variables de entorno con valores por defecto (se sobreescriben en Compose)</span>
+ENV SPRING_PROFILES_ACTIVE=docker
+ENV SERVER_PORT=8080
+
+EXPOSE 8080
+
+<span style="color:#546e7a"># Arrancar la aplicación</span>
+ENTRYPOINT ["java", "-jar", "app.jar"]</code></pre>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>El Dockerfile va en la raíz del proyecto</strong> — al mismo nivel que <code>pom.xml</code>. No dentro de <code>src/</code>.</div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:20px 0 12px;color:#004d40">.dockerignore — qué no empaquetar</h3>
+  <p style="font-size:.88rem;color:var(--gris-med);margin-bottom:10px">Creen un archivo <code>.dockerignore</code> en la raíz del proyecto para evitar copiar archivos innecesarios a la imagen:</p>
+
+  <pre><code>.git
+.gitignore
+.mvn
+target/
+*.md
+*.p12
+.env
+</code></pre>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:20px 0 12px;color:#004d40">application-docker.yml — configuración para el contenedor</h3>
+  <pre><code><span style="color:#546e7a"># src/main/resources/application-docker.yml</span>
+spring:
+  datasource:
+    url: jdbc:postgresql://<span style="color:#f0b27a">${DB_HOST:postgres}</span>:<span style="color:#f0b27a">${DB_PORT:5432}</span>/<span style="color:#f0b27a">${DB_NAME:restaurante}</span>
+    username: <span style="color:#f0b27a">${DB_USER:postgres}</span>
+    password: <span style="color:#f0b27a">${DB_PASSWORD:postgres}</span>
+  data:
+    mongodb:
+      uri: mongodb://<span style="color:#f0b27a">${MONGO_HOST:mongo}</span>:<span style="color:#f0b27a">${MONGO_PORT:27017}</span>/<span style="color:#f0b27a">${MONGO_DB:restaurante}</span>
+  jpa:
+    hibernate:
+      ddl-auto: update
+jwt:
+  secret: <span style="color:#f0b27a">${JWT_SECRET}</span>
+  expiration-ms: 3600000</code></pre>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>Las variables de entorno entre <code>${...}</code> con valor por defecto después de <code>:</code></strong> permiten que la app arranque localmente sin variables de entorno, pero las sobreescriban en Docker Compose y en producción.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 3 — BD EN DOCKER -->
+<section class="section" id="bd">
+  <div class="section-header">
+    <div class="section-icon">🗄️</div>
+    <div>
+      <span class="section-num">Paso 3 — Base de datos en contenedor</span>
+      <div class="section-title">PostgreSQL · MongoDB en Docker — sin instalar nada en la máquina</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">Usen la imagen oficial de su BD. Con Docker ya no necesitan instalar PostgreSQL o MongoDB localmente — el contenedor lo provee. Los datos persisten en un volumen Docker.</p>
+
+  <div class="fase-box">
+    <h3>🐘 PostgreSQL en Docker</h3>
+    <div class="cmd-box">
+      <div><span class="comment"># Correr PostgreSQL en un contenedor</span></div>
+      <div><span class="prompt">$ </span><span class="cmd">docker run -d \</span></div>
+      <div><span class="cmd">  --name postgres-restaurante \</span></div>
+      <div><span class="cmd">  -e POSTGRES_DB=restaurante \</span></div>
+      <div><span class="cmd">  -e POSTGRES_USER=postgres \</span></div>
+      <div><span class="cmd">  -e POSTGRES_PASSWORD=postgres \</span></div>
+      <div><span class="cmd">  -p 5432:5432 \</span></div>
+      <div><span class="cmd">  -v postgres-data:/var/lib/postgresql/data \</span></div>
+      <div><span class="cmd">  postgres:16-alpine</span></div>
+    </div>
+    <p style="font-size:.82rem;color:var(--gris-med);margin-top:8px">Verificar: <code>docker logs postgres-restaurante</code> → deben ver "database system is ready to accept connections"</p>
+  </div>
+
+  <div class="fase-box">
+    <h3>🍃 MongoDB en Docker</h3>
+    <div class="cmd-box">
+      <div><span class="comment"># Correr MongoDB en un contenedor</span></div>
+      <div><span class="prompt">$ </span><span class="cmd">docker run -d \</span></div>
+      <div><span class="cmd">  --name mongo-restaurante \</span></div>
+      <div><span class="cmd">  -e MONGO_INITDB_ROOT_USERNAME=admin \</span></div>
+      <div><span class="cmd">  -e MONGO_INITDB_ROOT_PASSWORD=admin \</span></div>
+      <div><span class="cmd">  -e MONGO_INITDB_DATABASE=restaurante \</span></div>
+      <div><span class="cmd">  -p 27017:27017 \</span></div>
+      <div><span class="cmd">  -v mongo-data:/data/db \</span></div>
+      <div><span class="cmd">  mongo:7</span></div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Los volúmenes (<code>-v nombre:/ruta</code>) son clave.</strong> Sin volumen, los datos desaparecen cuando el contenedor se elimina. El volumen persiste incluso si recrean el contenedor — los datos sobreviven.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 4 — DOCKER COMPOSE -->
+<section class="section" id="compose">
+  <div class="section-header">
+    <div class="section-icon">🔧</div>
+    <div>
+      <span class="section-num">Paso 4 — Orquestar todo junto</span>
+      <div class="section-title">docker-compose.yml — API + BD en un solo comando</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">Docker Compose define todos los servicios de su stack en un archivo YAML. Un solo comando levanta la API, PostgreSQL, MongoDB y cualquier dependencia — con las redes y volúmenes configurados automáticamente.</p>
+
+  <pre><code><span style="color:#546e7a"># docker-compose.yml — en la raíz del proyecto</span>
+version: <span style="color:#c3e88d">'3.9'</span>
+
+services:
+
+  <span style="color:#a8d5b5">api:</span>
+    build: .                        <span style="color:#546e7a"># construye desde el Dockerfile local</span>
+    container_name: restaurante-api
+    ports:
+      - <span style="color:#c3e88d">"8080:8080"</span>
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: restaurante
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_DB: restaurante
+      JWT_SECRET: <span style="color:#f0b27a">${JWT_SECRET}</span>   <span style="color:#546e7a"># viene del .env — no hardcodeado aquí</span>
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    networks:
+      - restaurante-net
+
+  <span style="color:#a8d5b5">postgres:</span>
+    image: postgres:16-alpine
+    container_name: restaurante-postgres
+    environment:
+      POSTGRES_DB: restaurante
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - <span style="color:#c3e88d">"5432:5432"</span>
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [<span style="color:#c3e88d">"CMD-SHELL"</span>, <span style="color:#c3e88d">"pg_isready -U postgres"</span>]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - restaurante-net
+
+  <span style="color:#a8d5b5">mongo:</span>
+    image: mongo:7
+    container_name: restaurante-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - <span style="color:#c3e88d">"27017:27017"</span>
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - restaurante-net
+
+volumes:
+  postgres-data:
+  mongo-data:
+
+networks:
+  restaurante-net:
+    driver: bridge</code></pre>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:20px 0 12px;color:#004d40">Archivo .env — secrets fuera del repositorio</h3>
+  <pre><code><span style="color:#546e7a"># .env — en la raíz del proyecto. AGREGAR A .gitignore</span>
+JWT_SECRET=TXkgc3VwZXIgc2VjcmV0IGtleSBwYXJhIGVsIHJlc3RhdXJhbnRl
+SSL_KEYSTORE_PASSWORD=miContraseña123</code></pre>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div><strong>El archivo <code>.env</code> NUNCA va en Git.</strong> Agréguenlo al <code>.gitignore</code> inmediatamente. Incluyan un archivo <code>.env.example</code> con los nombres de las variables (sin los valores) como guía para otros desarrolladores.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 5 — COMANDOS -->
+<section class="section" id="comandos">
+  <div class="section-header">
+    <div class="section-icon">⌨️</div>
+    <div>
+      <span class="section-num">Paso 5 — Todos los comandos Docker</span>
+      <div class="section-title">Referencia completa de comandos que usarán</div>
+    </div>
+  </div>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><code>docker build -t restaurante-api .</code></td><td>Construye la imagen con el tag <code>restaurante-api:latest</code></td></tr>
+        <tr><td><code>docker build -t restaurante-api:1.0 .</code></td><td>Construye con versión específica</td></tr>
+        <tr><td><code>docker images</code></td><td>Lista todas las imágenes locales</td></tr>
+        <tr><td><code>docker run -d -p 8080:8080 restaurante-api</code></td><td>Corre un contenedor en background</td></tr>
+        <tr><td><code>docker run -it restaurante-api sh</code></td><td>Corre en modo interactivo (para debug)</td></tr>
+        <tr><td><code>docker ps</code></td><td>Lista contenedores en ejecución</td></tr>
+        <tr><td><code>docker ps -a</code></td><td>Lista todos los contenedores (incluyendo detenidos)</td></tr>
+        <tr><td><code>docker logs restaurante-api</code></td><td>Ver logs del contenedor</td></tr>
+        <tr><td><code>docker logs -f restaurante-api</code></td><td>Seguir logs en tiempo real</td></tr>
+        <tr><td><code>docker exec -it restaurante-api sh</code></td><td>Abrir terminal dentro del contenedor</td></tr>
+        <tr><td><code>docker stop restaurante-api</code></td><td>Detiene el contenedor</td></tr>
+        <tr><td><code>docker rm restaurante-api</code></td><td>Elimina el contenedor (debe estar detenido)</td></tr>
+        <tr><td><code>docker rmi restaurante-api</code></td><td>Elimina la imagen</td></tr>
+        <tr><td><code>docker volume ls</code></td><td>Lista los volúmenes</td></tr>
+        <tr><td><code>docker network ls</code></td><td>Lista las redes</td></tr>
+        <tr><td><code>docker system prune</code></td><td>Limpia imágenes, contenedores y redes no usados</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:24px 0 12px;color:#004d40">Comandos Docker Compose</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><code>docker compose up</code></td><td>Levanta todos los servicios (en foreground)</td></tr>
+        <tr><td><code>docker compose up -d</code></td><td>Levanta en background (detached)</td></tr>
+        <tr><td><code>docker compose up --build</code></td><td>Reconstruye las imágenes antes de levantar</td></tr>
+        <tr><td><code>docker compose down</code></td><td>Detiene y elimina los contenedores</td></tr>
+        <tr><td><code>docker compose down -v</code></td><td>Detiene y elimina contenedores + volúmenes (¡borra datos!)</td></tr>
+        <tr><td><code>docker compose logs api</code></td><td>Ver logs de un servicio específico</td></tr>
+        <tr><td><code>docker compose logs -f</code></td><td>Seguir logs de todos los servicios</td></tr>
+        <tr><td><code>docker compose ps</code></td><td>Estado de los servicios del compose</td></tr>
+        <tr><td><code>docker compose restart api</code></td><td>Reiniciar un servicio específico</td></tr>
+        <tr><td><code>docker compose exec api sh</code></td><td>Terminal dentro de un servicio</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 6 — SUBIR IMAGEN -->
+<section class="section" id="subir">
+  <div class="section-header">
+    <div class="section-icon">☁️</div>
+    <div>
+      <span class="section-num">Paso 6 — Publicar la imagen</span>
+      <div class="section-title">Subir a Docker Hub — compartir su imagen con el mundo</div>
+    </div>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <div class="step-title">Crear cuenta en Docker Hub</div>
+        <div class="step-desc">Ir a <code>hub.docker.com</code> y crear cuenta gratuita. El nombre de usuario es su <em>namespace</em> — las imágenes se llaman <code>usuario/nombre-imagen:tag</code>.</div>
+      </div>
+    </li>
+    <li>
+      <div>
+        <div class="step-title">Iniciar sesión desde la terminal</div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="cmd-box">
+    <div><span class="prompt">$ </span><span class="cmd">docker login</span></div>
+    <div><span class="comment"># Ingresan usuario y contraseña de Docker Hub</span></div>
+    <div><span class="comment"># Login Succeeded</span></div>
+  </div>
+
+  <ol class="steps" style="counter-reset:step 2">
+    <li>
+      <div>
+        <div class="step-title">Construir con el nombre correcto para Docker Hub</div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="cmd-box">
+    <div><span class="comment"># Reemplazar "suusuario" con su nombre en Docker Hub</span></div>
+    <div><span class="prompt">$ </span><span class="cmd">docker build -t suusuario/restaurante-api:1.0 .</span></div>
+    <div><span class="prompt">$ </span><span class="cmd">docker build -t suusuario/restaurante-api:latest .</span></div>
+  </div>
+
+  <ol class="steps" style="counter-reset:step 3">
+    <li>
+      <div>
+        <div class="step-title">Subir (push) la imagen a Docker Hub</div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="cmd-box">
+    <div><span class="prompt">$ </span><span class="cmd">docker push suusuario/restaurante-api:1.0</span></div>
+    <div><span class="prompt">$ </span><span class="cmd">docker push suusuario/restaurante-api:latest</span></div>
+  </div>
+
+  <ol class="steps" style="counter-reset:step 4">
+    <li>
+      <div>
+        <div class="step-title">Verificar que está en Docker Hub</div>
+        <div class="step-desc">Entren a <code>hub.docker.com/r/suusuario/restaurante-api</code> — deben ver su imagen publicada. Prueben que funciona descargándola en otro directorio:</div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="cmd-box">
+    <div><span class="comment"># Eliminar la imagen local para probar el pull</span></div>
+    <div><span class="prompt">$ </span><span class="cmd">docker rmi suusuario/restaurante-api:1.0</span></div>
+    <div><span class="prompt">$ </span><span class="cmd">docker run -d -p 8080:8080 suusuario/restaurante-api:1.0</span></div>
+    <div><span class="comment"># Docker descarga automáticamente desde Hub y corre el contenedor</span></div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 7 — KUBERNETES -->
+<section class="section" id="k8s">
+  <div class="section-header">
+    <div class="section-icon">☸️</div>
+    <div>
+      <span class="section-num">Paso 7 — El siguiente nivel</span>
+      <div class="section-title">Kubernetes — orquestación de contenedores en producción</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">☸️</span>
+    <div><strong>Kubernetes (K8s) es para producción a escala.</strong> Mientras Docker Compose maneja múltiples servicios en una sola máquina, Kubernetes distribuye y orquesta contenedores a través de un clúster de máquinas, con autoescalado, auto-recuperación y despliegues sin downtime. Esta sección es una introducción — no necesitan implementarlo en su proyecto del curso, pero sí entender la arquitectura.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card"><h3>🏗️ Pod</h3><p>La unidad mínima en K8s. Un Pod contiene uno o más contenedores que comparten red y almacenamiento. En la mayoría de casos, un Pod = un contenedor.</p></div>
+    <div class="card"><h3>📦 Deployment</h3><p>Define cuántas réplicas (Pods) de su app deben correr. K8s las mantiene activas — si un Pod falla, lo recrea automáticamente.</p></div>
+    <div class="card"><h3>🌐 Service</h3><p>Expone un Deployment con una IP estable. Los Pods pueden ser eliminados y recreados con nuevas IPs, pero el Service siempre apunta a los Pods activos.</p></div>
+    <div class="card"><h3>⚙️ ConfigMap / Secret</h3><p>Equivalente a las variables de entorno del docker-compose. ConfigMap para config no sensible, Secret para passwords y tokens — siempre encriptados.</p></div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:22px 0 12px;color:#004d40">Ejemplo de Deployment para su API</h3>
+  <pre><code><span style="color:#546e7a"># k8s/deployment.yml — para referencia, no necesitan aplicarlo ahora</span>
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurante-api
+spec:
+  replicas: 2                        <span style="color:#546e7a"># dos instancias corriendo siempre</span>
+  selector:
+    matchLabels:
+      app: restaurante-api
+  template:
+    metadata:
+      labels:
+        app: restaurante-api
+    spec:
+      containers:
+        - name: api
+          image: suusuario/restaurante-api:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:        <span style="color:#546e7a"># viene de un K8s Secret</span>
+                  name: restaurante-secrets
+                  key: jwt-secret
+          readinessProbe:            <span style="color:#546e7a"># K8s espera a que la app esté lista</span>
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: restaurante-api-svc
+spec:
+  selector:
+    app: restaurante-api
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer               <span style="color:#546e7a"># expone con IP pública en la nube</span></code></pre>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>Para experimentar con K8s localmente:</strong> Docker Desktop incluye un clúster de K8s de un nodo que pueden activar en Settings → Kubernetes → Enable Kubernetes. También pueden usar <code>minikube</code>. En el proyecto del curso, su despliegue será en Azure — el CI/CD del siguiente sprint configura eso.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 8 — VERIFICAR -->
+<section class="section" id="verificar">
+  <div class="section-header">
+    <div class="section-icon">✅</div>
+    <div>
+      <span class="section-num">Paso 8 — Todo funcionando</span>
+      <div class="section-title">Verifiquen que el stack completo corre en Docker</div>
+    </div>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <div class="step-title">Levantar el stack completo</div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="cmd-box">
+    <div><span class="prompt">$ </span><span class="cmd">docker compose up --build -d</span></div>
+    <div><span class="comment"># Debe ver: Creating restaurante-postgres, restaurante-mongo, restaurante-api</span></div>
+  </div>
+
+  <ol class="steps" style="counter-reset:step 1">
+    <li>
+      <div>
+        <div class="step-title">Verificar que todos los servicios están corriendo</div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="cmd-box">
+    <div><span class="prompt">$ </span><span class="cmd">docker compose ps</span></div>
+    <div><span class="comment"># Todos deben mostrar "running" o "healthy"</span></div>
+  </div>
+
+  <ol class="steps" style="counter-reset:step 2">
+    <li>
+      <div>
+        <div class="step-title">Revisar los logs de la API</div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="cmd-box">
+    <div><span class="prompt">$ </span><span class="cmd">docker compose logs api</span></div>
+    <div><span class="comment"># Deben ver "Started RestauranteApplication" sin errores de conexión a BD</span></div>
+  </div>
+
+  <ul class="checklist" style="margin-top:20px">
+    <li><code>docker compose ps</code> muestra los tres servicios en estado <code>running</code> o <code>healthy</code></li>
+    <li>Swagger accesible en <code>http://localhost:8080/swagger-ui/index.html</code> desde el navegador</li>
+    <li>Ejecutar un POST desde Swagger y ver que los datos persisten en la BD (usar pgAdmin o MongoDB Compass apuntando al puerto del contenedor)</li>
+    <li>Reiniciar el contenedor de la API (<code>docker compose restart api</code>) y verificar que los datos siguen en la BD</li>
+    <li>Link a la imagen en Docker Hub accesible públicamente</li>
+  </ul>
+</section>
+
+<div class="sep"></div>
+
+<section class="section" id="readme">
+  <div class="section-header">
+    <div class="section-icon">📝</div>
+    <div>
+      <span class="section-num">Evidencia obligatoria</span>
+      <div class="section-title">Qué agregan al README</div>
+    </div>
+  </div>
+
+  <div class="readme-box">
+    <h4>📋 Sección "Docker" en el README del backend</h4>
+    <ul>
+      <li>Instrucciones claras para levantar el stack: <code>docker compose up --build -d</code></li>
+      <li>Captura de <code>docker compose ps</code> con todos los servicios en estado healthy</li>
+      <li>Captura de Swagger funcionando en el contenedor (<code>localhost:8080/swagger-ui</code>)</li>
+      <li>Captura de los logs de la API mostrando el inicio exitoso con conexión a BD</li>
+      <li>Link a la imagen publicada en Docker Hub</li>
+      <li>Captura de la página de Docker Hub con su imagen</li>
+      <li>Variables de entorno requeridas (sin valores) con descripción de cada una</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  🌿 <span>Guía Turtwig de Studio</span> &nbsp;·&nbsp; S10 — Dockerización &nbsp;·&nbsp; DOSW &nbsp;·&nbsp; Escuela Colombiana de Ingeniería
+</footer>
+
+<script>
+mermaid.initialize({startOnLoad:true,theme:'base',themeVariables:{primaryColor:'#e0f2f1',primaryTextColor:'#1c1f26',primaryBorderColor:'#80cbc4',lineColor:'#00695c',fontFamily:'Space Grotesk, sans-serif',fontSize:'13px'},flowchart:{curve:'basis',padding:20}});
+</script>
+</body>
+</html>

@@ -15,15 +15,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/mesas")
+@lombok.RequiredArgsConstructor
 public class MesaController implements MesaApi {
 
     private final IMesaService mesaService;
     private final MesaMapper mesaMapper;
-
-    public MesaController(IMesaService mesaService, MesaMapper mesaMapper) {
-        this.mesaService = mesaService;
-        this.mesaMapper = mesaMapper;
-    }
 
     @Override
     @GetMapping
@@ -63,14 +59,14 @@ public class MesaController implements MesaApi {
     }
 
     @Override
-    @PatchMapping("/{id}/abrir-cuenta")
+    @PatchMapping("/{id}/apertura-cuenta")
     public ResponseEntity<MesaResponseDTO> abrirCuenta(@PathVariable Long id) {
         Mesa actualizada = mesaService.abrirCuenta(id);
         return ResponseEntity.ok(mesaMapper.toResponse(actualizada));
     }
 
     @Override
-    @PatchMapping("/{id}/cerrar-cuenta")
+    @PatchMapping("/{id}/cierre-cuenta")
     public ResponseEntity<MesaResponseDTO> cerrarCuenta(@PathVariable Long id) {
         Mesa actualizada = mesaService.cerrarCuenta(id);
         return ResponseEntity.ok(mesaMapper.toResponse(actualizada));

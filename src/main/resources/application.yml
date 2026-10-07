@@ -47,3 +47,9 @@ server:
     key-store-password: ${SSL_KEYSTORE_PASSWORD}
     key-store-type: PKCS12
     key-alias: restaurante
+
+logging:
+  level:
+    root: INFO
+    com.dows.bitacora2.restaurante: DEBUG
+    org.springframework.web: WARN

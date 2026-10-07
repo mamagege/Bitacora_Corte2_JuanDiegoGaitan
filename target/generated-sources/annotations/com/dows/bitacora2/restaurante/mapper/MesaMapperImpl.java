@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-07T02:20:42-0500",
+    date = "2026-10-07T17:30:31-0500",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.12.1 (Eclipse Adoptium)"
 )
 @Component
@@ -24,8 +24,8 @@ public class MesaMapperImpl implements MesaMapper {
 
         Mesa mesa = new Mesa();
 
-        mesa.setNumero( dto.getNumero() );
-        mesa.setCapacidad( dto.getCapacidad() );
+        mesa.setNumero( dto.numero() );
+        mesa.setCapacidad( dto.capacidad() );
 
         mesa.setEstado( com.dows.bitacora2.restaurante.model.domain.EstadoMesa.DISPONIBLE );
         mesa.setCuentaAbierta( false );
@@ -39,13 +39,19 @@ public class MesaMapperImpl implements MesaMapper {
             return null;
         }
 
-        MesaResponseDTO mesaResponseDTO = new MesaResponseDTO();
+        Long id = null;
+        Integer numero = null;
+        Integer capacidad = null;
+        String estado = null;
 
-        mesaResponseDTO.setId( mesa.getId() );
-        mesaResponseDTO.setNumero( mesa.getNumero() );
-        mesaResponseDTO.setCapacidad( mesa.getCapacidad() );
-        mesaResponseDTO.setEstado( mesa.getEstado() );
-        mesaResponseDTO.setCuentaAbierta( mesa.getCuentaAbierta() );
+        id = mesa.getId();
+        numero = mesa.getNumero();
+        capacidad = mesa.getCapacidad();
+        if ( mesa.getEstado() != null ) {
+            estado = mesa.getEstado().name();
+        }
+
+        MesaResponseDTO mesaResponseDTO = new MesaResponseDTO( id, numero, capacidad, estado );
 
         return mesaResponseDTO;
     }

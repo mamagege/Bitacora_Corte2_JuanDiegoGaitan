@@ -10,20 +10,17 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/pedidos")
+@RequiredArgsConstructor
 public class PedidoController implements PedidoApi {
 
     private final IPedidoService pedidoService;
     private final PedidoMapper pedidoMapper;
-
-    public PedidoController(IPedidoService pedidoService, PedidoMapper pedidoMapper) {
-        this.pedidoService = pedidoService;
-        this.pedidoMapper = pedidoMapper;
-    }
 
     @Override
     @GetMapping
@@ -73,5 +70,10 @@ public class PedidoController implements PedidoApi {
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         pedidoService.eliminar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/resumen")
+    public ResponseEntity<com.dows.bitacora2.restaurante.model.dto.response.ResumenDiaDTO> resumenDelDia() {
+        return ResponseEntity.ok(pedidoService.resumenDelDia());
     }
 }

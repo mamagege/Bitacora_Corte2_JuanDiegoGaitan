@@ -13,16 +13,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@lombok.extern.slf4j.Slf4j
 @RequestMapping("/api/v1/platos")
+@lombok.RequiredArgsConstructor
 public class PlatoController implements PlatoApi {
-
-    public PlatoController(IPlatoService platoService, PlatoMapper platoMapper) { this.platoService = platoService; this.platoMapper = platoMapper; }
 
     private final IPlatoService platoService;
     private final PlatoMapper   platoMapper;
 
     @Override @GetMapping
     public ResponseEntity<List<PlatoResponseDTO>> listar() {
+        log.info("GET /api/v1/platos");
         return ResponseEntity.ok(
             platoService.obtenerTodos().stream()
                 .map(platoMapper::toResponse).toList());
@@ -36,6 +37,7 @@ public class PlatoController implements PlatoApi {
     @Override @PostMapping
     @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PlatoResponseDTO> crear(@RequestBody @Valid PlatoRequestDTO dto) {
+        log.info("POST /api/v1/platos - nombre={}", dto.nombre());
         Plato creado = platoService.crear(platoMapper.toDomain(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(platoMapper.toResponse(creado));
     }
@@ -47,7 +49,7 @@ public class PlatoController implements PlatoApi {
         return ResponseEntity.ok(platoMapper.toResponse(actualizado));
     }
 
-    @Override @PatchMapping("/{id}/disponible")
+    @Override @PatchMapping("/{id}/disponibilidad")
     @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PlatoResponseDTO> cambiarDisponibilidad(@PathVariable Long id, @RequestParam boolean disponible) {
         return ResponseEntity.ok(platoMapper.toResponse(platoService.cambiarDisponibilidad(id, disponible)));
