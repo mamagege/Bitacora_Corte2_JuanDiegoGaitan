@@ -12,12 +12,16 @@ import java.util.List;
 @Tag(name = "Cuentas", description = "Administración de cuentas y pagos del restaurante")
 public interface CuentaApi {
     @Operation(summary = "Listar todas las cuentas")
-    @ApiResponse(responseCode = "200", description = "Lista de cuentas")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de cuentas"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente.")
+    })
     ResponseEntity<List<CuentaResponseDTO>> listar();
 
     @Operation(summary = "Obtener cuenta por ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Cuenta encontrada"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Cuenta no existe")
     })
     ResponseEntity<CuentaResponseDTO> obtener(Long id);
@@ -26,6 +30,7 @@ public interface CuentaApi {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Cuenta creada"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "409", description = "Mesa ya tiene cuenta abierta")
     })
     ResponseEntity<CuentaResponseDTO> crear(CuentaRequestDTO dto);
@@ -34,6 +39,7 @@ public interface CuentaApi {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Total actualizado"),
         @ApiResponse(responseCode = "400", description = "La cuenta ya está pagada"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Cuenta no existe")
     })
     ResponseEntity<CuentaResponseDTO> actualizarTotal(Long id);
@@ -42,6 +48,7 @@ public interface CuentaApi {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Cuenta pagada"),
         @ApiResponse(responseCode = "400", description = "La cuenta ya estaba pagada"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Cuenta no existe")
     })
     ResponseEntity<CuentaResponseDTO> pagar(Long id);

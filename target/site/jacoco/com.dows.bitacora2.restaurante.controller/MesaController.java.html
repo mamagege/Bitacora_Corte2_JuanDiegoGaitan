@@ -20,10 +20,10 @@ public class MesaController implements MesaApi {
     private final IMesaService mesaService;
     private final MesaMapper mesaMapper;
 
-<span class="nc" id="L23">    public MesaController(IMesaService mesaService, MesaMapper mesaMapper) {</span>
-<span class="nc" id="L24">        this.mesaService = mesaService;</span>
-<span class="nc" id="L25">        this.mesaMapper = mesaMapper;</span>
-<span class="nc" id="L26">    }</span>
+<span class="fc" id="L23">    public MesaController(IMesaService mesaService, MesaMapper mesaMapper) {</span>
+<span class="fc" id="L24">        this.mesaService = mesaService;</span>
+<span class="fc" id="L25">        this.mesaMapper = mesaMapper;</span>
+<span class="fc" id="L26">    }</span>
 
     @Override
     @GetMapping
@@ -76,4 +76,4 @@ public class MesaController implements MesaApi {
 <span class="nc" id="L76">        return ResponseEntity.ok(mesaMapper.toResponse(actualizada));</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

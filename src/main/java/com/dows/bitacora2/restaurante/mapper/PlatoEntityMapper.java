@@ -9,6 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface PlatoEntityMapper {
+    @org.mapstruct.Mapping(target = "creadoEn", ignore = true)
     PlatoEntity toEntity(Plato plato);
     Plato toDomain(PlatoEntity entity);
     List<Plato> toDomainList(List<PlatoEntity> entities);

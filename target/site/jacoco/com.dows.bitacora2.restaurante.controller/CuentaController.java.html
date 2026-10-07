@@ -20,10 +20,10 @@ public class CuentaController implements CuentaApi {
     private final ICuentaService cuentaService;
     private final CuentaMapper cuentaMapper;
 
-<span class="nc" id="L23">    public CuentaController(ICuentaService cuentaService, CuentaMapper cuentaMapper) {</span>
-<span class="nc" id="L24">        this.cuentaService = cuentaService;</span>
-<span class="nc" id="L25">        this.cuentaMapper = cuentaMapper;</span>
-<span class="nc" id="L26">    }</span>
+<span class="fc" id="L23">    public CuentaController(ICuentaService cuentaService, CuentaMapper cuentaMapper) {</span>
+<span class="fc" id="L24">        this.cuentaService = cuentaService;</span>
+<span class="fc" id="L25">        this.cuentaMapper = cuentaMapper;</span>
+<span class="fc" id="L26">    }</span>
 
     @Override
     @GetMapping
@@ -61,4 +61,4 @@ public class CuentaController implements CuentaApi {
 <span class="nc" id="L61">        return ResponseEntity.ok(cuentaMapper.toResponse(pagada));</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Guía Turtwig · S10 — Seguridad en APIs Spring Boot</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+  :root {
+    --azul:#1a237e;--azul-med:#3949ab;--azul-cl:#7986cb;--azul-fondo:#f3f4fd;
+    --amarillo:#ffd600;--naranja:#ff6f00;--gris-osc:#1c1f26;--gris-med:#4a5568;
+    --blanco:#fff;--verde:#2e7d32;--rojo:#c62828;--code-bg:#0f172a;--code-txt:#7dd3fc;
+    --tip:#7c4dff;--warn:#f4a435;--teal:#00695c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--azul-fondo);color:var(--gris-osc);line-height:1.7;font-size:16px}
+  .hero{background:linear-gradient(135deg,#0d1b6e,#1a237e 50%,#283593);color:#fff;padding:64px 40px 56px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:rgba(255,214,0,.08);border-radius:50%}
+  .hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:1}
+  .dosw-badge{display:inline-flex;align-items:center;gap:8px;background:var(--amarillo);color:var(--azul);font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.8px;margin-bottom:18px;text-transform:uppercase}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:700;line-height:1.2;margin-bottom:14px}
+  .hero h1 span{color:var(--amarillo)}
+  .hero-sub{font-size:1rem;color:rgba(255,255,255,.75);max-width:640px;font-weight:300;line-height:1.7}
+  .hero-chips{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:600;padding:5px 13px;border-radius:16px;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);font-family:'JetBrains Mono',monospace}
+  .nav-toc{background:var(--blanco);border-bottom:2px solid #c5cae9;padding:0 40px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(26,35,126,.08)}
+  .nav-toc ul{max-width:920px;margin:0 auto;display:flex;gap:0;list-style:none;overflow-x:auto}
+  .nav-toc ul li a{display:block;padding:13px 12px;font-size:11px;font-weight:700;color:var(--gris-med);text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;text-transform:uppercase;letter-spacing:.4px}
+  .nav-toc ul li a:hover{color:var(--azul-med);border-bottom-color:var(--azul-med)}
+  .content{max-width:920px;margin:0 auto;padding:52px 40px 80px}
+  .section{margin-bottom:72px;scroll-margin-top:60px}
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid #c5cae9}
+  .section-icon{width:46px;height:46px;background:var(--azul-med);color:#fff;font-size:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .section-title{font-size:1.4rem;font-weight:700}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--azul-med);letter-spacing:1.2px;display:block;text-transform:uppercase}
+  .card{background:var(--blanco);border-radius:12px;padding:22px 26px;margin-bottom:14px;border-left:4px solid var(--azul-med);box-shadow:0 2px 8px rgba(26,35,126,.07)}
+  .card h3{font-size:.95rem;font-weight:700;color:var(--azul-med);margin-bottom:7px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+  @media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}}
+  .callout{border-radius:10px;padding:16px 20px;margin:18px 0;display:flex;gap:12px;font-size:.9rem}
+  .callout-icon{font-size:19px;flex-shrink:0;line-height:1.5}
+  .callout.tip{background:#f3eeff;border-left:4px solid var(--tip)}
+  .callout.warn{background:#fff8ec;border-left:4px solid var(--warn)}
+  .callout.info{background:#e8eaf6;border-left:4px solid var(--azul-med)}
+  .callout.key{background:#e8f5e9;border-left:4px solid var(--verde)}
+  .callout.danger{background:#ffebee;border-left:4px solid var(--rojo)}
+  .callout strong{display:block;font-weight:700;margin-bottom:3px}
+  .tabla-wrap{overflow-x:auto;margin:16px 0;border-radius:10px;box-shadow:0 2px 8px rgba(26,35,126,.08)}
+  table{width:100%;border-collapse:collapse;background:var(--blanco)}
+  th{background:var(--azul);color:#fff;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;text-align:left}
+  td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid #e8eaf6;color:var(--gris-osc)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#f8f9ff}
+  .steps{counter-reset:step;list-style:none;margin:16px 0}
+  .steps li{counter-increment:step;display:flex;gap:14px;margin-bottom:18px;align-items:flex-start}
+  .steps li::before{content:counter(step);min-width:30px;height:30px;background:var(--azul-med);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px}
+  .step-title{font-weight:700;font-size:.95rem;margin-bottom:3px;color:var(--azul)}
+  .step-desc{font-size:.88rem;color:var(--gris-med)}
+  .checklist{list-style:none;margin:14px 0}
+  .checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.91rem;border-bottom:1px solid #e8eaf6}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li::before{content:'☐';color:var(--azul-med);font-size:1.1rem;flex-shrink:0;margin-top:1px}
+  pre{background:var(--code-bg);color:var(--code-txt);border-radius:10px;padding:18px 22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;overflow-x:auto;line-height:1.65;margin:14px 0}
+  code{font-family:'JetBrains Mono',monospace;background:rgba(57,73,171,.1);color:var(--azul-med);padding:2px 7px;border-radius:4px;font-size:.85em}
+  pre code{background:none;color:inherit;padding:0}
+  .diagram-wrap{background:var(--blanco);border-radius:12px;padding:26px;margin:20px 0;box-shadow:0 2px 12px rgba(26,35,126,.08);overflow-x:auto}
+  .diagram-label{font-size:11.5px;font-weight:700;color:var(--azul-med);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+  .diagram-label::before{content:'◆';font-size:8px}
+  .fase-box{background:var(--blanco);border-radius:14px;padding:24px 28px;margin-bottom:20px;border-top:4px solid var(--azul-med);box-shadow:0 2px 10px rgba(26,35,126,.08)}
+  .fase-box h3{font-size:1rem;font-weight:700;color:var(--azul);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .fase-tag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:800;padding:3px 10px;border-radius:8px;background:var(--azul-fondo);color:var(--azul-med)}
+  .owasp-item{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #e8eaf6}
+  .owasp-item:last-child{border-bottom:none}
+  .owasp-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;width:32px;height:32px;background:var(--azul);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .owasp-num.risk{background:var(--rojo)}
+  .owasp-body strong{font-size:.88rem;font-weight:700;color:var(--gris-osc);display:block;margin-bottom:2px}
+  .owasp-body p{font-size:.82rem;color:var(--gris-med)}
+  .readme-box{background:var(--azul);color:#fff;border-radius:12px;padding:24px 28px;margin:16px 0}
+  .readme-box h4{color:var(--amarillo);font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px}
+  .readme-box ul{list-style:none;font-size:.88rem}
+  .readme-box ul li{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+  .readme-box ul li:last-child{border-bottom:none}
+  .readme-box ul li::before{content:'📎 '}
+  .sep{height:1px;background:linear-gradient(90deg,#c5cae9,transparent);margin:56px 0}
+  footer{background:var(--azul);color:rgba(255,255,255,.6);text-align:center;padding:28px;font-size:13px}
+  footer span{color:var(--amarillo)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="dosw-badge">🔐 Semana 10 · DOSW · ECI</div>
+    <h1>Guía Turtwig S10 —<br><span>Seguridad en APIs Spring Boot</span></h1>
+    <p class="hero-sub">Ya tienen la API funcionando con persistencia real. Ahora hay que asegurarse de que no todo el mundo pueda hacer todo. El cliente ve la carta, el mesero toma el pedido, el chef lo prepara — cada rol accede solo a lo que le corresponde.</p>
+    <div class="hero-chips">
+      <span class="chip">🔑 HTTP Basic</span>
+      <span class="chip">🌐 OAuth2</span>
+      <span class="chip">🎟️ JWT</span>
+      <span class="chip">🛡️ Autorización</span>
+      <span class="chip">🔒 SSL / CORS</span>
+      <span class="chip">📋 OWASP Top 10</span>
+      <span class="chip">🚫 CSRF / XSS</span>
+    </div>
+  </div>
+</div>
+
+<nav class="nav-toc">
+  <ul>
+    <li><a href="#roles">1 · Roles</a></li>
+    <li><a href="#basic">2 · HTTP Basic</a></li>
+    <li><a href="#oauth2">3 · OAuth2</a></li>
+    <li><a href="#jwt">4 · JWT</a></li>
+    <li><a href="#autorizacion">5 · Autorización</a></li>
+    <li><a href="#ssl">6 · SSL</a></li>
+    <li><a href="#cors">7 · CORS</a></li>
+    <li><a href="#owasp">8 · OWASP</a></li>
+    <li><a href="#ataques">9 · CSRF/XSS</a></li>
+    <li><a href="#pruebas">10 · Pruebas</a></li>
+    <li><a href="#readme">README</a></li>
+  </ul>
+</nav>
+
+<div class="content">
+
+<!-- PASO 1 — ROLES -->
+<section class="section" id="roles">
+  <div class="section-header">
+    <div class="section-icon">👥</div>
+    <div>
+      <span class="section-num">Paso 1 — Punto de partida</span>
+      <div class="section-title">Los roles de su restaurante — ya los identificaron</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:20px">En el análisis de requerimientos ya mapearon quién hace qué en su sistema. Antes de escribir una sola línea de Spring Security, respondan estas preguntas mirando sus requerimientos:</p>
+
+  <div class="grid-2">
+    <div class="card"><h3>¿Quién puede acceder sin autenticarse?</h3><p>¿La carta del restaurante es pública? ¿Los eventos se pueden ver sin login? Esos endpoints son <code>permitAll()</code>.</p></div>
+    <div class="card"><h3>¿Qué acciones son exclusivas de cada rol?</h3><p>Crear platos: solo el chef. Consultar pedidos: mesero y chef. Cancelar cuenta: solo admin. Eso define sus <code>hasRole()</code>.</p></div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Ejercicio previo obligatorio — hagan esta tabla antes de codificar:</strong></div>
+  </div>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Endpoint</th><th>Método</th><th>¿Quién puede?</th><th>Rol en Spring</th></tr></thead>
+      <tbody>
+        <tr><td><code>/api/v1/platos</code></td><td>GET</td><td>Todos (público)</td><td><code>permitAll()</code></td></tr>
+        <tr><td><code>/api/v1/platos</code></td><td>POST</td><td>Solo chef/admin</td><td><code>hasRole("CHEF")</code></td></tr>
+        <tr><td><code>/api/v1/pedidos</code></td><td>POST</td><td>Solo clientes autenticados</td><td><code>hasRole("CLIENTE")</code></td></tr>
+        <tr><td><code>/api/v1/pedidos/{id}/estado</code></td><td>PATCH</td><td>Mesero y chef</td><td><code>hasAnyRole("MESERO","CHEF")</code></td></tr>
+        <tr><td><code>/api/v1/usuarios</code></td><td>GET</td><td>Solo admin</td><td><code>hasRole("ADMIN")</code></td></tr>
+        <tr><td colspan="4" style="color:var(--gris-med);font-style:italic">→ Completen esta tabla con los endpoints reales de su proyecto</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="font-size:.88rem;color:var(--gris-med)">Esta tabla es la base de su <code>SecurityConfig</code>. Todo lo que configuren en Spring Security debe poder trazarse a una fila de esta tabla.</p>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 2 — HTTP BASIC -->
+<section class="section" id="basic">
+  <div class="section-header">
+    <div class="section-icon">🔑</div>
+    <div>
+      <span class="section-num">Paso 2 — Autenticación más simple</span>
+      <div class="section-title">HTTP Basic — usuario y contraseña en cada petición</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">HTTP Basic es el primer nivel de autenticación. El cliente envía <code>usuario:contraseña</code> codificados en Base64 en el header <code>Authorization</code> en cada petición. Es stateless — el servidor no guarda sesión. Sirve para entender la mecánica antes de pasar a JWT.</p>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>HTTP Basic no cifra — solo codifica.</strong> Base64 es reversible en un segundo. HTTP Basic solo es seguro sobre HTTPS. Nunca lo usen en producción sin SSL. En este sprint lo usan para aprender el flujo — JWT es el estándar real.</div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Flujo de HTTP Basic</div>
+    <div class="mermaid">
+sequenceDiagram
+    participant C as Cliente
+    participant S as Spring Security Filter
+    participant U as UserDetailsService
+    participant A as API Controller
+
+    C->>S: GET /api/v1/platos<br/>Authorization: Basic dXN1YXJpbzpjbGF2ZQ==
+    S->>S: Decodifica Base64 → usuario:clave
+    S->>U: loadUserByUsername("usuario")
+    U-->>S: UserDetails (roles, password hash)
+    S->>S: BCrypt.matches(clave, hash) → true/false
+    alt Autenticado
+        S->>A: Pasa la petición
+        A-->>C: 200 OK + datos
+    else No autenticado
+        S-->>C: 401 Unauthorized
+    end
+    </div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:22px 0 14px;color:var(--azul)">Implementación paso a paso</h3>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <div class="step-title">Agregar dependencia de Spring Security</div>
+        <div class="step-desc">En <code>pom.xml</code> — si ya tienen springdoc, también agregan el bridge para que Swagger soporte autenticación:</div>
+      </div>
+    </li>
+  </ol>
+
+  <pre><code><span style="color:#c792ea">&lt;dependency&gt;</span>
+    <span style="color:#c3e88d">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#c3e88d">&lt;/groupId&gt;</span>
+    <span style="color:#c3e88d">&lt;artifactId&gt;</span>spring-boot-starter-security<span style="color:#c3e88d">&lt;/artifactId&gt;</span>
+<span style="color:#c792ea">&lt;/dependency&gt;</span></code></pre>
+
+  <ol class="steps" style="counter-reset:step 1">
+    <li>
+      <div>
+        <div class="step-title">Crear el modelo de Usuario con roles</div>
+      </div>
+    </li>
+  </ol>
+
+  <pre><code><span style="color:#c792ea">@Entity</span> <span style="color:#c792ea">@Table</span>(name = <span style="color:#c3e88d">"usuarios"</span>)
+<span style="color:#89d3fe">public class</span> <span style="color:#f0b27a">UsuarioEntity</span> {
+    <span style="color:#c792ea">@Id</span> <span style="color:#c792ea">@GeneratedValue</span>
+    <span style="color:#89d3fe">private</span> Long id;
+    <span style="color:#c792ea">@Column</span>(unique = <span style="color:#89d3fe">true</span>, nullable = <span style="color:#89d3fe">false</span>)
+    <span style="color:#89d3fe">private</span> String email;
+    <span style="color:#89d3fe">private</span> String password;   <span style="color:#546e7a">// SIEMPRE hasheado con BCrypt — nunca en texto plano</span>
+    <span style="color:#89d3fe">private</span> String rol;        <span style="color:#546e7a">// "ROLE_ADMIN", "ROLE_CHEF", "ROLE_CLIENTE"</span>
+}</code></pre>
+
+  <ol class="steps" style="counter-reset:step 2">
+    <li>
+      <div>
+        <div class="step-title">Implementar UserDetailsService</div>
+        <div class="step-desc">Spring Security necesita saber cómo cargar un usuario por nombre. Esta implementación lo busca en su BD:</div>
+      </div>
+    </li>
+  </ol>
+
+  <pre><code><span style="color:#c792ea">@Service</span> <span style="color:#c792ea">@RequiredArgsConstructor</span>
+<span style="color:#89d3fe">public class</span> <span style="color:#f0b27a">UsuarioDetailsService</span> <span style="color:#89d3fe">implements</span> <span style="color:#f0b27a">UserDetailsService</span> {
+
+    <span style="color:#89d3fe">private final</span> UsuarioRepository repository;
+
+    <span style="color:#c792ea">@Override</span>
+    <span style="color:#89d3fe">public</span> <span style="color:#f0b27a">UserDetails</span> loadUserByUsername(String email) <span style="color:#89d3fe">throws</span> <span style="color:#f0b27a">UsernameNotFoundException</span> {
+        <span style="color:#f0b27a">UsuarioEntity</span> usuario = repository.findByEmail(email)
+                .orElseThrow(() -> <span style="color:#89d3fe">new</span> <span style="color:#f0b27a">UsernameNotFoundException</span>(<span style="color:#c3e88d">"Usuario no encontrado: "</span> + email));
+        <span style="color:#89d3fe">return</span> <span style="color:#f0b27a">User</span>.builder()
+                .username(usuario.getEmail())
+                .password(usuario.getPassword())     <span style="color:#546e7a">// ya viene hasheado de la BD</span>
+                .roles(usuario.getRol())             <span style="color:#546e7a">// "ADMIN", "CHEF", "CLIENTE"</span>
+                .build();
+    }
+}</code></pre>
+
+  <ol class="steps" style="counter-reset:step 3">
+    <li>
+      <div>
+        <div class="step-title">Configurar SecurityConfig con HTTP Basic</div>
+      </div>
+    </li>
+  </ol>
+
+  <pre><code><span style="color:#c792ea">@Configuration</span> <span style="color:#c792ea">@EnableWebSecurity</span> <span style="color:#c792ea">@EnableMethodSecurity</span>
+<span style="color:#89d3fe">public class</span> <span style="color:#f0b27a">SecurityConfig</span> {
+
+    <span style="color:#c792ea">@Bean</span>
+    <span style="color:#89d3fe">public</span> <span style="color:#f0b27a">SecurityFilterChain</span> filterChain(<span style="color:#f0b27a">HttpSecurity</span> http) <span style="color:#89d3fe">throws</span> Exception {
+        <span style="color:#89d3fe">return</span> http
+            .csrf(csrf -> csrf.disable())           <span style="color:#546e7a">// APIs stateless no necesitan CSRF</span>
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(<span style="color:#c3e88d">"/api/v1/platos"</span>).permitAll()             <span style="color:#546e7a">// carta pública</span>
+                .requestMatchers(<span style="color:#c3e88d">"/swagger-ui/**"</span>, <span style="color:#c3e88d">"/v3/api-docs/**"</span>).permitAll() <span style="color:#546e7a">// Swagger</span>
+                .requestMatchers(HttpMethod.POST, <span style="color:#c3e88d">"/api/v1/platos"</span>).hasRole(<span style="color:#c3e88d">"CHEF"</span>)
+                .anyRequest().authenticated()
+            )
+            .httpBasic(Customizer.withDefaults())   <span style="color:#546e7a">// activa HTTP Basic</span>
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .build();
+    }
+
+    <span style="color:#c792ea">@Bean</span>
+    <span style="color:#89d3fe">public</span> <span style="color:#f0b27a">PasswordEncoder</span> passwordEncoder() {
+        <span style="color:#89d3fe">return new</span> <span style="color:#f0b27a">BCryptPasswordEncoder</span>();  <span style="color:#546e7a">// OBLIGATORIO — nunca guardar passwords en texto plano</span>
+    }
+}</code></pre>
+
+  <ol class="steps" style="counter-reset:step 4">
+    <li>
+      <div>
+        <div class="step-title">Registrar usuario con password hasheado</div>
+        <div class="step-desc">En el endpoint de registro, hasheen el password antes de guardarlo:</div>
+      </div>
+    </li>
+  </ol>
+
+  <pre><code><span style="color:#546e7a">// En el ServiceImpl de registro:</span>
+<span style="color:#89d3fe">public</span> Usuario registrar(Usuario usuario) {
+    usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));  <span style="color:#546e7a">// ← siempre</span>
+    <span style="color:#89d3fe">return</span> mapper.toDomain(repository.save(mapper.toEntity(usuario)));
+}</code></pre>
+
+  <ol class="steps" style="counter-reset:step 5">
+    <li>
+      <div>
+        <div class="step-title">Probar en Swagger — agregar el botón Authorize</div>
+        <div class="step-desc">Swagger necesita conocer el esquema de autenticación para mostrar el candado. En <code>SwaggerConfig.java</code>:</div>
+      </div>
+    </li>
+  </ol>
+
+  <pre><code><span style="color:#c792ea">@Bean</span>
+<span style="color:#89d3fe">public</span> <span style="color:#f0b27a">OpenAPI</span> openAPI() {
+    <span style="color:#89d3fe">return new</span> <span style="color:#f0b27a">OpenAPI</span>()
+        .info(<span style="color:#89d3fe">new</span> <span style="color:#f0b27a">Info</span>().title(<span style="color:#c3e88d">"API Restaurante"</span>).version(<span style="color:#c3e88d">"2.0"</span>))
+        .addSecurityItem(<span style="color:#89d3fe">new</span> <span style="color:#f0b27a">SecurityRequirement</span>().addList(<span style="color:#c3e88d">"basicAuth"</span>))
+        .components(<span style="color:#89d3fe">new</span> <span style="color:#f0b27a">Components</span>()
+            .addSecuritySchemes(<span style="color:#c3e88d">"basicAuth"</span>,
+                <span style="color:#89d3fe">new</span> <span style="color:#f0b27a">SecurityScheme</span>().type(<span style="color:#f0b27a">SecurityScheme</span>.Type.HTTP).scheme(<span style="color:#c3e88d">"basic"</span>)));
+}</code></pre>
+
+  <div class="callout key">
+    <span class="callout-icon">✅</span>
+    <div><strong>Verifiquen que funciona:</strong> levanten la app → abran Swagger → hagan clic en "Authorize" → ingresen usuario y contraseña → ejecuten un endpoint protegido → deben ver 200. Sin credenciales deben ver 401.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 3 — OAUTH2 -->
+<section class="section" id="oauth2">
+  <div class="section-header">
+    <div class="section-icon">🌐</div>
+    <div>
+      <span class="section-num">Paso 3 — Autenticación con proveedor externo</span>
+      <div class="section-title">OAuth2 — "Ingresar con Google"</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">OAuth2 permite que sus usuarios se autentiquen usando Google, GitHub u otro proveedor de identidad, sin que su API maneje contraseñas directamente. El proveedor confirma la identidad — su API solo recibe un token válido.</p>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Flujo completo OAuth2 con Google</div>
+    <div class="mermaid">
+sequenceDiagram
+    participant U as Usuario/Browser
+    participant A as Su API Spring Boot
+    participant G as Google OAuth2
+
+    U->>A: GET /oauth2/authorization/google
+    A-->>U: Redirect → accounts.google.com?client_id=...&redirect_uri=...
+    U->>G: El usuario ingresa sus credenciales de Google
+    G-->>U: Redirect → /login/oauth2/code/google?code=ABC123
+    U->>A: GET /login/oauth2/code/google?code=ABC123
+    A->>G: POST /token con code=ABC123 + client_secret
+    G-->>A: access_token + id_token (JWT con info del usuario)
+    A->>A: Crea/actualiza el usuario local con los datos de Google
+    A-->>U: Sesión establecida — redirige a la app
+    </div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:22px 0 14px;color:var(--azul)">Paso a paso — OAuth2 con Google</h3>
+
+  <div class="fase-box">
+    <h3>🔧 Fase 1 — Crear las credenciales en Google Cloud Console</h3>
+    <ol class="steps">
+      <li><div><div class="step-title">Ir a console.cloud.google.com</div><div class="step-desc">Crear un proyecto nuevo o usar uno existente. Buscar "APIs y servicios" → "Credenciales".</div></div></li>
+      <li><div><div class="step-title">Crear credenciales OAuth2 → "ID de cliente OAuth"</div><div class="step-desc">Tipo de aplicación: <strong>Aplicación web</strong>. En "URIs de redireccionamiento autorizados" agregar exactamente: <code>http://localhost:8080/login/oauth2/code/google</code></div></div></li>
+      <li><div><div class="step-title">Copiar Client ID y Client Secret</div><div class="step-desc">Los necesitan en el siguiente paso. No los suban al repositorio — van en variables de entorno.</div></div></li>
+    </ol>
+  </div>
+
+  <div class="fase-box">
+    <h3>📦 Fase 2 — Dependencia y configuración</h3>
+    <pre><code><span style="color:#546e7a">&lt;!-- pom.xml --&gt;</span>
+<span style="color:#c792ea">&lt;dependency&gt;</span>
+    <span style="color:#c3e88d">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#c3e88d">&lt;/groupId&gt;</span>
+    <span style="color:#c3e88d">&lt;artifactId&gt;</span>spring-boot-starter-oauth2-client<span style="color:#c3e88d">&lt;/artifactId&gt;</span>
+<span style="color:#c792ea">&lt;/dependency&gt;</span></code></pre>
+
+    <pre><code><span style="color:#546e7a"># application.yml</span>
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: <span style="color:#c3e88d">${GOOGLE_CLIENT_ID}</span>           <span style="color:#546e7a"># variable de entorno</span>
+            client-secret: <span style="color:#c3e88d">${GOOGLE_CLIENT_SECRET}</span>      <span style="color:#546e7a"># variable de entorno</span>
+            scope:
+              - openid
+              - profile
+              - email</code></pre>
+  </div>
+
+  <div class="fase-box">
+    <h3>⚙️ Fase 3 — SecurityConfig con OAuth2</h3>
+    <pre><code><span style="color:#c792ea">@Bean</span>
+<span style="color:#89d3fe">public</span> <span style="color:#f0b27a">SecurityFilterChain</span> filterChain(<span style="color:#f0b27a">HttpSecurity</span> http) <span style="color:#89d3fe">throws</span> Exception {
+    <span style="color:#89d3fe">return</span> http
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(<span style="color:#c3e88d">"/api/v1/platos"</span>).permitAll()
+            .requestMatchers(<span style="color:#c3e88d">"/swagger-ui/**"</span>, <span style="color:#c3e88d">"/v3/api-docs/**"</span>).permitAll()
+            .anyRequest().authenticated()
+        )
+        .oauth2Login(oauth2 -> oauth2
+            .successHandler(oAuth2SuccessHandler())  <span style="color:#546e7a">// ← manejamos el éxito</span>
+        )
+        .build();
+}
+
+<span style="color:#c792ea">@Bean</span>
+<span style="color:#89d3fe">public</span> <span style="color:#f0b27a">AuthenticationSuccessHandler</span> oAuth2SuccessHandler() {
+    <span style="color:#89d3fe">return</span> (request, response, authentication) -> {
+        <span style="color:#f0b27a">OAuth2User</span> oauthUser = (<span style="color:#f0b27a">OAuth2User</span>) authentication.getPrincipal();
+        String email = oauthUser.getAttribute(<span style="color:#c3e88d">"email"</span>);
+        String nombre = oauthUser.getAttribute(<span style="color:#c3e88d">"name"</span>);
+        <span style="color:#546e7a">// Crear o actualizar el usuario en su BD con email y nombre de Google</span>
+        <span style="color:#546e7a">// Luego generar un JWT propio y devolverlo (ver sección JWT)</span>
+        log.info(<span style="color:#c3e88d">"Login OAuth2 exitoso: {}"</span>, email);
+        response.sendRedirect(<span style="color:#c3e88d">"/api/v1/auth/me"</span>);
+    };
+}</code></pre>
+  </div>
+
+  <div class="fase-box">
+    <h3>🧪 Fase 4 — Probar el flujo</h3>
+    <ol class="steps">
+      <li><div><div class="step-title">Levantar la app y abrir <code>http://localhost:8080/oauth2/authorization/google</code></div><div class="step-desc">Deben ser redirigidos a la pantalla de login de Google.</div></div></li>
+      <li><div><div class="step-title">Ingresar con una cuenta Google de prueba</div><div class="step-desc">Después de autenticarse, Google redirige a su app con el código de autorización.</div></div></li>
+      <li><div><div class="step-title">Verificar que el successHandler se ejecuta</div><div class="step-desc">En los logs deben ver <code>Login OAuth2 exitoso: email@gmail.com</code>. En la BD debe aparecer un registro del usuario.</div></div></li>
+    </ol>
+  </div>
+
+  <div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div><strong>Patrón común — OAuth2 + JWT:</strong> en la mayoría de proyectos reales, OAuth2 autentica al usuario con Google, y luego el successHandler genera un JWT propio de su sistema y lo devuelve al cliente. El cliente usa ese JWT en las siguientes peticiones. Así combinan OAuth2 (identificación con proveedor externo) con JWT (sesión stateless en su API).</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 4 — JWT -->
+<section class="section" id="jwt">
+  <div class="section-header">
+    <div class="section-icon">🎟️</div>
+    <div>
+      <span class="section-num">Paso 4 — Autenticación stateless</span>
+      <div class="section-title">JWT — el estándar real para APIs REST</div>
+    </div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Estructura de un JWT</div>
+    <div class="mermaid">
+flowchart LR
+    H["HEADER\n{alg: HS256, typ: JWT}\n→ Base64URL"]
+    P["PAYLOAD\n{sub: email, roles: CHEF,\niat: ahora, exp: +1h}\n→ Base64URL"]
+    S["SIGNATURE\nHMAC-SHA256(header.payload, secret)\n→ verificación de integridad"]
+    H -->|"."| P -->|"."| S
+    style H fill:#e8eaf6,stroke:#3949ab
+    style P fill:#e8f5e9,stroke:#2e7d32
+    style S fill:#fff8e1,stroke:#ff8f00
+    </div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:22px 0 14px;color:var(--azul)">Implementación completa de JWT</h3>
+
+  <div class="fase-box">
+    <h3>📦 Fase 1 — Dependencias jjwt</h3>
+    <pre><code><span style="color:#546e7a">&lt;!-- pom.xml — librería jjwt 0.12.x --&gt;</span>
+<span style="color:#c792ea">&lt;dependency&gt;</span>
+    <span style="color:#c3e88d">&lt;groupId&gt;</span>io.jsonwebtoken<span style="color:#c3e88d">&lt;/groupId&gt;</span>
+    <span style="color:#c3e88d">&lt;artifactId&gt;</span>jjwt-api<span style="color:#c3e88d">&lt;/artifactId&gt;</span>
+    <span style="color:#c3e88d">&lt;version&gt;</span>0.12.3<span style="color:#c3e88d">&lt;/version&gt;</span>
+<span style="color:#c792ea">&lt;/dependency&gt;</span>
+<span style="color:#c792ea">&lt;dependency&gt;</span>
+    <span style="color:#c3e88d">&lt;groupId&gt;</span>io.jsonwebtoken<span style="color:#c3e88d">&lt;/groupId&gt;</span>
+    <span style="color:#c3e88d">&lt;artifactId&gt;</span>jjwt-impl<span style="color:#c3e88d">&lt;/artifactId&gt;</span>
+    <span style="color:#c3e88d">&lt;version&gt;</span>0.12.3<span style="color:#c3e88d">&lt;/version&gt;</span>
+    <span style="color:#c3e88d">&lt;scope&gt;</span>runtime<span style="color:#c3e88d">&lt;/scope&gt;</span>
+<span style="color:#c792ea">&lt;/dependency&gt;</span>
+<span style="color:#c792ea">&lt;dependency&gt;</span>
+    <span style="color:#c3e88d">&lt;groupId&gt;</span>io.jsonwebtoken<span style="color:#c3e88d">&lt;/groupId&gt;</span>
+    <span style="color:#c3e88d">&lt;artifactId&gt;</span>jjwt-jackson<span style="color:#c3e88d">&lt;/artifactId&gt;</span>
+    <span style="color:#c3e88d">&lt;version&gt;</span>0.12.3<span style="color:#c3e88d">&lt;/version&gt;</span>
+    <span style="color:#c3e88d">&lt;scope&gt;</span>runtime<span style="color:#c3e88d">&lt;/scope&gt;</span>
+<span style="color:#c792ea">&lt;/dependency&gt;</span></code></pre>
+
+    <pre><code><span style="color:#546e7a"># application.yml — secret mínimo 44 caracteres Base64</span>
+jwt:
+  secret: <span style="color:#c3e88d">TXkgc3VwZXIgc2VjcmV0IGtleSBwYXJhIGVsIHJlc3RhdXJhbnRl</span>
+  expiration-ms: 3600000  <span style="color:#546e7a"># 1 hora en milisegundos</span></code></pre>
+  </div>
+
+  <div class="fase-box">
+    <h3>⚙️ Fase 2 — JwtUtil: generar y validar tokens</h3>
+    <pre><code><span style="color:#c792ea">@Component</span>
+<span style="color:#89d3fe">public class</span> <span style="color:#f0b27a">JwtUtil</span> {
+
+    <span style="color:#c792ea">@Value</span>(<span style="color:#c3e88d">"${jwt.secret}"</span>)          <span style="color:#89d3fe">private</span> String secret;
+    <span style="color:#c792ea">@Value</span>(<span style="color:#c3e88d">"${jwt.expiration-ms}"</span>)    <span style="color:#89d3fe">private</span> Long expirationMs;
+
+    <span style="color:#89d3fe">private</span> <span style="color:#f0b27a">SecretKey</span> getKey() {
+        <span style="color:#89d3fe">return</span> Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    }
+
+    <span style="color:#89d3fe">public</span> String generateToken(String email, String rol) {
+        <span style="color:#89d3fe">return</span> Jwts.builder()
+                .subject(email)
+                .claim(<span style="color:#c3e88d">"rol"</span>, rol)
+                .issuedAt(<span style="color:#89d3fe">new</span> Date())
+                .expiration(<span style="color:#89d3fe">new</span> Date(System.currentTimeMillis() + expirationMs))
+                .signWith(getKey())
+                .compact();
+    }
+
+    <span style="color:#89d3fe">public</span> Claims extractClaims(String token) {
+        <span style="color:#89d3fe">return</span> Jwts.parser()
+                .verifyWith(getKey()).build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    <span style="color:#89d3fe">public</span> boolean isValid(String token) {
+        <span style="color:#89d3fe">try</span> {
+            extractClaims(token);
+            <span style="color:#89d3fe">return true</span>;
+        } <span style="color:#89d3fe">catch</span> (<span style="color:#f0b27a">JwtException</span> | <span style="color:#f0b27a">IllegalArgumentException</span> e) {
+            <span style="color:#89d3fe">return false</span>;
+        }
+    }
+}</code></pre>
+  </div>
+
+  <div class="fase-box">
+    <h3>🔍 Fase 3 — JwtAuthFilter: interceptar cada petición</h3>
+    <pre><code><span style="color:#c792ea">@Component</span> <span style="color:#c792ea">@RequiredArgsConstructor</span>
+<span style="color:#89d3fe">public class</span> <span style="color:#f0b27a">JwtAuthFilter</span> <span style="color:#89d3fe">extends</span> <span style="color:#f0b27a">OncePerRequestFilter</span> {
+
+    <span style="color:#89d3fe">private final</span> JwtUtil jwtUtil;
+    <span style="color:#89d3fe">private final</span> UsuarioDetailsService userDetailsService;
+
+    <span style="color:#c792ea">@Override</span>
+    <span style="color:#89d3fe">protected void</span> doFilterInternal(<span style="color:#f0b27a">HttpServletRequest</span> req,
+                                      <span style="color:#f0b27a">HttpServletResponse</span> res,
+                                      <span style="color:#f0b27a">FilterChain</span> chain) <span style="color:#89d3fe">throws</span> IOException, ServletException {
+
+        String header = req.getHeader(<span style="color:#c3e88d">"Authorization"</span>);
+        <span style="color:#89d3fe">if</span> (header == <span style="color:#89d3fe">null</span> || !header.startsWith(<span style="color:#c3e88d">"Bearer "</span>)) {
+            chain.doFilter(req, res); <span style="color:#89d3fe">return</span>;
+        }
+
+        String token = header.substring(7);
+        <span style="color:#89d3fe">if</span> (jwtUtil.isValid(token)) {
+            String email = jwtUtil.extractClaims(token).getSubject();
+            UserDetails user = userDetailsService.loadUserByUsername(email);
+            UsernamePasswordAuthenticationToken auth =
+                    <span style="color:#89d3fe">new</span> UsernamePasswordAuthenticationToken(user, <span style="color:#89d3fe">null</span>, user.getAuthorities());
+            auth.setDetails(<span style="color:#89d3fe">new</span> WebAuthenticationDetailsSource().buildDetails(req));
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+        chain.doFilter(req, res);
+    }
+}</code></pre>
+  </div>
+
+  <div class="fase-box">
+    <h3>📡 Fase 4 — AuthController: login devuelve el token</h3>
+    <pre><code><span style="color:#c792ea">@RestController</span> <span style="color:#c792ea">@RequestMapping</span>(<span style="color:#c3e88d">"/api/v1/auth"</span>) <span style="color:#c792ea">@RequiredArgsConstructor</span>
+<span style="color:#89d3fe">public class</span> <span style="color:#f0b27a">AuthController</span> {
+
+    <span style="color:#89d3fe">private final</span> AuthenticationManager authManager;
+    <span style="color:#89d3fe">private final</span> JwtUtil jwtUtil;
+
+    <span style="color:#c792ea">@PostMapping</span>(<span style="color:#c3e88d">"/login"</span>)
+    <span style="color:#89d3fe">public</span> ResponseEntity&lt;TokenResponseDTO&gt; login(<span style="color:#c792ea">@RequestBody</span> LoginRequestDTO dto) {
+        Authentication auth = authManager.authenticate(
+                <span style="color:#89d3fe">new</span> UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
+        UserDetails user = (UserDetails) auth.getPrincipal();
+        String token = jwtUtil.generateToken(user.getUsername(),
+                user.getAuthorities().iterator().next().getAuthority());
+        <span style="color:#89d3fe">return</span> ResponseEntity.ok(<span style="color:#89d3fe">new</span> TokenResponseDTO(token));
+    }
+}
+
+<span style="color:#546e7a">// Records para los DTOs</span>
+<span style="color:#89d3fe">public record</span> <span style="color:#f0b27a">LoginRequestDTO</span>(String email, String password) {}
+<span style="color:#89d3fe">public record</span> <span style="color:#f0b27a">TokenResponseDTO</span>(String token) {}</code></pre>
+  </div>
+
+  <div class="fase-box">
+    <h3>🔧 Fase 5 — SecurityConfig actualizado para JWT</h3>
+    <pre><code><span style="color:#c792ea">@Bean</span>
+<span style="color:#89d3fe">public</span> <span style="color:#f0b27a">SecurityFilterChain</span> filterChain(<span style="color:#f0b27a">HttpSecurity</span> http) <span style="color:#89d3fe">throws</span> Exception {
+    <span style="color:#89d3fe">return</span> http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(<span style="color:#c3e88d">"/api/v1/auth/**"</span>).permitAll()         <span style="color:#546e7a">// login público</span>
+            .requestMatchers(<span style="color:#c3e88d">"/swagger-ui/**"</span>,<span style="color:#c3e88d">"/v3/api-docs/**"</span>).permitAll()
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+}
+
+<span style="color:#c792ea">@Bean</span>
+<span style="color:#89d3fe">public</span> <span style="color:#f0b27a">AuthenticationManager</span> authManager(<span style="color:#f0b27a">AuthenticationConfiguration</span> config) <span style="color:#89d3fe">throws</span> Exception {
+    <span style="color:#89d3fe">return</span> config.getAuthenticationManager();
+}</code></pre>
+
+    <div class="callout info" style="margin-top:14px">
+      <span class="callout-icon">💡</span>
+      <div><strong>Swagger con JWT:</strong> en <code>SwaggerConfig</code> cambien el scheme a <code>bearer</code>:
+        <pre style="margin-top:8px"><code>.addSecuritySchemes(<span style="color:#c3e88d">"bearerAuth"</span>,
+    <span style="color:#89d3fe">new</span> SecurityScheme().type(SecurityScheme.Type.HTTP)
+        .scheme(<span style="color:#c3e88d">"bearer"</span>).bearerFormat(<span style="color:#c3e88d">"JWT"</span>))</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 5 — AUTORIZACIÓN -->
+<section class="section" id="autorizacion">
+  <div class="section-header">
+    <div class="section-icon">🛡️</div>
+    <div>
+      <span class="section-num">Paso 5 — ¿Qué puede hacer cada usuario?</span>
+      <div class="section-title">Autorización — permisos por endpoint y por método</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Autenticación vs Autorización:</strong> Autenticación = ¿quién eres? (ya resuelta con JWT). Autorización = ¿qué puedes hacer? (se configura aquí). Una vez que el JwtAuthFilter establece la identidad del usuario, Spring Security evalúa si ese usuario tiene el rol necesario para ejecutar la acción.</div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:20px 0 14px;color:var(--azul)">Forma 1 — Reglas en SecurityConfig (por URL)</h3>
+  <pre><code>.authorizeHttpRequests(auth -> auth
+    .requestMatchers(HttpMethod.GET, <span style="color:#c3e88d">"/api/v1/platos"</span>).permitAll()
+    .requestMatchers(HttpMethod.POST, <span style="color:#c3e88d">"/api/v1/platos"</span>).hasRole(<span style="color:#c3e88d">"CHEF"</span>)
+    .requestMatchers(<span style="color:#c3e88d">"/api/v1/pedidos/**"</span>).hasAnyRole(<span style="color:#c3e88d">"CLIENTE"</span>, <span style="color:#c3e88d">"MESERO"</span>)
+    .requestMatchers(<span style="color:#c3e88d">"/api/v1/admin/**"</span>).hasRole(<span style="color:#c3e88d">"ADMIN"</span>)
+    .anyRequest().authenticated()
+)</code></pre>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:20px 0 14px;color:var(--azul)">Forma 2 — @PreAuthorize en el método (más granular)</h3>
+  <pre><code><span style="color:#c792ea">@RestController</span>
+<span style="color:#89d3fe">public class</span> <span style="color:#f0b27a">PlatoController</span> {
+
+    <span style="color:#c792ea">@GetMapping</span>    <span style="color:#546e7a">// sin restricción — público</span>
+    <span style="color:#89d3fe">public</span> List&lt;PlatoResponseDTO&gt; listar() { ... }
+
+    <span style="color:#c792ea">@PostMapping</span>
+    <span style="color:#c792ea">@PreAuthorize</span>(<span style="color:#c3e88d">"hasRole('CHEF')"</span>)   <span style="color:#546e7a">// solo el chef crea platos</span>
+    <span style="color:#89d3fe">public</span> ResponseEntity&lt;PlatoResponseDTO&gt; crear(...) { ... }
+
+    <span style="color:#c792ea">@DeleteMapping</span>(<span style="color:#c3e88d">"/{id}"</span>)
+    <span style="color:#c792ea">@PreAuthorize</span>(<span style="color:#c3e88d">"hasRole('ADMIN') or hasRole('CHEF')"</span>)
+    <span style="color:#89d3fe">public</span> ResponseEntity&lt;Void&gt; eliminar(<span style="color:#c792ea">@PathVariable</span> Long id) { ... }
+
+    <span style="color:#c792ea">@PatchMapping</span>(<span style="color:#c3e88d">"/{id}/estado"</span>)
+    <span style="color:#c792ea">@PreAuthorize</span>(<span style="color:#c3e88d">"hasAnyRole('MESERO','CHEF')"</span>)
+    <span style="color:#89d3fe">public</span> ResponseEntity&lt;PlatoResponseDTO&gt; actualizarEstado(...) { ... }
+}</code></pre>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Código HTTP</th><th>Significado</th><th>Cuándo ocurre</th></tr></thead>
+      <tbody>
+        <tr><td><code>401 Unauthorized</code></td><td>No está autenticado</td><td>No envió token, token inválido o token expirado</td></tr>
+        <tr><td><code>403 Forbidden</code></td><td>Autenticado pero sin permiso</td><td>Tiene token válido pero su rol no tiene acceso a ese endpoint</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:20px 0 14px;color:var(--azul)">Manejo de errores de autorización en GlobalExceptionHandler</h3>
+  <pre><code><span style="color:#c792ea">@ExceptionHandler</span>(<span style="color:#f0b27a">AccessDeniedException</span>.<span style="color:#89d3fe">class</span>)
+<span style="color:#c792ea">@ResponseStatus</span>(<span style="color:#f0b27a">HttpStatus</span>.FORBIDDEN)
+<span style="color:#89d3fe">public</span> <span style="color:#f0b27a">ErrorResponseDTO</span> handleAccessDenied(<span style="color:#f0b27a">AccessDeniedException</span> ex) {
+    <span style="color:#89d3fe">return new</span> <span style="color:#f0b27a">ErrorResponseDTO</span>(403, <span style="color:#c3e88d">"No tienes permisos para realizar esta acción"</span>);
+}</code></pre>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 6 — SSL -->
+<section class="section" id="ssl">
+  <div class="section-header">
+    <div class="section-icon">🔒</div>
+    <div>
+      <span class="section-num">Paso 6 — Cifrado en tránsito</span>
+      <div class="section-title">SSL/TLS — de HTTP a HTTPS</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">SSL cifra todo lo que viaja entre el cliente y el servidor. Sin HTTPS, un atacante en la red puede ver los tokens JWT en texto plano. En desarrollo usan un certificado auto-firmado. En producción usan Let's Encrypt o el certificado de Azure.</p>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <div class="step-title">Generar certificado auto-firmado para desarrollo</div>
+      </div>
+    </li>
+  </ol>
+  <pre><code><span style="color:#546e7a"># Ejecutar en la raíz del proyecto</span>
+keytool -genkeypair -alias restaurante -keyalg RSA -keysize 2048 \
+  -storetype PKCS12 -keystore src/main/resources/restaurante.p12 \
+  -validity 365 \
+  -dname "CN=localhost, OU=Dev, O=Restaurante, L=Bogota, S=DC, C=CO"
+<span style="color:#546e7a"># Les pedirá una contraseña — guárdenla para el application.yml</span></code></pre>
+
+  <pre><code><span style="color:#546e7a"># application.yml</span>
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:restaurante.p12
+    key-store-password: <span style="color:#c3e88d">${SSL_KEYSTORE_PASSWORD}</span>
+    key-store-type: PKCS12
+    key-alias: restaurante</code></pre>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>El archivo .p12 y la contraseña no van en Git.</strong> Agréguenlo a <code>.gitignore</code>. En CI/CD y en producción se inyecta como variable de entorno o secreto.</div>
+  </div>
+
+  <div class="callout key">
+    <span class="callout-icon">✅</span>
+    <div><strong>Verificación:</strong> levanten la app → abran <code>https://localhost:8443/swagger-ui/index.html</code>. El navegador mostrará "advertencia de certificado" (es auto-firmado) → hagan clic en "Avanzado" → "Continuar". Deben ver Swagger en HTTPS.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 7 — CORS -->
+<section class="section" id="cors">
+  <div class="section-header">
+    <div class="section-icon">🌍</div>
+    <div>
+      <span class="section-num">Paso 7 — Acceso desde el frontend</span>
+      <div class="section-title">CORS — quién puede llamar a su API desde un navegador</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">Sin CORS configurado, su frontend React en <code>localhost:3000</code> no puede llamar a su API en <code>localhost:8080</code> — el navegador bloquea la petición. CORS le dice al navegador qué dominios externos tienen permiso de hacer peticiones a su API.</p>
+
+  <pre><code><span style="color:#c792ea">@Configuration</span>
+<span style="color:#89d3fe">public class</span> <span style="color:#f0b27a">CorsConfig</span> {
+
+    <span style="color:#c792ea">@Bean</span>
+    <span style="color:#89d3fe">public</span> <span style="color:#f0b27a">CorsConfigurationSource</span> corsConfigurationSource() {
+        <span style="color:#f0b27a">CorsConfiguration</span> config = <span style="color:#89d3fe">new</span> <span style="color:#f0b27a">CorsConfiguration</span>();
+        config.setAllowedOrigins(List.of(
+            <span style="color:#c3e88d">"http://localhost:3000"</span>,     <span style="color:#546e7a">// frontend React en desarrollo</span>
+            <span style="color:#c3e88d">"https://su-dominio.com"</span>      <span style="color:#546e7a">// producción</span>
+        ));
+        config.setAllowedMethods(List.of(<span style="color:#c3e88d">"GET"</span>, <span style="color:#c3e88d">"POST"</span>, <span style="color:#c3e88d">"PUT"</span>, <span style="color:#c3e88d">"PATCH"</span>, <span style="color:#c3e88d">"DELETE"</span>, <span style="color:#c3e88d">"OPTIONS"</span>));
+        config.setAllowedHeaders(List.of(<span style="color:#c3e88d">"*"</span>));
+        config.setAllowCredentials(<span style="color:#89d3fe">true</span>);   <span style="color:#546e7a">// necesario para enviar cookies o Authorization headers</span>
+
+        <span style="color:#f0b27a">UrlBasedCorsConfigurationSource</span> source = <span style="color:#89d3fe">new</span> <span style="color:#f0b27a">UrlBasedCorsConfigurationSource</span>();
+        source.registerCorsConfiguration(<span style="color:#c3e88d">"/**"</span>, config);
+        <span style="color:#89d3fe">return</span> source;
+    }
+}
+
+<span style="color:#546e7a">// En SecurityConfig, activar CORS:</span>
+http.cors(cors -> cors.configurationSource(corsConfigurationSource()))</code></pre>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div><strong>NUNCA usen <code>allowedOrigins("*")</code> con <code>allowCredentials(true)</code>.</strong> El navegador rechaza esta combinación por seguridad. Si necesitan aceptar cualquier origen durante desarrollo, usen <code>allowedOrigins("*")</code> SIN <code>allowCredentials(true)</code>.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 8 — OWASP -->
+<section class="section" id="owasp">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div>
+      <span class="section-num">Paso 8 — Checklist de vulnerabilidades</span>
+      <div class="section-title">OWASP Top 10 — evalúen su API</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">OWASP publica las 10 vulnerabilidades más críticas en APIs. Revisen su código contra este checklist antes de presentar. Cada ítem con ☐ es algo que deben verificar y corregir si aplica.</p>
+
+  <div style="background:var(--blanco);border-radius:12px;padding:24px;box-shadow:0 2px 10px rgba(26,35,126,.08)">
+
+    <div class="owasp-item">
+      <div class="owasp-num risk">A1</div>
+      <div class="owasp-body">
+        <strong>Broken Access Control — Control de acceso roto</strong>
+        <p>¿Pueden sus endpoints ser accedidos por roles que no deberían? Prueben llamar a <code>POST /platos</code> con un token de CLIENTE — deben recibir 403. Si reciben 200, tienen A1.</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num risk">A2</div>
+      <div class="owasp-body">
+        <strong>Cryptographic Failures — Fallas criptográficas</strong>
+        <p>¿Los passwords se guardan con BCrypt? ¿El JWT usa HS256 con un secret de al menos 44 chars Base64? ¿La app corre en HTTPS? Si alguna de estas es no, tienen A2.</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num risk">A3</div>
+      <div class="owasp-body">
+        <strong>Injection — Inyección SQL / NoSQL</strong>
+        <p>¿Usan métodos derivados de JPA o @Query con parámetros nombrados? JPA y MongoRepository ya protegen contra inyección. Si armaron queries concatenando strings, tienen A3.</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num">A4</div>
+      <div class="owasp-body">
+        <strong>Insecure Design — Diseño inseguro</strong>
+        <p>¿Existen endpoints que exponen más datos de los necesarios? Revisen que los ResponseDTO no incluyan campos sensibles (passwords, tokens internos, datos de otros usuarios).</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num">A5</div>
+      <div class="owasp-body">
+        <strong>Security Misconfiguration — Mala configuración</strong>
+        <p>¿El error 500 devuelve el stack trace completo? ¿Swagger está expuesto en producción sin autenticación? ¿Las credenciales están en el código fuente en Git?</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num">A6</div>
+      <div class="owasp-body">
+        <strong>Vulnerable and Outdated Components</strong>
+        <p>Ejecuten <code>mvn dependency:check</code> para ver si alguna dependencia tiene vulnerabilidades conocidas. Mantengan Spring Boot actualizado a la última versión estable.</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num risk">A7</div>
+      <div class="owasp-body">
+        <strong>Identification and Authentication Failures</strong>
+        <p>¿El endpoint de login tiene rate limiting? ¿Los tokens JWT tienen expiración? ¿Los passwords tienen validación de complejidad (@Size, @Pattern)? ¿Hay manejo correcto de tokens expirados (401, no 500)?</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num">A8</div>
+      <div class="owasp-body">
+        <strong>Software and Data Integrity Failures</strong>
+        <p>¿El JWT usa una firma con secret fuerte? ¿Verifican la firma en cada petición (lo hace jjwt automáticamente)? ¿Las dependencias de pom.xml vienen de repositorios confiables (Maven Central)?</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num">A9</div>
+      <div class="owasp-body">
+        <strong>Security Logging and Monitoring Failures</strong>
+        <p>¿Registran en logs los intentos de login fallidos? ¿Los accesos denegados (403)? ¿Los tokens inválidos? Sin estos logs, un ataque puede pasar desapercibido durante días.</p>
+      </div>
+    </div>
+
+    <div class="owasp-item">
+      <div class="owasp-num">A10</div>
+      <div class="owasp-body">
+        <strong>Server-Side Request Forgery (SSRF)</strong>
+        <p>Si su API acepta URLs como parámetros de entrada (para consultar recursos externos), validen que apunten solo a dominios permitidos. Si no aceptan URLs en los inputs, no tienen este riesgo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 9 — CSRF / XSS / CLICKJACKING -->
+<section class="section" id="ataques">
+  <div class="section-header">
+    <div class="section-icon">🚫</div>
+    <div>
+      <span class="section-num">Paso 9 — Protección activa</span>
+      <div class="section-title">CSRF · XSS · Clickjacking — cómo proteger su API</div>
+    </div>
+  </div>
+
+  <div class="fase-box">
+    <h3>🎭 CSRF — Cross-Site Request Forgery</h3>
+    <p style="font-size:.88rem;color:var(--gris-med);margin-bottom:12px">Un atacante hace que un usuario autenticado ejecute acciones sin saberlo (clic en link malicioso que llama a su API). <strong>Las APIs stateless con JWT no son vulnerables a CSRF clásico</strong> porque el token no se envía automáticamente — el cliente lo incluye explícitamente. Por eso deshabilitan CSRF en la configuración.</p>
+    <pre><code><span style="color:#546e7a">// En SecurityConfig — correcto para APIs con JWT</span>
+http.csrf(csrf -> csrf.disable());  <span style="color:#546e7a">// stateless + JWT = sin vulnerabilidad CSRF</span></code></pre>
+    <div class="callout info" style="margin-top:10px"><span class="callout-icon">💡</span><div>Si en el futuro agregan sesiones con cookies (no JWT), deberán reactivar CSRF con <code>CsrfTokenRepository</code>. Con JWT y <code>SessionCreationPolicy.STATELESS</code>, desactivarlo es la práctica correcta.</div></div>
+  </div>
+
+  <div class="fase-box" style="border-top-color:#c62828">
+    <h3>💉 XSS — Cross-Site Scripting</h3>
+    <p style="font-size:.88rem;color:var(--gris-med);margin-bottom:12px">Un atacante inyecta scripts maliciosos que se ejecutan en el navegador de otro usuario. La defensa en Spring Boot son los headers HTTP de seguridad:</p>
+    <pre><code><span style="color:#c792ea">@Bean</span>
+<span style="color:#89d3fe">public</span> <span style="color:#f0b27a">SecurityFilterChain</span> filterChain(<span style="color:#f0b27a">HttpSecurity</span> http) <span style="color:#89d3fe">throws</span> Exception {
+    <span style="color:#89d3fe">return</span> http
+        .headers(headers -> headers
+            .contentSecurityPolicy(csp -> csp
+                .policyDirectives(<span style="color:#c3e88d">"default-src 'self'; script-src 'self'"</span>))
+            .frameOptions(frame -> frame.deny())        <span style="color:#546e7a">// bloquea iframes</span>
+            .xssProtection(xss -> xss.headerValue(      <span style="color:#546e7a">// activa filtro XSS del navegador</span>
+                XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+        )
+        <span style="color:#546e7a">// ... resto de la config</span>
+        .build();
+}</code></pre>
+    <p style="font-size:.82rem;color:var(--gris-med);margin-top:10px">En el frontend React: nunca usen <code>dangerouslySetInnerHTML</code> con datos del usuario. React escapa automáticamente las variables en JSX — no salten esa protección.</p>
+  </div>
+
+  <div class="fase-box" style="border-top-color:#e65100">
+    <h3>🖱️ Clickjacking</h3>
+    <p style="font-size:.88rem;color:var(--gris-med);margin-bottom:12px">Un atacante embebe su app en un iframe invisible para engañar a los usuarios a hacer clic en acciones no deseadas. El header <code>X-Frame-Options: DENY</code> lo previene — ya lo activan con <code>frameOptions(frame -> frame.deny())</code> en la configuración anterior.</p>
+    <pre><code><span style="color:#546e7a">// Verificar que el header aparece en las respuestas:</span>
+<span style="color:#546e7a">// En Postman o curl, revisen los headers de respuesta:</span>
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block</code></pre>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 10 — PRUEBAS DE SEGURIDAD -->
+<section class="section" id="pruebas">
+  <div class="section-header">
+    <div class="section-icon">🧪</div>
+    <div>
+      <span class="section-num">Paso 10 — Verificación final</span>
+      <div class="section-title">Prueben que todo funciona — checklist de seguridad</div>
+    </div>
+  </div>
+
+  <ul class="checklist">
+    <li><strong>Login exitoso:</strong> POST a <code>/api/v1/auth/login</code> con credenciales válidas → devuelve 200 con token JWT</li>
+    <li><strong>Login fallido:</strong> POST a <code>/api/v1/auth/login</code> con contraseña incorrecta → devuelve 401</li>
+    <li><strong>Sin token:</strong> GET a un endpoint protegido sin Authorization header → devuelve 401</li>
+    <li><strong>Token inválido:</strong> GET con <code>Authorization: Bearer tokenbasura</code> → devuelve 401</li>
+    <li><strong>Token expirado:</strong> esperen a que expire el TTL y ejecuten → devuelve 401</li>
+    <li><strong>Acceso denegado por rol:</strong> CLIENTE intenta POST a <code>/platos</code> → devuelve 403</li>
+    <li><strong>Acceso permitido por rol:</strong> CHEF hace POST a <code>/platos</code> con token válido → devuelve 201</li>
+    <li><strong>Swagger con autenticación:</strong> hagan clic en "Authorize" en Swagger UI → ingresan el token → ejecutan endpoint protegido → 200</li>
+    <li><strong>Headers de seguridad:</strong> revisen en Postman los headers de respuesta — deben ver <code>X-Frame-Options</code>, <code>X-Content-Type-Options</code></li>
+    <li><strong>Password hasheado:</strong> consulten la BD directamente — el campo password debe verse como <code>$2a$10$...</code>, nunca en texto plano</li>
+    <li><strong>CORS:</strong> si tienen frontend, prueben que React puede llamar a la API sin errores de CORS en la consola del navegador</li>
+  </ul>
+
+  <div class="callout key">
+    <span class="callout-icon">🌱</span>
+    <div><strong>Prueba de seguridad con MockMvc:</strong> agreguen una prueba unitaria que verifique que los endpoints protegidos devuelven 401/403 sin autenticación.</div>
+  </div>
+
+  <pre><code><span style="color:#c792ea">@SpringBootTest</span> <span style="color:#c792ea">@AutoConfigureMockMvc</span>
+<span style="color:#89d3fe">class</span> <span style="color:#f0b27a">SecurityTest</span> {
+
+    <span style="color:#c792ea">@Autowired</span> <span style="color:#89d3fe">private</span> <span style="color:#f0b27a">MockMvc</span> mockMvc;
+
+    <span style="color:#c792ea">@Test</span>
+    <span style="color:#89d3fe">void</span> crearPlato_sinToken_devuelve401() <span style="color:#89d3fe">throws</span> Exception {
+        mockMvc.perform(post(<span style="color:#c3e88d">"/api/v1/platos"</span>)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(<span style="color:#c3e88d">"{\"nombre\":\"Bandeja\",\"precio\":28000}"</span>))
+                .andExpect(status().isUnauthorized());
+    }
+
+    <span style="color:#c792ea">@Test</span>
+    <span style="color:#c792ea">@WithMockUser</span>(roles = <span style="color:#c3e88d">"CLIENTE"</span>)
+    <span style="color:#89d3fe">void</span> crearPlato_conRolCliente_devuelve403() <span style="color:#89d3fe">throws</span> Exception {
+        mockMvc.perform(post(<span style="color:#c3e88d">"/api/v1/platos"</span>)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(<span style="color:#c3e88d">"{\"nombre\":\"Bandeja\",\"precio\":28000}"</span>))
+                .andExpect(status().isForbidden());
+    }
+}</code></pre>
+</section>
+
+<div class="sep"></div>
+
+<!-- README -->
+<section class="section" id="readme">
+  <div class="section-header">
+    <div class="section-icon">📝</div>
+    <div>
+      <span class="section-num">Evidencia obligatoria</span>
+      <div class="section-title">Qué agregan al README</div>
+    </div>
+  </div>
+
+  <div class="readme-box">
+    <h4>📋 Sección "Seguridad" en el README del backend</h4>
+    <ul>
+      <li>Tabla de roles y permisos por endpoint (la que hicieron al inicio)</li>
+      <li>Captura del login exitoso en Swagger: request + respuesta con el JWT</li>
+      <li>Captura de 401 al llamar sin token</li>
+      <li>Captura de 403 al llamar con rol incorrecto</li>
+      <li>Captura del botón "Authorize" en Swagger UI con el token ingresado</li>
+      <li>Captura de los headers de seguridad en Postman (X-Frame-Options, etc.)</li>
+      <li>Checklist OWASP Top 10 completado — cuáles aplican y cómo los mitigaron</li>
+      <li>Resultado de mvn test con las pruebas de seguridad en verde</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  🌿 <span>Guía Turtwig de Studio</span> &nbsp;·&nbsp; S10 — Seguridad &nbsp;·&nbsp; DOSW &nbsp;·&nbsp; Escuela Colombiana de Ingeniería
+</footer>
+
+<script>
+mermaid.initialize({startOnLoad:true,theme:'base',themeVariables:{primaryColor:'#e8eaf6',primaryTextColor:'#1c1f26',primaryBorderColor:'#7986cb',lineColor:'#7986cb',fontFamily:'Space Grotesk, sans-serif',fontSize:'13px'},flowchart:{curve:'basis',padding:20}});
+</script>
+</body>
+</html>

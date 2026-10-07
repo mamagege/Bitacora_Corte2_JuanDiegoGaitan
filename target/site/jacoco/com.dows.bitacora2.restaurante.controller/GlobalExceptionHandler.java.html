@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestControllerAdvice
-<span class="nc" id="L17">public class GlobalExceptionHandler {</span>
-<span class="nc" id="L18">    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);</span>
+<span class="fc" id="L17">public class GlobalExceptionHandler {</span>
+<span class="fc" id="L18">    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);</span>
 
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ResponseEntity&lt;ErrorResponseDTO&gt; handleNotFound(RecursoNoEncontradoException ex, HttpServletRequest request) {
@@ -45,15 +45,22 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L45">                .body(buildError(400, &quot;Bad Request&quot;, mensaje, request.getRequestURI()));</span>
     }
 
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity&lt;ErrorResponseDTO&gt; handleAccessDenied(org.springframework.security.access.AccessDeniedException ex, HttpServletRequest request) {
+<span class="nc" id="L50">        log.warn(&quot;Acceso denegado (403) a la ruta: {} - Mensaje: {}&quot;, request.getRequestURI(), ex.getMessage());</span>
+<span class="nc" id="L51">        return ResponseEntity.status(HttpStatus.FORBIDDEN)</span>
+<span class="nc" id="L52">                .body(buildError(403, &quot;Forbidden&quot;, &quot;No tienes permisos para realizar esta acción&quot;, request.getRequestURI()));</span>
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity&lt;ErrorResponseDTO&gt; handleGenerico(Exception ex, HttpServletRequest request) {
-<span class="nc" id="L50">        log.error(&quot;Error inesperado: {}&quot;, ex.getMessage(), ex);</span>
-<span class="nc" id="L51">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</span>
-<span class="nc" id="L52">                .body(buildError(500, &quot;Internal Server Error&quot;, &quot;Error inesperado del servidor&quot;, request.getRequestURI()));</span>
+<span class="nc" id="L57">        log.error(&quot;Error inesperado: {}&quot;, ex.getMessage(), ex);</span>
+<span class="nc" id="L58">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)</span>
+<span class="nc" id="L59">                .body(buildError(500, &quot;Internal Server Error&quot;, &quot;Error inesperado del servidor&quot;, request.getRequestURI()));</span>
     }
 
     private ErrorResponseDTO buildError(int status, String error, String message, String path) {
-<span class="nc" id="L56">        return new ErrorResponseDTO(LocalDateTime.now(), status, error, message, path);</span>
+<span class="nc" id="L63">        return new ErrorResponseDTO(LocalDateTime.now(), status, error, message, path);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping(&quot;/api/v1/platos&quot;)
 public class PlatoController implements PlatoApi {
 
-<span class="nc" id="L19">    public PlatoController(IPlatoService platoService, PlatoMapper platoMapper) { this.platoService = platoService; this.platoMapper = platoMapper; }</span>
+<span class="fc" id="L19">    public PlatoController(IPlatoService platoService, PlatoMapper platoMapper) { this.platoService = platoService; this.platoMapper = platoMapper; }</span>
 
     private final IPlatoService platoService;
     private final PlatoMapper   platoMapper;
@@ -34,26 +34,30 @@ public class PlatoController implements PlatoApi {
     }
 
     @Override @PostMapping
+    @org.springframework.security.access.prepost.PreAuthorize(&quot;hasRole('ADMIN')&quot;)
     public ResponseEntity&lt;PlatoResponseDTO&gt; crear(@RequestBody @Valid PlatoRequestDTO dto) {
-<span class="nc" id="L38">        Plato creado = platoService.crear(platoMapper.toDomain(dto));</span>
-<span class="nc" id="L39">        return ResponseEntity.status(HttpStatus.CREATED).body(platoMapper.toResponse(creado));</span>
+<span class="nc" id="L39">        Plato creado = platoService.crear(platoMapper.toDomain(dto));</span>
+<span class="nc" id="L40">        return ResponseEntity.status(HttpStatus.CREATED).body(platoMapper.toResponse(creado));</span>
     }
 
     @Override @PutMapping(&quot;/{id}&quot;)
+    @org.springframework.security.access.prepost.PreAuthorize(&quot;hasRole('ADMIN')&quot;)
     public ResponseEntity&lt;PlatoResponseDTO&gt; actualizar(@PathVariable Long id, @RequestBody @Valid PlatoRequestDTO dto) {
-<span class="nc" id="L44">        Plato actualizado = platoService.actualizar(id, platoMapper.toDomain(dto));</span>
-<span class="nc" id="L45">        return ResponseEntity.ok(platoMapper.toResponse(actualizado));</span>
+<span class="nc" id="L46">        Plato actualizado = platoService.actualizar(id, platoMapper.toDomain(dto));</span>
+<span class="nc" id="L47">        return ResponseEntity.ok(platoMapper.toResponse(actualizado));</span>
     }
 
     @Override @PatchMapping(&quot;/{id}/disponible&quot;)
+    @org.springframework.security.access.prepost.PreAuthorize(&quot;hasRole('ADMIN')&quot;)
     public ResponseEntity&lt;PlatoResponseDTO&gt; cambiarDisponibilidad(@PathVariable Long id, @RequestParam boolean disponible) {
-<span class="nc" id="L50">        return ResponseEntity.ok(platoMapper.toResponse(platoService.cambiarDisponibilidad(id, disponible)));</span>
+<span class="nc" id="L53">        return ResponseEntity.ok(platoMapper.toResponse(platoService.cambiarDisponibilidad(id, disponible)));</span>
     }
 
     @Override @DeleteMapping(&quot;/{id}&quot;)
+    @org.springframework.security.access.prepost.PreAuthorize(&quot;hasRole('ADMIN')&quot;)
     public ResponseEntity&lt;Void&gt; eliminar(@PathVariable Long id) {
-<span class="nc" id="L55">        platoService.eliminar(id);</span>
-<span class="nc" id="L56">        return ResponseEntity.noContent().build();</span>
+<span class="nc" id="L59">        platoService.eliminar(id);</span>
+<span class="nc" id="L60">        return ResponseEntity.noContent().build();</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -15,6 +15,7 @@ public interface PedidoEntityMapper {
     Pedido toDomain(PedidoEntity entity);
     List<Pedido> toDomainList(List<PedidoEntity> entities);
     
+    @org.mapstruct.Mapping(target = "id", ignore = true)
     ItemPedidoEntity toItemEntity(ItemPedido item);
     ItemPedido toItemDomain(ItemPedidoEntity entity);
 }

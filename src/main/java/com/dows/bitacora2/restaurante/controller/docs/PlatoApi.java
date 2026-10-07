@@ -26,6 +26,7 @@ public interface PlatoApi {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Plato creado"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "409", description = "Nombre duplicado")
     })
     ResponseEntity<PlatoResponseDTO> crear(PlatoRequestDTO dto);
@@ -34,6 +35,7 @@ public interface PlatoApi {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Plato actualizado"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Plato no existe"),
         @ApiResponse(responseCode = "409", description = "Nombre duplicado")
     })
@@ -42,6 +44,7 @@ public interface PlatoApi {
     @Operation(summary = "Activar o desactivar un plato")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Plato no existe")
     })
     ResponseEntity<PlatoResponseDTO> cambiarDisponibilidad(Long id, boolean disponible);
@@ -49,6 +52,7 @@ public interface PlatoApi {
     @Operation(summary = "Eliminar un plato")
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Plato eliminado"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Plato no existe")
     })
     ResponseEntity<Void> eliminar(Long id);

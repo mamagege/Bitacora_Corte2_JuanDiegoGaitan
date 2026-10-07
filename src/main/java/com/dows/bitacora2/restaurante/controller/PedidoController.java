@@ -27,6 +27,7 @@ public class PedidoController implements PedidoApi {
 
     @Override
     @GetMapping
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('MESERO', 'COCINA', 'ADMIN', 'CLIENTE')")
     public ResponseEntity<List<PedidoResponseDTO>> listar() {
         List<Pedido> pedidos = pedidoService.obtenerTodos();
         return ResponseEntity.ok(pedidoMapper.toResponseList(pedidos));
@@ -34,6 +35,7 @@ public class PedidoController implements PedidoApi {
 
     @Override
     @GetMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('MESERO', 'COCINA', 'ADMIN', 'CLIENTE')")
     public ResponseEntity<PedidoResponseDTO> obtener(@PathVariable Long id) {
         Pedido pedido = pedidoService.obtenerPorId(id);
         return ResponseEntity.ok(pedidoMapper.toResponse(pedido));
@@ -41,6 +43,7 @@ public class PedidoController implements PedidoApi {
 
     @Override
     @PostMapping
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('CLIENTE', 'MESERO')")
     public ResponseEntity<PedidoResponseDTO> crear(@Valid @RequestBody PedidoRequestDTO dto) {
         Pedido nuevo = pedidoMapper.toDomain(dto);
         Pedido creado = pedidoService.crear(nuevo);
@@ -49,6 +52,7 @@ public class PedidoController implements PedidoApi {
 
     @Override
     @PutMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('CLIENTE', 'MESERO')")
     public ResponseEntity<PedidoResponseDTO> actualizar(@PathVariable Long id, @Valid @RequestBody PedidoRequestDTO dto) {
         Pedido modificado = pedidoMapper.toDomain(dto);
         Pedido actualizado = pedidoService.actualizar(id, modificado);
@@ -57,6 +61,7 @@ public class PedidoController implements PedidoApi {
 
     @Override
     @PatchMapping("/{id}/estado")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('COCINA', 'MESERO')")
     public ResponseEntity<PedidoResponseDTO> cambiarEstado(@PathVariable Long id, @RequestParam String estado) {
         Pedido actualizado = pedidoService.cambiarEstado(id, estado);
         return ResponseEntity.ok(pedidoMapper.toResponse(actualizado));
@@ -64,6 +69,7 @@ public class PedidoController implements PedidoApi {
 
     @Override
     @DeleteMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('MESERO', 'ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         pedidoService.eliminar(id);
         return ResponseEntity.noContent().build();

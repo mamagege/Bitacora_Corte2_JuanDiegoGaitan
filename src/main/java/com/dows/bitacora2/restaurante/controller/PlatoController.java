@@ -34,23 +34,27 @@ public class PlatoController implements PlatoApi {
     }
 
     @Override @PostMapping
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PlatoResponseDTO> crear(@RequestBody @Valid PlatoRequestDTO dto) {
         Plato creado = platoService.crear(platoMapper.toDomain(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(platoMapper.toResponse(creado));
     }
 
     @Override @PutMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PlatoResponseDTO> actualizar(@PathVariable Long id, @RequestBody @Valid PlatoRequestDTO dto) {
         Plato actualizado = platoService.actualizar(id, platoMapper.toDomain(dto));
         return ResponseEntity.ok(platoMapper.toResponse(actualizado));
     }
 
     @Override @PatchMapping("/{id}/disponible")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PlatoResponseDTO> cambiarDisponibilidad(@PathVariable Long id, @RequestParam boolean disponible) {
         return ResponseEntity.ok(platoMapper.toResponse(platoService.cambiarDisponibilidad(id, disponible)));
     }
 
     @Override @DeleteMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         platoService.eliminar(id);
         return ResponseEntity.noContent().build();

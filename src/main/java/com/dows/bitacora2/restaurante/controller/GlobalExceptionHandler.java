@@ -45,6 +45,13 @@ public class GlobalExceptionHandler {
                 .body(buildError(400, "Bad Request", mensaje, request.getRequestURI()));
     }
 
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAccessDenied(org.springframework.security.access.AccessDeniedException ex, HttpServletRequest request) {
+        log.warn("Acceso denegado (403) a la ruta: {} - Mensaje: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(buildError(403, "Forbidden", "No tienes permisos para realizar esta acción", request.getRequestURI()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGenerico(Exception ex, HttpServletRequest request) {
         log.error("Error inesperado: {}", ex.getMessage(), ex);

@@ -1,6 +1,8 @@
 spring:
   application:
     name: restaurante
+  config:
+    import: optional:file:.env[.properties]
 
   # Configuración ACID (PostgreSQL)
   datasource:
@@ -20,5 +22,28 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/restaurante_historico
 
+  # Configuración JWT
+  jwt:
+    secret: TXkgc3VwZXIgc2VjcmV0IGtleSBwYXJhIGVsIHJlc3RhdXJhbnRl
+    expiration-ms: 3600000
+
+  # Configuración OAuth2
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    key-store: classpath:restaurante.p12
+    key-store-password: ${SSL_KEYSTORE_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: restaurante

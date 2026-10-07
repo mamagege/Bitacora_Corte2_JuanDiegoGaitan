@@ -12,12 +12,16 @@ import java.util.List;
 @Tag(name = "Mesas", description = "Administración de mesas del restaurante")
 public interface MesaApi {
     @Operation(summary = "Listar todas las mesas")
-    @ApiResponse(responseCode = "200", description = "Lista de mesas")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de mesas"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente.")
+    })
     ResponseEntity<List<MesaResponseDTO>> listar();
 
     @Operation(summary = "Obtener mesa por ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Mesa encontrada"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Mesa no existe")
     })
     ResponseEntity<MesaResponseDTO> obtener(Long id);
@@ -26,6 +30,7 @@ public interface MesaApi {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Mesa creada"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "409", description = "Número de mesa duplicado")
     })
     ResponseEntity<MesaResponseDTO> crear(MesaRequestDTO dto);
@@ -34,6 +39,7 @@ public interface MesaApi {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Mesa actualizada"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Mesa no existe"),
         @ApiResponse(responseCode = "409", description = "Número duplicado")
     })
@@ -43,6 +49,7 @@ public interface MesaApi {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Estado actualizado"),
         @ApiResponse(responseCode = "400", description = "Estado inválido"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Mesa no existe")
     })
     ResponseEntity<MesaResponseDTO> cambiarEstado(Long id, String estado);
@@ -50,6 +57,7 @@ public interface MesaApi {
     @Operation(summary = "Abrir cuenta de una mesa")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Cuenta abierta"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Mesa no existe"),
         @ApiResponse(responseCode = "409", description = "Mesa ya tiene cuenta abierta")
     })
@@ -58,6 +66,7 @@ public interface MesaApi {
     @Operation(summary = "Cerrar cuenta de una mesa")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Cuenta cerrada"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Mesa no existe"),
         @ApiResponse(responseCode = "409", description = "Mesa no tiene cuenta abierta")
     })

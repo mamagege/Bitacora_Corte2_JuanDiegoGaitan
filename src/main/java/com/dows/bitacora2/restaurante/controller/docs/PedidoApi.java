@@ -12,12 +12,16 @@ import java.util.List;
 @Tag(name = "Pedidos", description = "Administración de pedidos del restaurante")
 public interface PedidoApi {
     @Operation(summary = "Listar todos los pedidos")
-    @ApiResponse(responseCode = "200", description = "Lista de pedidos")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de pedidos"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente.")
+    })
     ResponseEntity<List<PedidoResponseDTO>> listar();
 
     @Operation(summary = "Obtener pedido por ID")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Pedido no existe")
     })
     ResponseEntity<PedidoResponseDTO> obtener(Long id);
@@ -25,7 +29,8 @@ public interface PedidoApi {
     @Operation(summary = "Crear un nuevo pedido")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "Pedido creado"),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos o reglas de negocio no cumplidas")
+        @ApiResponse(responseCode = "400", description = "Datos inválidos o reglas de negocio no cumplidas"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente.")
     })
     ResponseEntity<PedidoResponseDTO> crear(PedidoRequestDTO dto);
 
@@ -33,6 +38,7 @@ public interface PedidoApi {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Pedido actualizado"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Pedido no existe"),
         @ApiResponse(responseCode = "409", description = "Pedido no está en estado RECIBIDO")
     })
@@ -42,6 +48,7 @@ public interface PedidoApi {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Estado actualizado"),
         @ApiResponse(responseCode = "400", description = "Transición inválida o estado inexistente"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Pedido no existe")
     })
     ResponseEntity<PedidoResponseDTO> cambiarEstado(Long id, String estado);
@@ -50,6 +57,7 @@ public interface PedidoApi {
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Pedido cancelado"),
         @ApiResponse(responseCode = "400", description = "No se puede cancelar en este estado"),
+        @ApiResponse(responseCode = "403", description = "Acceso denegado. Motivo: Rol insuficiente."),
         @ApiResponse(responseCode = "404", description = "Pedido no existe")
     })
     ResponseEntity<Void> eliminar(Long id);

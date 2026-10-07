@@ -1,5 +1,6 @@
-com\dows\bitacora2\restaurante\service\CuentaServiceImplTest.class
-com\dows\bitacora2\restaurante\service\MesaServiceImplTest.class
 com\dows\bitacora2\restaurante\model\domain\PedidoTest.class
 com\dows\bitacora2\restaurante\service\PlatoServiceImplTest.class
+com\dows\bitacora2\restaurante\security\SecurityTest.class
 com\dows\bitacora2\restaurante\service\PedidoServiceImplTest.class
+com\dows\bitacora2\restaurante\service\CuentaServiceImplTest.class
+com\dows\bitacora2\restaurante\service\MesaServiceImplTest.class
