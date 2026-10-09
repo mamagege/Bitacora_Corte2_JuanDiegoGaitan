@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Guía Turtwig S10 — CI/CD con GitHub Actions</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+  :root{--azul:#1a237e;--naranja:#e65100;--naranja-med:#f57c00;--naranja-cl:#ffb74d;--naranja-fondo:#fff8f0;--amarillo:#ffd600;--gris-osc:#1c1f26;--gris-med:#4a5568;--blanco:#fff;--verde:#2e7d32;--rojo:#c62828;--code-bg:#0f172a;--code-txt:#7dd3fc;--tip:#7c4dff;--warn:#f4a435;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--naranja-fondo);color:var(--gris-osc);line-height:1.7;font-size:16px}
+  .hero{background:linear-gradient(135deg,#bf360c,#e64a19 50%,#f4511e);color:#fff;padding:64px 40px 56px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:rgba(255,255,255,.06);border-radius:50%}
+  .hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:1}
+  .dosw-badge{display:inline-flex;align-items:center;gap:8px;background:var(--amarillo);color:#bf360c;font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;letter-spacing:.8px;margin-bottom:18px;text-transform:uppercase}
+  .hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:700;line-height:1.2;margin-bottom:14px}
+  .hero h1 span{color:var(--amarillo)}
+  .hero-sub{font-size:1rem;color:rgba(255,255,255,.8);max-width:640px;font-weight:300;line-height:1.7}
+  .hero-chips{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:600;padding:5px 13px;border-radius:16px;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.9);font-family:'JetBrains Mono',monospace}
+  .nav-toc{background:var(--blanco);border-bottom:2px solid #ffccbc;padding:0 40px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(230,74,25,.08)}
+  .nav-toc ul{max-width:920px;margin:0 auto;display:flex;gap:0;list-style:none;overflow-x:auto}
+  .nav-toc ul li a{display:block;padding:13px 12px;font-size:11px;font-weight:700;color:var(--gris-med);text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;text-transform:uppercase;letter-spacing:.4px}
+  .nav-toc ul li a:hover{color:var(--naranja-med);border-bottom-color:var(--naranja-med)}
+  .content{max-width:920px;margin:0 auto;padding:52px 40px 80px}
+  .section{margin-bottom:72px;scroll-margin-top:60px}
+  .section-header{display:flex;align-items:center;gap:14px;margin-bottom:26px;padding-bottom:14px;border-bottom:2px solid #ffccbc}
+  .section-icon{width:46px;height:46px;background:var(--naranja-med);color:#fff;font-size:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .section-title{font-size:1.4rem;font-weight:700}
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--naranja-med);letter-spacing:1.2px;display:block;text-transform:uppercase}
+  .card{background:var(--blanco);border-radius:12px;padding:22px 26px;margin-bottom:14px;border-left:4px solid var(--naranja-med);box-shadow:0 2px 8px rgba(230,74,25,.07)}
+  .card h3{font-size:.95rem;font-weight:700;color:var(--naranja-med);margin-bottom:7px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+  @media(max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}}
+  .callout{border-radius:10px;padding:16px 20px;margin:18px 0;display:flex;gap:12px;font-size:.9rem}
+  .callout-icon{font-size:19px;flex-shrink:0;line-height:1.5}
+  .callout.tip{background:#f3eeff;border-left:4px solid var(--tip)}
+  .callout.warn{background:#fff8ec;border-left:4px solid var(--warn)}
+  .callout.info{background:#fff3e0;border-left:4px solid var(--naranja-med)}
+  .callout.key{background:#e8f5e9;border-left:4px solid var(--verde)}
+  .callout.danger{background:#ffebee;border-left:4px solid var(--rojo)}
+  .callout strong{display:block;font-weight:700;margin-bottom:3px}
+  .tabla-wrap{overflow-x:auto;margin:16px 0;border-radius:10px;box-shadow:0 2px 8px rgba(230,74,25,.08)}
+  table{width:100%;border-collapse:collapse;background:var(--blanco)}
+  th{background:var(--naranja-med);color:#fff;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:12px 16px;text-align:left}
+  td{padding:11px 16px;font-size:13.5px;border-bottom:1px solid #fff3e0;color:var(--gris-osc)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#fffbf5}
+  .steps{counter-reset:step;list-style:none;margin:16px 0}
+  .steps li{counter-increment:step;display:flex;gap:14px;margin-bottom:18px;align-items:flex-start}
+  .steps li::before{content:counter(step);min-width:30px;height:30px;background:var(--naranja-med);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px}
+  .step-title{font-weight:700;font-size:.95rem;margin-bottom:3px;color:var(--naranja)}
+  .step-desc{font-size:.88rem;color:var(--gris-med)}
+  .checklist{list-style:none;margin:14px 0}
+  .checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.91rem;border-bottom:1px solid #fff3e0}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li::before{content:'☐';color:var(--naranja-med);font-size:1.1rem;flex-shrink:0;margin-top:1px}
+  pre{background:var(--code-bg);color:var(--code-txt);border-radius:10px;padding:18px 22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;overflow-x:auto;line-height:1.65;margin:14px 0}
+  code{font-family:'JetBrains Mono',monospace;background:rgba(230,74,25,.1);color:var(--naranja-med);padding:2px 7px;border-radius:4px;font-size:.85em}
+  pre code{background:none;color:inherit;padding:0}
+  .diagram-wrap{background:var(--blanco);border-radius:12px;padding:26px;margin:20px 0;box-shadow:0 2px 12px rgba(230,74,25,.08);overflow-x:auto}
+  .diagram-label{font-size:11.5px;font-weight:700;color:var(--naranja-med);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+  .env-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:12px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700}
+  .env-qa{background:#e3f2fd;color:#1565c0}
+  .env-prod{background:#ffebee;color:#c62828}
+  .fase-box{background:var(--blanco);border-radius:14px;padding:24px 28px;margin-bottom:20px;border-top:4px solid var(--naranja-med);box-shadow:0 2px 10px rgba(230,74,25,.08)}
+  .fase-box h3{font-size:1rem;font-weight:700;color:var(--naranja);margin-bottom:14px}
+  .readme-box{background:var(--naranja-med);color:#fff;border-radius:12px;padding:24px 28px;margin:16px 0}
+  .readme-box h4{color:var(--amarillo);font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px}
+  .readme-box ul{list-style:none;font-size:.88rem}
+  .readme-box ul li{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+  .readme-box ul li:last-child{border-bottom:none}
+  .readme-box ul li::before{content:'📎 '}
+  .sep{height:1px;background:linear-gradient(90deg,#ffccbc,transparent);margin:56px 0}
+  footer{background:#bf360c;color:rgba(255,255,255,.6);text-align:center;padding:28px;font-size:13px}
+  footer span{color:var(--amarillo)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="dosw-badge">⚙️ Semana 10 · DOSW · ECI</div>
+    <h1>Guía Turtwig S10 —<br><span>CI/CD con GitHub Actions</span></h1>
+    <p class="hero-sub">El código que no se despliega automáticamente se despliega tarde, con errores o no se despliega. CI/CD convierte cada push en un proceso verificado: pruebas, build, imagen Docker y despliegue en Azure — sin intervención manual.</p>
+    <div class="hero-chips">
+      <span class="chip">🔄 GitHub Actions</span>
+      <span class="chip">🧪 QA Environment</span>
+      <span class="chip">🚀 PROD Environment</span>
+      <span class="chip">🔐 Secrets</span>
+      <span class="chip">☁️ Azure</span>
+      <span class="chip">📐 Diagrama despliegue</span>
+    </div>
+  </div>
+</div>
+
+<nav class="nav-toc">
+  <ul>
+    <li><a href="#conceptos">1 · Conceptos</a></li>
+    <li><a href="#estructura">2 · Estructura</a></li>
+    <li><a href="#secrets">3 · Secrets</a></li>
+    <li><a href="#pipeline-qa">4 · Pipeline QA</a></li>
+    <li><a href="#pipeline-prod">5 · Pipeline PROD</a></li>
+    <li><a href="#azure">6 · Azure BD</a></li>
+    <li><a href="#despliegue">7 · Despliegue</a></li>
+    <li><a href="#diagrama">8 · Diagrama</a></li>
+    <li><a href="#readme">README</a></li>
+  </ul>
+</nav>
+
+<div class="content">
+
+<!-- PASO 1 — CONCEPTOS -->
+<section class="section" id="conceptos">
+  <div class="section-header">
+    <div class="section-icon">🔄</div>
+    <div>
+      <span class="section-num">Paso 1 — Fundamentos</span>
+      <div class="section-title">CI/CD — qué es y por qué su API lo necesita</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card"><h3>🔧 CI — Integración Continua</h3><p>Cada vez que hacen push a GitHub, se ejecutan automáticamente las pruebas y se construye la imagen Docker. Si algo falla, el equipo sabe de inmediato — antes de que llegue a producción.</p></div>
+    <div class="card"><h3>🚀 CD — Despliegue Continuo</h3><p>Si el pipeline de CI pasa, el código se despliega automáticamente al ambiente correspondiente (QA o PROD) en Azure. Sin copiar archivos manualmente, sin SSH, sin errores humanos.</p></div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Flujo completo CI/CD — de push a producción</div>
+    <div class="mermaid">
+flowchart LR
+    DEV["👨‍💻 Developer\ngit push"]
+    GH["📦 GitHub\nRepositorio"]
+    CI["⚙️ GitHub Actions\nCI Pipeline\n→ Tests\n→ Build\n→ Docker push"]
+    QA["🧪 Azure QA\nValidación del equipo"]
+    APPROVE["✅ Aprobación\nmanual"]
+    PROD["🚀 Azure PROD\nAPI pública"]
+
+    DEV --> GH
+    GH -->|"push main"| CI
+    CI -->|"✅ pasa"| QA
+    QA --> APPROVE
+    APPROVE --> PROD
+
+    style CI fill:#e65100,color:#fff
+    style QA fill:#1565c0,color:#fff
+    style PROD fill:#1b5e20,color:#fff
+    style APPROVE fill:#ffd600,color:#000
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 2 — ESTRUCTURA -->
+<section class="section" id="estructura">
+  <div class="section-header">
+    <div class="section-icon">📁</div>
+    <div>
+      <span class="section-num">Paso 2 — Organización</span>
+      <div class="section-title">Estructura de archivos — dónde va cada pipeline</div>
+    </div>
+  </div>
+
+  <pre><code>restaurante-api/
+├── .github/
+│   └── workflows/
+│       ├── ci-qa.yml          <span style="color:#546e7a"># ← pipeline de CI + despliegue a QA</span>
+│       └── ci-prod.yml        <span style="color:#546e7a"># ← pipeline de despliegue a PROD</span>
+├── src/
+├── Dockerfile
+├── docker-compose.yml
+└── pom.xml</code></pre>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <div><strong>Los workflows de GitHub Actions van en <code>.github/workflows/</code></strong> — GitHub los detecta automáticamente. Cada archivo <code>.yml</code> es un pipeline independiente con sus propias reglas de disparo.</div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:22px 0 14px;color:var(--naranja)">Dos ambientes — QA y PROD</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Ambiente</th><th>Cuándo se activa</th><th>Propósito</th><th>Aprobación</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="env-badge env-qa">🧪 QA</span></td>
+          <td>Push a rama <code>main</code> o <code>develop</code></td>
+          <td>Validar que el código funciona después de merges. El equipo prueba aquí.</td>
+          <td>Automática — sin aprobación manual</td>
+        </tr>
+        <tr>
+          <td><span class="env-badge env-prod">🚀 PROD</span></td>
+          <td>Tag de versión <code>v*.*.*</code> o aprobación manual</td>
+          <td>API que usan los usuarios reales. Solo llega código validado en QA.</td>
+          <td>Requiere aprobación manual en GitHub</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 3 — SECRETS -->
+<section class="section" id="secrets">
+  <div class="section-header">
+    <div class="section-icon">🔐</div>
+    <div>
+      <span class="section-num">Paso 3 — Configuración segura</span>
+      <div class="section-title">Secrets — variables sensibles en GitHub, no en el código</div>
+    </div>
+  </div>
+
+  <p style="font-size:.95rem;color:var(--gris-med);margin-bottom:18px">Las credenciales de la BD, el JWT secret, las claves de Azure y el token de Docker Hub nunca van en el código. GitHub guarda estos valores encriptados como Secrets y los inyecta en el pipeline cuando se ejecuta.</p>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <div class="step-title">Ir a Settings → Secrets and variables → Actions en su repositorio</div>
+        <div class="step-desc">Cada repositorio tiene su propia sección de secrets. Los Secrets de Organization aplican a todos los repositorios de la organización.</div>
+      </div>
+    </li>
+    <li>
+      <div>
+        <div class="step-title">Crear los siguientes secrets</div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Secret</th><th>Valor</th><th>Para qué sirve</th></tr></thead>
+      <tbody>
+        <tr><td><code>DOCKERHUB_USERNAME</code></td><td>Su usuario de Docker Hub</td><td>Login para hacer push de la imagen</td></tr>
+        <tr><td><code>DOCKERHUB_TOKEN</code></td><td>Token de acceso de Docker Hub (no el password)</td><td>Autenticación segura sin exponer el password</td></tr>
+        <tr><td><code>AZURE_CREDENTIALS</code></td><td>JSON de credenciales del Service Principal de Azure</td><td>Permite a GitHub Actions desplegar en Azure</td></tr>
+        <tr><td><code>JWT_SECRET_QA</code></td><td>Secret JWT para ambiente QA</td><td>Distinto del de PROD — cada ambiente tiene el suyo</td></tr>
+        <tr><td><code>JWT_SECRET_PROD</code></td><td>Secret JWT para ambiente PROD</td><td>Más seguro, rotado periódicamente</td></tr>
+        <tr><td><code>DB_PASSWORD_QA</code></td><td>Password de la BD en Azure QA</td><td>Credencial de la BD de QA</td></tr>
+        <tr><td><code>DB_PASSWORD_PROD</code></td><td>Password de la BD en Azure PROD</td><td>Credencial de la BD de producción</td></tr>
+        <tr><td><code>AZURE_WEBAPP_NAME_QA</code></td><td>Nombre del App Service de QA en Azure</td><td>A dónde desplegar en QA</td></tr>
+        <tr><td><code>AZURE_WEBAPP_NAME_PROD</code></td><td>Nombre del App Service de PROD en Azure</td><td>A dónde desplegar en PROD</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout danger">
+    <span class="callout-icon">🚨</span>
+    <div><strong>Nunca usen el mismo JWT secret ni las mismas credenciales de BD en QA y PROD.</strong> Si QA se compromete, PROD sigue siendo seguro. Cada ambiente es independiente.</div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:20px 0 12px;color:var(--naranja)">Crear el token de Docker Hub</h3>
+  <ol class="steps">
+    <li><div><div class="step-title">Ir a hub.docker.com → Account Settings → Security → New Access Token</div><div class="step-desc">Nombre: <code>github-actions</code>. Permisos: Read & Write. Copiar el token inmediatamente — solo se muestra una vez.</div></div></li>
+    <li><div><div class="step-title">Guardarlo como secret <code>DOCKERHUB_TOKEN</code> en GitHub</div><div class="step-desc">Nunca en el código, nunca en un archivo que se vaya a commitear.</div></div></li>
+  </ol>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 4 — PIPELINE QA -->
+<section class="section" id="pipeline-qa">
+  <div class="section-header">
+    <div class="section-icon">🧪</div>
+    <div>
+      <span class="section-num">Paso 4 — Integración continua</span>
+      <div class="section-title">Pipeline QA — tests + build + despliegue automático</div>
+    </div>
+  </div>
+
+  <pre><code><span style="color:#546e7a"># .github/workflows/ci-qa.yml</span>
+name: <span style="color:#c3e88d">CI — Build · Test · Deploy QA</span>
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  IMAGE_NAME: <span style="color:#f0b27a">${{ secrets.DOCKERHUB_USERNAME }}</span>/restaurante-api
+
+jobs:
+
+  <span style="color:#a8d5b5">test:</span>
+    name: 🧪 Pruebas
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: <span style="color:#c3e88d">'21'</span>
+          distribution: <span style="color:#c3e88d">'temurin'</span>
+
+      - name: Cache Maven
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: <span style="color:#f0b27a">${{ runner.os }}</span>-maven-<span style="color:#f0b27a">${{ hashFiles('**/pom.xml') }}</span>
+
+      - name: Ejecutar pruebas
+        run: mvn test --no-transfer-progress
+
+      - name: Publicar reporte de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: target/site/jacoco/
+
+  <span style="color:#a8d5b5">build-and-push:</span>
+    name: 🐳 Build imagen Docker
+    needs: test                     <span style="color:#546e7a"># solo si los tests pasan</span>
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: <span style="color:#f0b27a">${{ steps.meta.outputs.version }}</span>
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login a Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: <span style="color:#f0b27a">${{ secrets.DOCKERHUB_USERNAME }}</span>
+          password: <span style="color:#f0b27a">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+      - name: Metadata de la imagen
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: <span style="color:#f0b27a">${{ env.IMAGE_NAME }}</span>
+          tags: |
+            type=sha,prefix=qa-        <span style="color:#546e7a"># tag: qa-abc1234</span>
+            type=raw,value=qa-latest
+
+      - name: Build y push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: <span style="color:#f0b27a">${{ steps.meta.outputs.tags }}</span>
+          labels: <span style="color:#f0b27a">${{ steps.meta.outputs.labels }}</span>
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  <span style="color:#a8d5b5">deploy-qa:</span>
+    name: 🚀 Desplegar a QA
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: qa                 <span style="color:#546e7a"># ambiente configurado en GitHub</span>
+    steps:
+      - name: Login a Azure
+        uses: azure/login@v1
+        with:
+          creds: <span style="color:#f0b27a">${{ secrets.AZURE_CREDENTIALS }}</span>
+
+      - name: Desplegar en Azure Web App (QA)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: <span style="color:#f0b27a">${{ secrets.AZURE_WEBAPP_NAME_QA }}</span>
+          images: <span style="color:#f0b27a">${{ env.IMAGE_NAME }}:qa-latest</span>
+
+      - name: Configurar variables de entorno en Azure QA
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: <span style="color:#f0b27a">${{ secrets.AZURE_WEBAPP_NAME_QA }}</span>
+          app-settings-json: |
+            [
+              {"name": "SPRING_PROFILES_ACTIVE", "value": "docker"},
+              {"name": "JWT_SECRET", "value": "<span style="color:#f0b27a">${{ secrets.JWT_SECRET_QA }}</span>"},
+              {"name": "DB_PASSWORD", "value": "<span style="color:#f0b27a">${{ secrets.DB_PASSWORD_QA }}</span>"}
+            ]</code></pre>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 5 — PIPELINE PROD -->
+<section class="section" id="pipeline-prod">
+  <div class="section-header">
+    <div class="section-icon">🚀</div>
+    <div>
+      <span class="section-num">Paso 5 — Despliegue controlado</span>
+      <div class="section-title">Pipeline PROD — aprobación manual + despliegue</div>
+    </div>
+  </div>
+
+  <div class="callout key">
+    <span class="callout-icon">🌱</span>
+    <div><strong>El pipeline de PROD requiere aprobación manual.</strong> Ningún push va directamente a producción sin que alguien del equipo revise y apruebe en GitHub. Esto es la línea de defensa entre "funciona en QA" y "está en producción".</div>
+  </div>
+
+  <div class="fase-box">
+    <h3>🔧 Configurar el environment de producción en GitHub</h3>
+    <ol class="steps">
+      <li><div><div class="step-title">Ir a Settings → Environments → New environment</div><div class="step-desc">Nombre: <code>production</code>. Activar "Required reviewers" y agregar a los integrantes del equipo. Con esto, el workflow de PROD se pausa hasta que alguien apruebe.</div></div></li>
+      <li><div><div class="step-title">Agregar los secrets específicos de PROD</div><div class="step-desc"><code>JWT_SECRET_PROD</code>, <code>DB_PASSWORD_PROD</code>, <code>AZURE_WEBAPP_NAME_PROD</code> — distintos de los de QA.</div></div></li>
+    </ol>
+  </div>
+
+  <pre><code><span style="color:#546e7a"># .github/workflows/ci-prod.yml</span>
+name: <span style="color:#c3e88d">CD — Deploy PROD</span>
+
+on:
+  push:
+    tags:
+      - <span style="color:#c3e88d">'v*.*.*'</span>        <span style="color:#546e7a"># se activa al crear un tag: git tag v1.0.0 && git push --tags</span>
+
+env:
+  IMAGE_NAME: <span style="color:#f0b27a">${{ secrets.DOCKERHUB_USERNAME }}</span>/restaurante-api
+
+jobs:
+
+  <span style="color:#a8d5b5">build-prod:</span>
+    name: 🐳 Build imagen PROD
+    runs-on: ubuntu-latest
+    outputs:
+      version: <span style="color:#f0b27a">${{ steps.meta.outputs.version }}</span>
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login a Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: <span style="color:#f0b27a">${{ secrets.DOCKERHUB_USERNAME }}</span>
+          password: <span style="color:#f0b27a">${{ secrets.DOCKERHUB_TOKEN }}</span>
+
+      - name: Metadata con el tag de versión
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: <span style="color:#f0b27a">${{ env.IMAGE_NAME }}</span>
+          tags: |
+            type=semver,pattern={{version}}   <span style="color:#546e7a"># v1.0.0</span>
+            type=raw,value=latest             <span style="color:#546e7a"># latest actualizado</span>
+
+      - name: Build y push imagen de producción
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: <span style="color:#f0b27a">${{ steps.meta.outputs.tags }}</span>
+
+  <span style="color:#a8d5b5">deploy-prod:</span>
+    name: 🚀 Desplegar a PROD
+    needs: build-prod
+    runs-on: ubuntu-latest
+    environment: production         <span style="color:#546e7a"># ← pausa aquí hasta aprobación manual</span>
+    steps:
+      - name: Login a Azure
+        uses: azure/login@v1
+        with:
+          creds: <span style="color:#f0b27a">${{ secrets.AZURE_CREDENTIALS }}</span>
+
+      - name: Desplegar en Azure Web App (PROD)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: <span style="color:#f0b27a">${{ secrets.AZURE_WEBAPP_NAME_PROD }}</span>
+          images: <span style="color:#f0b27a">${{ env.IMAGE_NAME }}:${{ needs.build-prod.outputs.version }}</span>
+
+      - name: Configurar variables PROD
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: <span style="color:#f0b27a">${{ secrets.AZURE_WEBAPP_NAME_PROD }}</span>
+          app-settings-json: |
+            [
+              {"name": "SPRING_PROFILES_ACTIVE", "value": "docker"},
+              {"name": "JWT_SECRET", "value": "<span style="color:#f0b27a">${{ secrets.JWT_SECRET_PROD }}</span>"},
+              {"name": "DB_PASSWORD", "value": "<span style="color:#f0b27a">${{ secrets.DB_PASSWORD_PROD }}</span>"}
+            ]
+
+  <span style="color:#a8d5b5">notify:</span>
+    name: 📣 Notificación
+    needs: deploy-prod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resumen del despliegue
+        run: |
+          echo "✅ PROD desplegado exitosamente"
+          echo "Versión: <span style="color:#f0b27a">${{ github.ref_name }}</span>"
+          echo "URL: https://<span style="color:#f0b27a">${{ secrets.AZURE_WEBAPP_NAME_PROD }}</span>.azurewebsites.net"</code></pre>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 6 — AZURE BD -->
+<section class="section" id="azure">
+  <div class="section-header">
+    <div class="section-icon">☁️</div>
+    <div>
+      <span class="section-num">Paso 6 — Base de datos en la nube</span>
+      <div class="section-title">Crear la BD en Azure — un ambiente por vez</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">☁️</span>
+    <div><strong>Azure for Students da $100 USD de crédito.</strong> Verifiquen que tienen acceso en <a href="https://azure.microsoft.com/es-es/free/students/" style="color:var(--naranja-med)">azure.microsoft.com/free/students</a>. Con eso cubren una BD pequeña y un App Service para la duración del proyecto.</div>
+  </div>
+
+  <div class="fase-box">
+    <h3>🐘 Azure Database for PostgreSQL</h3>
+    <ol class="steps">
+      <li><div><div class="step-title">Crear el servidor en el portal de Azure</div><div class="step-desc">Buscar "Azure Database for PostgreSQL" → Flexible server. Tier: Burstable B1ms (el más económico). Región: East US o la más cercana. Crear dos instancias: una para QA, una para PROD — con nombres distintos.</div></div></li>
+      <li><div><div class="step-title">Configurar el firewall</div><div class="step-desc">En "Networking" del servidor → Agregar regla: permitir IPs de GitHub Actions. GitHub publica sus rangos de IPs en <code>api.github.com/meta</code>. También pueden activar "Allow access to Azure services" temporalmente.</div></div></li>
+      <li><div><div class="step-title">Obtener la cadena de conexión</div><div class="step-desc">En el portal: Settings → Connect → Java. Tendrán algo como: <code>jdbc:postgresql://servidor-qa.postgres.database.azure.com:5432/restaurante?sslmode=require</code></div></div></li>
+      <li><div><div class="step-title">Guardar el host y password como Secrets en GitHub</div><div class="step-desc"><code>DB_HOST_QA</code>, <code>DB_HOST_PROD</code>, <code>DB_PASSWORD_QA</code>, <code>DB_PASSWORD_PROD</code></div></div></li>
+    </ol>
+  </div>
+
+  <div class="fase-box">
+    <h3>🍃 Azure Cosmos DB for MongoDB</h3>
+    <ol class="steps">
+      <li><div><div class="step-title">Buscar "Azure Cosmos DB" → Create → Azure Cosmos DB for MongoDB</div><div class="step-desc">API: MongoDB. Tier: Free tier (gratis, 400 RU/s y 5 GB). Una instancia por ambiente.</div></div></li>
+      <li><div><div class="step-title">Obtener el connection string</div><div class="step-desc">Settings → Connection String → PRIMARY CONNECTION STRING. Tiene el formato: <code>mongodb://cuenta:password@cuenta.mongo.cosmos.azure.com:10255/?ssl=true&...</code></div></div></li>
+    </ol>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 7 — DESPLIEGUE -->
+<section class="section" id="despliegue">
+  <div class="section-header">
+    <div class="section-icon">🌐</div>
+    <div>
+      <span class="section-num">Paso 7 — Su API en línea</span>
+      <div class="section-title">Azure App Service — correr su contenedor en la nube</div>
+    </div>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <div>
+        <div class="step-title">Crear el App Service en Azure</div>
+        <div class="step-desc">Buscar "App Service" → Create. Publish: Container. OS: Linux. Crear dos: uno para QA (<code>restaurante-qa</code>), uno para PROD (<code>restaurante-prod</code>).</div>
+      </div>
+    </li>
+    <li>
+      <div>
+        <div class="step-title">Configurar el contenedor en el App Service</div>
+        <div class="step-desc">Settings → Configuration → Container settings → Docker Hub → imagen: <code>suusuario/restaurante-api:qa-latest</code>. Continuous deployment: ON (Azure verifica cada 5 min si hay nueva imagen).</div>
+      </div>
+    </li>
+    <li>
+      <div>
+        <div class="step-title">Crear el Service Principal para GitHub Actions</div>
+        <div class="step-desc">En Azure Cloud Shell o desde la terminal con Azure CLI:</div>
+      </div>
+    </li>
+  </ol>
+
+  <pre><code><span style="color:#546e7a"># Instalar Azure CLI si no lo tienen: https://docs.microsoft.com/cli/azure/install-azure-cli</span>
+az login
+
+<span style="color:#546e7a"># Obtener el ID de la suscripción</span>
+az account show --query id -o tsv
+
+<span style="color:#546e7a"># Crear el Service Principal — guardar el JSON completo como AZURE_CREDENTIALS en GitHub</span>
+az ad sp create-for-rbac \
+  --name "github-actions-restaurante" \
+  --role contributor \
+  --scopes /subscriptions/{subscription-id}/resourceGroups/{resource-group} \
+  --json-auth</code></pre>
+
+  <ol class="steps" style="counter-reset:step 3">
+    <li>
+      <div>
+        <div class="step-title">Verificar la URL de su API en Azure</div>
+        <div class="step-desc">En el portal: App Service → Overview → URL. Será algo como <code>https://restaurante-qa.azurewebsites.net</code>. Prueben el Swagger: <code>https://restaurante-qa.azurewebsites.net/swagger-ui/index.html</code></div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="callout key">
+    <span class="callout-icon">✅</span>
+    <div><strong>El URL de su API desplegada va en el README</strong> — QA y PROD separados. Es la evidencia principal de que el CI/CD funciona.</div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PASO 8 — DIAGRAMA -->
+<section class="section" id="diagrama">
+  <div class="section-header">
+    <div class="section-icon">📐</div>
+    <div>
+      <span class="section-num">Paso 8 — Documentación visual</span>
+      <div class="section-title">Diagrama de despliegue — cómo está desplegado su sistema</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <div><strong>El diagrama de despliegue lo hacen manual</strong> — en draw.io, Lucidchart o Miro, con el código de colores de su equipo. No Mermaid ni autogenerado. Este diagrama muestra la arquitectura real de su sistema en producción.</div>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:700;margin:20px 0 14px;color:var(--naranja)">Qué debe mostrar su diagrama de despliegue</h3>
+
+  <div class="grid-2">
+    <div class="card"><h3>🌐 Nodos (como cubos UML)</h3><p>Desarrollador → GitHub → GitHub Actions → Azure App Service QA → Azure App Service PROD. Cada nodo es un cuadrado con el nombre del servicio.</p></div>
+    <div class="card"><h3>📦 Artefactos</h3><p>Imagen Docker en Docker Hub (entre GitHub Actions y los App Services). Archivos de workflow (.yml) en el nodo de GitHub Actions.</p></div>
+    <div class="card"><h3>🗄️ Almacenamiento</h3><p>Azure Database for PostgreSQL (QA) conectado al App Service QA. Azure Database for PostgreSQL (PROD) conectado al App Service PROD. Lo mismo para MongoDB si aplica.</p></div>
+    <div class="card"><h3>↔️ Comunicaciones</h3><p>Líneas sólidas entre nodos con el protocolo: HTTPS entre cliente y API, JDBC/MongoDB entre API y BD, CI/CD entre GitHub Actions y Azure.</p></div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-label">Referencia visual — su diagrama debe tener esta estructura</div>
+    <div class="mermaid">
+flowchart TD
+    DEV["💻 Desarrollador\n(Local)"]
+    GH["📦 GitHub\nRepositorio"]
+    GA["⚙️ GitHub Actions\nCI/CD Pipeline\nworkflows/*.yml"]
+    HUB["🐳 Docker Hub\nsuusuario/restaurante-api"]
+
+    subgraph AZURE_QA["☁️ Azure — QA"]
+        WAPP_QA["🌐 App Service\nrestaurante-qa\n.azurewebsites.net"]
+        DB_QA["🐘 PostgreSQL QA\nrestaurante-qa.postgres\n.database.azure.com"]
+        MONGO_QA["🍃 Cosmos DB QA\nrestaurante-qa.mongo\n.cosmos.azure.com"]
+    end
+
+    subgraph AZURE_PROD["☁️ Azure — PROD"]
+        WAPP_PROD["🌐 App Service\nrestaurante-prod\n.azurewebsites.net"]
+        DB_PROD["🐘 PostgreSQL PROD\nrestaurante-prod.postgres\n.database.azure.com"]
+        MONGO_PROD["🍃 Cosmos DB PROD\nrestaurante-prod.mongo\n.cosmos.azure.com"]
+    end
+
+    CLIENT["📱 Cliente\nSwagger / React"]
+
+    DEV -->|"git push"| GH
+    GH -->|"trigger CI/CD"| GA
+    GA -->|"docker push"| HUB
+    GA -->|"deploy QA"| WAPP_QA
+    GA -->|"aprobación manual"| WAPP_PROD
+    WAPP_QA -->|"JDBC"| DB_QA
+    WAPP_QA -->|"MongoDB"| MONGO_QA
+    WAPP_PROD -->|"JDBC"| DB_PROD
+    WAPP_PROD -->|"MongoDB"| MONGO_PROD
+    CLIENT -->|"HTTPS"| WAPP_QA
+    CLIENT -->|"HTTPS"| WAPP_PROD
+
+    style AZURE_QA fill:#e3f2fd,stroke:#1565c0
+    style AZURE_PROD fill:#e8f5e9,stroke:#1b5e20
+    style GA fill:#e65100,color:#fff
+    style HUB fill:#0db7ed,color:#fff
+    </div>
+  </div>
+
+  <p style="font-size:.84rem;color:var(--gris-med);margin-top:10px">Este es el diagrama de referencia generado con Mermaid para que entiendan la estructura. El que entregan debe ser construido manualmente en draw.io, Lucidchart o Miro con el mismo código de colores de todos sus diagramas.</p>
+
+  <ul class="checklist" style="margin-top:20px">
+    <li>Diagrama de despliegue construido manualmente — sin Mermaid ni autogenerado por IA</li>
+    <li>Misma herramienta que usaron para los diagramas de clases y componentes</li>
+    <li>Mismo código de colores del equipo</li>
+    <li>Muestra los dos ambientes (QA y PROD) claramente diferenciados</li>
+    <li>Incluye Docker Hub como nodo intermedio entre CI/CD y Azure</li>
+    <li>Muestra la BD de cada ambiente con las líneas de comunicación</li>
+    <li>Exportado en PNG o SVG de alta resolución</li>
+  </ul>
+</section>
+
+<div class="sep"></div>
+
+<section class="section" id="readme">
+  <div class="section-header">
+    <div class="section-icon">📝</div>
+    <div>
+      <span class="section-num">Evidencia obligatoria</span>
+      <div class="section-title">Qué agregan al README</div>
+    </div>
+  </div>
+
+  <div class="readme-box">
+    <h4>📋 Sección "CI/CD y Despliegue" en el README del backend</h4>
+    <ul>
+      <li><strong>URL de la API en QA</strong> (accesible públicamente): <code>https://restaurante-qa.azurewebsites.net/swagger-ui/index.html</code></li>
+      <li><strong>URL de la API en PROD</strong>: <code>https://restaurante-prod.azurewebsites.net/swagger-ui/index.html</code></li>
+      <li>Captura del pipeline de GitHub Actions en verde — jobs test, build y deploy completados</li>
+      <li>Captura de la aprobación manual del deploy a PROD en GitHub</li>
+      <li>Captura de la imagen en Docker Hub con los tags de versión</li>
+      <li>Captura del App Service en Azure mostrando el contenedor corriendo</li>
+      <li>Diagrama de despliegue (el que construyeron manualmente) — PNG de alta resolución</li>
+      <li>Lista de secrets configurados en GitHub (nombres, sin valores)</li>
+      <li>Descripción de los dos ambientes: qué va a QA, qué va a PROD y cuándo</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  🌿 <span>Guía Turtwig de Studio</span> &nbsp;·&nbsp; S10 — CI/CD &nbsp;·&nbsp; DOSW &nbsp;·&nbsp; Escuela Colombiana de Ingeniería
+</footer>
+
+<script>
+mermaid.initialize({startOnLoad:true,theme:'base',themeVariables:{primaryColor:'#fff3e0',primaryTextColor:'#1c1f26',primaryBorderColor:'#ffcc80',lineColor:'#f57c00',fontFamily:'Space Grotesk, sans-serif',fontSize:'13px'},flowchart:{curve:'basis',padding:20}});
+</script>
+</body>
+</html>
