@@ -1,0 +1,81 @@
+name: CD — Deploy PROD
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'       # se activa al crear un tag: git tag v1.0.0 && git push --tags
+
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/restaurante-api
+
+jobs:
+  build-prod:
+    name: Build imagen PROD
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login a Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Metadata con el tag de versión
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}   # v1.0.0
+            type=raw,value=latest            # latest actualizado
+
+      - name: Build y push imagen de producción
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+
+  deploy-prod:
+    name: Desplegar a PROD
+    needs: build-prod
+    runs-on: ubuntu-latest
+    environment: production        # pausa aquí hasta aprobación manual
+    steps:
+      - name: Login a Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Desplegar en Azure Web App (PROD)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME_PROD }}
+          images: ${{ env.IMAGE_NAME }}:${{ needs.build-prod.outputs.version }}
+
+      - name: Configurar variables PROD
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME_PROD }}
+          app-settings-json: |
+            [
+              {"name": "SPRING_PROFILES_ACTIVE", "value": "docker"},
+              {"name": "JWT_SECRET", "value": "${{ secrets.JWT_SECRET_PROD }}"},
+              {"name": "DB_PASSWORD", "value": "${{ secrets.DB_PASSWORD_PROD }}"},
+              {"name": "DB_HOST", "value": "${{ secrets.DB_HOST_PROD }}"},
+              {"name": "DB_USER", "value": "${{ secrets.DB_USER_PROD }}"},
+              {"name": "SPRING_DATA_MONGODB_URI", "value": "${{ secrets.MONGO_URI_PROD }}"}
+            ]
+
+  notify:
+    name: Notificación
+    needs: deploy-prod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resumen del despliegue
+        run: |
+          echo "PROD desplegado exitosamente"
+          echo "Versión: ${{ github.ref_name }}"
+          echo "URL: https://${{ secrets.AZURE_WEBAPP_NAME_PROD }}.azurewebsites.net"
