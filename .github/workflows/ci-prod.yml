@@ -65,11 +65,11 @@ jobs:
           app-settings-json: |
             [
               {"name": "SPRING_PROFILES_ACTIVE", "value": "docker"},
-              {"name": "JWT_SECRET", "value": "${{ secrets.JWT_SECRET_PROD }}"},
-              {"name": "DB_PASSWORD", "value": "${{ secrets.DB_PASSWORD_PROD }}"},
-              {"name": "DB_HOST", "value": "${{ secrets.DB_HOST_PROD }}"},
-              {"name": "DB_USER", "value": "${{ secrets.DB_USER_PROD }}"},
-              {"name": "SPRING_DATA_MONGODB_URI", "value": "${{ secrets.MONGO_URI_PROD }}"}
+              {"name": "JWT_SECRET", "value": ${{ toJson(secrets.JWT_SECRET_PROD) }}},
+              {"name": "DB_PASSWORD", "value": ${{ toJson(secrets.DB_PASSWORD_PROD) }}},
+              {"name": "DB_HOST", "value": ${{ toJson(secrets.DB_HOST_PROD) }}},
+              {"name": "DB_USER", "value": ${{ toJson(secrets.DB_USER_PROD) }}},
+              {"name": "SPRING_DATA_MONGODB_URI", "value": ${{ toJson(secrets.MONGO_URI_PROD) }}}
             ]
 
   notify:
