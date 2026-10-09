@@ -60,7 +60,6 @@ class PlatoServiceImplTest {
 
     @Test
     void crear_PlatoNuevo_RetornaPlatoCreado() {
-        when(platoRepository.existsByNombreIgnoreCase("Pasta")).thenReturn(false);
         when(entityMapper.toEntity(plato)).thenReturn(entity);
         when(platoRepository.save(entity)).thenReturn(entity);
         when(entityMapper.toDomain(entity)).thenReturn(plato);
@@ -85,7 +84,7 @@ class PlatoServiceImplTest {
 
     @Test
     void crear_nombreDuplicado_debeLanzarExcepcion() {
-        when(platoRepository.existsByNombreIgnoreCase("Pasta")).thenReturn(true);
+        doThrow(new com.dows.bitacora2.restaurante.exception.ConflictoException("Ya existe")).when(validator).validarNombreUnico("Pasta");
 
         com.dows.bitacora2.restaurante.exception.ConflictoException ex = assertThrows(
             com.dows.bitacora2.restaurante.exception.ConflictoException.class,

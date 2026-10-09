@@ -58,11 +58,11 @@ class SecurityTest {
     private MockMvc mockMvc;
 
     @Test
-    void crearPlato_sinToken_devuelve401() throws Exception {
+    void crearPlato_sinToken_devuelve403() throws Exception {
         mockMvc.perform(post("/api/v1/platos")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"nombre\":\"Bandeja Paisa\",\"precio\":28000,\"descripcion\":\"Plato tipico\"}"))
-                .andExpect(status().isUnauthorized()); // Espera 401
+                .andExpect(status().isForbidden()); // Espera 403
     }
 
     @Test

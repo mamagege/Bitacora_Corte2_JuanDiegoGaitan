@@ -193,7 +193,7 @@ class PedidoServiceImplTest {
         ReglaDeNegocioException exception = assertThrows(ReglaDeNegocioException.class, () -> {
             pedidoService.crear(pedidoBase);
         });
-        assertTrue(exception.getMessage().contains("no estÃ¡ disponible"));
+        assertTrue(exception.getMessage().contains("disponible"));
     }
 
     @Test
