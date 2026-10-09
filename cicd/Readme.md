@@ -71,3 +71,31 @@ Durante la implementación y despliegue del proyecto en Azure App Services, enfr
 ### 6. Cadena de conexión oculta en Azure Cosmos DB (MongoDB)
 * **El Problema:** Spring Boot fallaba al inicializar los repositorios Mongo con el error `Database name must not be empty`.
 * **La Solución:** La cadena de conexión predeterminada (Connection String) que entrega el portal de Azure Cosmos DB viene sin el nombre de la base de datos mapeada. Para resolverlo, editamos los *Secrets* en GitHub y añadimos manualmente el nombre de la base de datos `restaurante` justo después de la barra de ruta y antes de los parámetros TLS (`...com:10260/restaurante?tls=true...`).
+
+## Infraestructura Desplegada en Azure
+
+A continuación se presentan las evidencias de los recursos provisionados exitosamente en Azure para soportar ambos ambientes (QA y Producción).
+
+### App Service Plan (Plan de Linux)
+![Plan de Linux](img/plan_linux.png)
+
+### App Services (Web Apps)
+**Ambiente de Producción:**
+![App Service PROD](img/app_service_prod.png)
+
+**Ambiente de QA:**
+![App Service QA](img/app_service_qa.png)
+
+### Bases de Datos Relacionales (PostgreSQL)
+**Instancia de Producción:**
+![PostgreSQL PROD](img/postgres_prod.png)
+
+**Instancia de QA:**
+![PostgreSQL QA](img/postgres_qa.png)
+
+### Bases de Datos No Relacionales (Cosmos DB - MongoDB)
+**Instancia de Producción:**
+![MongoDB PROD](img/mongo_prod.png)
+
+**Instancia de QA:**
+![MongoDB QA](img/mongo_qa.png)
